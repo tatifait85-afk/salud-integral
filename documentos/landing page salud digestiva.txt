@@ -1,0 +1,1173 @@
+<html lang="es">
+<head>
+<meta charset="UTF-8"></meta>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+<title>Salud Digestiva | Master Tatiana Fait Shaw</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+--forest: #173A1E;
+--olive: #5F7318;
+--sage: #A8C08A;
+--mint: #DCE8D2;
+--ivory: #F7F3E8;
+--beige: #D7C7A5;
+--mustard: #C79D2A;
+--terracotta: #D98B67;
+--darkbrown: #3A2C22;
+--lavender: #8D7FAE;
+--lavender-soft: #EAE5F4;
+--whatsapp: #25D366;
+--whatsapp-dark: #1DA851;
+--white: #FFFFFF;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+font-family: 'Inter', sans-serif;
+color: var(--darkbrown);
+background: var(--ivory);
+line-height: 1.6;
+position: relative;
+overflow-x: hidden;
+}
+img { max-width:100%; display:block; }
+
+/* ============ HEADER / BANNER ============ */
+.brand-banner {
+width: 100%;
+line-height: 0;
+}
+.brand-banner img {
+width: 100%;
+height: auto;
+object-fit: cover;
+}
+
+.sub-nav {
+background: var(--forest);
+border-bottom: 3px solid var(--mustard);
+position: relative;
+}
+.sub-nav-fade {
+display: none;
+pointer-events: none;
+}
+.sub-nav-inner {
+max-width: 1080px;
+margin: 0 auto;
+padding: 12px 24px;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 28px;
+flex-wrap: wrap;
+}
+.sub-nav a {
+color: var(--ivory);
+text-decoration: none;
+font-size: 0.82rem;
+font-weight: 600;
+letter-spacing: 0.02em;
+opacity: 0.9;
+transition: opacity 0.2s, color 0.2s;
+}
+.sub-nav a:hover { opacity: 1; color: var(--sage); }
+.sub-nav a.nav-cta {
+background: var(--mustard);
+color: var(--forest);
+padding: 7px 18px;
+border-radius: 20px;
+opacity: 1;
+}
+.sub-nav a.nav-wa {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: var(--whatsapp);
+color: var(--white);
+padding: 7px 16px;
+border-radius: 20px;
+}
+.sub-nav a.nav-wa svg { width:14px; height:14px; }
+
+@media (max-width: 700px) {
+.sub-nav-inner {
+flex-wrap: nowrap;
+justify-content: flex-start;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
+gap: 14px;
+padding: 10px 16px;
+scrollbar-width: none;
+}
+.sub-nav-inner::-webkit-scrollbar { display: none; }
+.sub-nav a { font-size: 0.76rem; white-space: nowrap; flex-shrink: 0; }
+.sub-nav a.nav-cta, .sub-nav a.nav-wa { padding: 6px 14px; }
+.sub-nav-fade {
+display: block;
+position: absolute;
+top: 0; right: 0; bottom: 3px;
+width: 28px;
+background: linear-gradient(90deg, rgba(23,58,30,0) 0%, rgba(23,58,30,0.85) 100%);
+}
+}
+
+/* ============ HERO ============ */
+.hero-main {
+position: relative;
+overflow: hidden;
+background: linear-gradient(180deg, #FFFDF9 0%, var(--ivory) 100%);
+}
+.hero-main::before {
+content:"";
+position:absolute;
+top:-160px; left:-140px;
+width:420px; height:420px;
+background: radial-gradient(circle, rgba(168,192,138,0.4) 0%, rgba(168,192,138,0) 70%);
+border-radius:50%;
+pointer-events:none;
+}
+.hero-main::after {
+content:"";
+position:absolute;
+bottom:-160px; right:-140px;
+width:380px; height:380px;
+background: radial-gradient(circle, rgba(141,127,174,0.16) 0%, rgba(141,127,174,0) 70%);
+border-radius:50%;
+pointer-events:none;
+}
+.hero-grid {
+position: relative;
+z-index:1;
+max-width: 1080px;
+margin: 0 auto;
+padding: 48px 24px 60px;
+display: grid;
+grid-template-columns: 0.95fr 1.05fr;
+gap: 44px;
+align-items: center;
+}
+@media (max-width: 860px) {
+.hero-grid { grid-template-columns: 1fr; padding: 32px 20px 44px; text-align:center; }
+}
+.hero-visual {
+position: relative;
+border-radius: 28px;
+overflow: hidden;
+box-shadow: 0 20px 50px rgba(23,58,30,0.18);
+border: 6px solid var(--white);
+outline: 1px solid var(--beige);
+}
+.hero-visual img { width:100%; }
+
+.hero-copy .eyebrow {
+display:inline-flex;
+align-items:center;
+gap:8px;
+background: var(--mint);
+border: 1px solid var(--sage);
+color: var(--forest);
+padding: 7px 16px;
+border-radius: 50px;
+font-size: 0.74rem;
+font-weight: 800;
+letter-spacing: 0.04em;
+text-transform: uppercase;
+margin-bottom: 18px;
+}
+.hero-copy h1 {
+font-family:'Playfair Display', serif;
+font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+color: var(--forest);
+line-height:1.18;
+font-weight:700;
+margin-bottom: 16px;
+}
+.hero-copy h1 em {
+font-style: italic;
+color: var(--terracotta);
+}
+.hero-copy p.desc {
+font-size: 0.98rem;
+color: var(--darkbrown);
+opacity: 0.92;
+margin-bottom: 26px;
+max-width: 480px;
+}
+@media (max-width: 860px) { .hero-copy p.desc { margin-left:auto; margin-right:auto; } }
+
+/* Big free CTA block - the visibility star of the page */
+.hero-cta-box {
+background: var(--white);
+border: 2.5px solid var(--mustard);
+border-radius: 20px;
+padding: 26px;
+box-shadow: 0 14px 34px rgba(199,157,42,0.18);
+}
+.hero-cta-box h3 {
+font-family:'Playfair Display', serif;
+font-size: 1.2rem;
+color: var(--forest);
+margin-bottom: 4px;
+font-weight: 700;
+}
+.hero-cta-box p {
+font-size: 0.82rem;
+color: var(--darkbrown);
+opacity: 0.85;
+margin-bottom: 16px;
+}
+.hero-form { display:flex; flex-direction:column; gap:10px; }
+.hero-form input[type="email"] {
+width:100%;
+background: var(--ivory);
+border: 1.5px solid var(--sage);
+border-radius: 12px;
+padding: 15px 18px;
+font-size: 0.92rem;
+font-family:'Inter', sans-serif;
+color: var(--darkbrown);
+}
+.hero-form input[type="email"]:focus {
+outline:none;
+border-color: var(--olive);
+box-shadow: 0 0 0 3px rgba(95,115,24,0.14);
+}
+.btn-giant {
+width:100%;
+background: var(--mustard);
+color: var(--forest) !important;
+font-weight: 800;
+font-size: 1.05rem;
+padding: 18px;
+border-radius: 12px;
+border:none;
+cursor:pointer;
+text-align:center;
+text-decoration:none;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+box-shadow: 0 8px 20px rgba(199,157,42,0.35);
+transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-giant:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(199,157,42,0.48); }
+.hero-microcopy {
+font-size: 0.72rem;
+color: var(--olive);
+font-weight: 700;
+text-align:center;
+margin-top: 10px;
+letter-spacing: 0.02em;
+}
+.hero-success {
+display:none;
+background: var(--mint);
+border: 1px solid var(--sage);
+border-radius: 12px;
+padding: 18px;
+text-align:center;
+}
+.hero-success h4 { color:var(--forest); font-family:'Playfair Display', serif; font-size:1.05rem; margin-bottom:4px; }
+.hero-success p { font-size:0.82rem; color:var(--darkbrown); }
+
+.hero-secondary-links {
+display:flex;
+gap:18px;
+justify-content:center;
+margin-top:18px;
+flex-wrap:wrap;
+}
+.hero-secondary-links a {
+font-size:0.8rem;
+font-weight:700;
+color:var(--forest);
+text-decoration:underline;
+text-decoration-color: var(--sage);
+text-underline-offset:3px;
+}
+
+/* ============ SECTION SHELL ============ */
+.section { padding: 60px 24px; max-width: 1080px; margin:0 auto; }
+.section-label {
+font-size:0.72rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase;
+color: var(--terracotta); margin-bottom:8px; text-align:center; display:block;
+}
+.section-title {
+font-family:'Playfair Display', serif;
+font-size: clamp(1.5rem, 3vw, 2.1rem);
+color: var(--forest);
+text-align:center;
+margin-bottom:12px;
+font-weight:700;
+}
+.section-subtitle {
+font-size:0.92rem; color:var(--darkbrown); text-align:center;
+max-width:580px; margin:0 auto 36px auto; opacity:0.9;
+}
+
+/* ============ QUIZ ============ */
+.quiz-section { background: var(--white); border-top:1px solid var(--beige); border-bottom:1px solid var(--beige); }
+.quiz-box {
+background: var(--ivory);
+border: 1px solid var(--beige);
+border-radius: 20px;
+padding: 32px;
+max-width: 640px;
+margin: 0 auto;
+}
+@media (max-width:640px){ .quiz-box{ padding:22px 16px; } }
+.quiz-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid var(--mint); padding-bottom:12px; }
+.quiz-progress-text { font-size:0.75rem; font-weight:700; color:var(--olive); }
+.quiz-progress-outer { width:110px; background:var(--mint); height:6px; border-radius:10px; overflow:hidden; }
+.quiz-progress-inner { background:var(--olive); height:100%; width:25%; transition:width 0.3s ease; }
+.quiz-question { font-family:'Playfair Display', serif; font-size:1.08rem; color:var(--forest); font-weight:700; margin-bottom:20px; line-height:1.4; }
+.quiz-options { display:grid; grid-template-columns:1fr; gap:10px; }
+.quiz-opt-btn {
+background: var(--white); border:1.5px solid var(--beige); border-radius:12px; padding:14px 18px;
+font-size:0.88rem; text-align:left; font-family:'Inter', sans-serif; color:var(--darkbrown); font-weight:500;
+cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:12px;
+}
+.quiz-opt-btn:hover { border-color:var(--olive); background:var(--mint); }
+.quiz-opt-num { width:22px; height:22px; background:var(--ivory); border:1px solid var(--sage); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:var(--forest); flex-shrink:0; }
+.quiz-result-view { display:none; }
+.quiz-profile-card { background:var(--mint); border:1px solid var(--sage); padding:20px; border-radius:14px; margin-bottom:18px; }
+.quiz-profile-card h4 { font-family:'Playfair Display', serif; font-size:1.1rem; color:var(--forest); margin-bottom:8px; font-weight:700; }
+.quiz-profile-card p { font-size:0.85rem; color:var(--darkbrown); line-height:1.6; }
+.quiz-btn-reset { display:block; margin:14px auto 0 auto; background:transparent; border:none; color:var(--darkbrown); font-size:0.74rem; font-weight:600; text-decoration:underline; cursor:pointer; opacity:0.7; }
+
+/* ============ FREE PROGRAM DETAIL ============ */
+.free-program { background: #FDFBF7; }
+.weeks-accordion { display:flex; flex-direction:column; gap:12px; max-width:720px; margin:0 auto 32px auto; }
+.week-card { background:var(--white); border:1px solid var(--beige); border-radius:12px; padding:16px 18px; }
+.week-card-header { display:flex; gap:14px; align-items:center; }
+.week-num-badge { width:28px; height:28px; border-radius:50%; background:var(--forest); color:var(--white); font-family:'Playfair Display', serif; font-weight:700; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.week-card-title h4 { font-size:0.88rem; font-weight:700; color:var(--forest); }
+.week-card-title p { font-size:0.7rem; color:var(--olive); font-weight:700; text-transform:uppercase; letter-spacing:0.03em; }
+.week-card-body { font-size:0.8rem; color:var(--darkbrown); line-height:1.55; margin-top:10px; padding-left:42px; opacity:0.95; }
+
+.ml-custom-container {
+background: var(--white);
+border: 2px solid var(--mustard);
+border-radius: 18px;
+padding: 28px;
+max-width: 480px;
+margin: 0 auto;
+box-shadow: 0 10px 26px rgba(199,157,42,0.15);
+}
+.ml-custom-container h4 { font-family:'Playfair Display', serif; font-size:1.25rem !important; color:var(--forest) !important; text-align:center !important; font-weight:700 !important; margin-bottom:6px !important; }
+.ml-custom-container p { font-size:0.8rem !important; color:var(--darkbrown) !important; text-align:center !important; line-height:1.4 !important; margin-bottom:18px !important; }
+.ml-field-group input { width:100% !important; background:var(--ivory) !important; border:1.5px solid var(--sage) !important; border-radius:10px !important; padding:14px 16px !important; font-size:0.85rem !important; font-family:'Inter', sans-serif !important; color:var(--darkbrown) !important; }
+.ml-field-group input:focus { outline:none !important; border-color:var(--olive) !important; box-shadow:0 0 0 3px rgba(95,115,24,0.12) !important; }
+.ml-custom-container button.primary { width:100% !important; background:var(--mustard) !important; color:var(--forest) !important; font-weight:800 !important; font-size:0.95rem !important; padding:16px !important; border:none !important; border-radius:10px !important; cursor:pointer !important; margin-top:12px !important; box-shadow:0 6px 16px rgba(199,157,42,0.3) !important; }
+.ml-custom-container button.primary:hover { background:#B78C1F !important; }
+.ml-custom-success { background:var(--mint) !important; border:1px solid var(--sage) !important; border-radius:10px !important; padding:20px !important; text-align:center !important; }
+.ml-custom-success h4 { color:var(--forest) !important; font-family:'Playfair Display', serif !important; font-size:1.15rem !important; }
+
+/* ============ PRICING ============ */
+.pricing-section { background: var(--white); border-top:1px solid var(--beige); border-bottom:1px solid var(--beige); }
+.pricing-grid {
+display:grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 24px;
+align-items: stretch;
+}
+@media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; max-width:420px; margin:0 auto; } }
+
+.price-card {
+background: var(--ivory);
+border: 1.5px solid var(--beige);
+border-radius: 20px;
+padding: 28px 24px;
+display:flex;
+flex-direction:column;
+text-align:center;
+position: relative;
+}
+.price-card.featured {
+background: var(--white);
+border: 2.5px solid var(--mustard);
+box-shadow: 0 16px 36px rgba(199,157,42,0.16);
+transform: scale(1.03);
+}
+@media (max-width:900px){ .price-card.featured{ transform:none; } }
+.price-card .ribbon {
+position:absolute; top:-13px; left:50%; transform:translateX(-50%);
+background: var(--mustard); color:var(--forest); font-size:0.68rem; font-weight:800;
+text-transform:uppercase; letter-spacing:0.06em; padding:5px 16px; border-radius:50px;
+white-space:nowrap;
+}
+.price-icon {
+width:50px; height:50px; border-radius:50%;
+display:flex; align-items:center; justify-content:center;
+margin: 4px auto 14px auto;
+}
+.price-icon.free { background:var(--mint); color:var(--forest); }
+.price-icon.pdf { background:var(--lavender-soft); color:var(--lavender); }
+.price-icon.wa { background:#DEFbe8; color:var(--whatsapp-dark); }
+.price-icon.online { background: var(--mint); color: var(--olive); }
+.price-icon svg { width:24px; height:24px; }
+
+.price-card h4 { font-family:'Playfair Display', serif; font-size:1.15rem; color:var(--forest); font-weight:700; margin-bottom:8px; }
+.price-card .price-tag { font-family:'Playfair Display', serif; font-size:1.7rem; font-weight:700; color:var(--forest); line-height:1; margin-bottom:2px; }
+.price-card .price-tag small { font-size:0.85rem; font-weight:600; color:var(--olive); }
+.price-card .price-alt { font-size:0.72rem; color:var(--darkbrown); opacity:0.7; margin-bottom:14px; }
+.price-card ul { list-style:none; text-align:left; margin: 6px 0 20px 0; flex-grow:1; }
+.price-card ul li {
+font-size: 0.82rem; color:var(--darkbrown); opacity:0.9; padding: 6px 0 6px 24px; position:relative; line-height:1.4;
+}
+.price-card ul li::before {
+content:"\2713"; position:absolute; left:0; top:6px; color:var(--olive); font-weight:800; font-size:0.8rem;
+}
+.price-card .btn-block { margin-top:auto; }
+
+.pricing-inline-wrapper { margin-top: 4px; }
+.pricing-inline-form input[type="email"] {
+width:100%;
+background: var(--ivory);
+border: 1.5px solid var(--sage);
+border-radius: 10px;
+padding: 12px 14px;
+font-size: 0.85rem;
+font-family:'Inter', sans-serif;
+color: var(--darkbrown);
+margin-bottom: 10px;
+}
+.pricing-inline-form input[type="email"]:focus {
+outline:none;
+border-color: var(--olive);
+box-shadow: 0 0 0 3px rgba(95,115,24,0.14);
+}
+.pricing-inline-success {
+background:var(--mint);
+border:1px solid var(--sage);
+border-radius:10px;
+padding:14px;
+text-align:center;
+margin-top:10px;
+}
+.pricing-inline-success p { font-size:0.8rem; color:var(--darkbrown); margin:0; }
+
+.btn-mustard-outline {
+display:block; width:100%; background:var(--mustard); color:var(--forest) !important; font-weight:800;
+padding:14px; border-radius:10px; font-size:0.9rem; text-decoration:none; border:none; cursor:pointer;
+box-shadow: 0 6px 16px rgba(199,157,42,0.3);
+}
+.btn-lavender {
+display:block; width:100%; background:var(--lavender); color:var(--white) !important; font-weight:700;
+padding:14px; border-radius:10px; font-size:0.9rem; text-decoration:none;
+box-shadow: 0 6px 16px rgba(141,127,174,0.3);
+}
+.btn-whatsapp {
+display:flex; align-items:center; justify-content:center; gap:8px;
+width:100%; background:var(--whatsapp); color:var(--white) !important; font-weight:700;
+padding:14px; border-radius:10px; font-size:0.9rem; text-decoration:none;
+box-shadow: 0 6px 16px rgba(37,211,102,0.35);
+}
+.btn-whatsapp svg { width:18px; height:18px; }
+.btn-whatsapp:hover { background: var(--whatsapp-dark); }
+
+/* ============ BIO ============ */
+.bio-box {
+background: var(--white); border:1px solid var(--beige); border-radius:20px; padding:40px;
+display:flex; gap:32px; align-items:center; box-shadow:0 8px 24px rgba(23,58,30,0.03);
+}
+@media (max-width:640px){ .bio-box{ flex-direction:column; padding:24px; text-align:center; gap:20px; } }
+.bio-avatar { flex-shrink:0; position:relative; display:block; }
+.bio-avatar img {
+width:140px; height:140px; border-radius:50%; object-fit:cover;
+border:4px solid var(--white); box-shadow:0 8px 24px rgba(23,58,30,0.12);
+transition: transform 0.2s;
+}
+.bio-avatar:hover img { transform: scale(1.03); }
+.bio-avatar .li-badge {
+position:absolute; bottom:2px; right:2px; width:30px; height:30px; border-radius:50%;
+background:#0A66C2; display:flex; align-items:center; justify-content:center; border:2.5px solid var(--white);
+}
+.bio-avatar .li-badge svg { width:15px; height:15px; fill:var(--white); }
+.bio-text-area h3 { font-family:'Playfair Display', serif; font-size:1.3rem; color:var(--forest); margin-bottom:4px; font-weight:700; }
+.bio-subtitle { font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--olive); margin-bottom:12px; }
+.bio-description { font-size:0.85rem; color:var(--darkbrown); line-height:1.6; margin-bottom:16px; opacity:0.9; }
+.bio-links { display:flex; gap:14px; align-items:center; justify-content:flex-start; flex-wrap:wrap; }
+@media (max-width:640px){ .bio-links{ justify-content:center; } }
+.bio-links a {
+display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--forest); font-weight:700; text-decoration:none;
+border:1.5px solid var(--beige); padding:7px 14px; border-radius:20px; transition:border-color 0.2s, background 0.2s;
+white-space: nowrap; flex-shrink: 0;
+}
+.bio-links a:hover { border-color:var(--sage); background:var(--mint); }
+.bio-links a svg { width:16px; height:16px; }
+
+/* ============ FAQ ============ */
+.faq-container { max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
+.faq-card { background:var(--white); border:1px solid var(--beige); border-radius:12px; overflow:hidden; transition:border-color 0.2s; }
+.faq-card:hover { border-color:var(--sage); }
+.faq-q { padding:18px 20px; font-weight:700; font-size:0.9rem; color:var(--forest); display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; gap:12px; }
+.faq-icon-arrow { width:16px; height:16px; transition:transform 0.2s; flex-shrink:0; }
+.faq-a { padding:0 20px 20px 20px; font-size:0.82rem; color:var(--darkbrown); line-height:1.55; display:none; border-top:1px solid var(--ivory); padding-top:14px; }
+
+/* ============ FOOTER ============ */
+.footer { background:var(--forest); color:rgba(247,243,232,0.7); text-align:center; padding:44px 20px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.75rem; position:relative; overflow:hidden; }
+.footer::before { content:""; position:absolute; bottom:-120px; left:-100px; width:340px; height:240px; background:radial-gradient(circle, rgba(168,192,138,0.14) 0%, rgba(168,192,138,0) 70%); border-radius:50%; pointer-events:none; }
+.footer::after { content:""; position:absolute; top:-100px; right:-100px; width:260px; height:260px; background:radial-gradient(circle, rgba(141,127,174,0.1) 0%, rgba(141,127,174,0) 70%); border-radius:50%; pointer-events:none; }
+.footer > * { position:relative; z-index:1; }
+.footer h4 { font-family:'Playfair Display', serif; color:var(--ivory); font-size:1.1rem; margin-bottom:6px; font-weight:700; }
+.footer p.f-sub { font-size:0.7rem; color:var(--sage); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px; }
+.footer .footer-social { display:flex; justify-content:center; gap:14px; margin-bottom:20px; }
+.footer .footer-social a { width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+.footer .footer-social a:hover { background:rgba(255,255,255,0.18); }
+.footer .footer-social a svg { width:16px; height:16px; fill:var(--ivory); }
+.footer p.f-desc { max-width:600px; margin:0 auto 20px auto; line-height:1.5; font-size:0.7rem; opacity:0.6; }
+.footer-credits { border-top:1px solid rgba(255,255,255,0.05); padding-top:20px; font-size:0.65rem; opacity:0.5; }
+
+/* ============ FLOATING WHATSAPP ============ */
+.wa-float {
+position: fixed;
+bottom: 20px;
+right: 20px;
+z-index: 999;
+background: var(--whatsapp);
+width: 58px;
+height: 58px;
+border-radius: 50%;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow: 0 8px 22px rgba(37,211,102,0.45);
+text-decoration:none;
+animation: waPulse 2.6s infinite;
+}
+.wa-float svg { width:28px; height:28px; fill:var(--white); }
+@keyframes waPulse {
+0% { box-shadow: 0 8px 22px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0.5); }
+70% { box-shadow: 0 8px 22px rgba(37,211,102,0.45), 0 0 0 14px rgba(37,211,102,0); }
+100% { box-shadow: 0 8px 22px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0); }
+}
+
+/* ============ AJUSTES DE BOTÓN DE CARGA Y SPINNER Y TOASTS ============ */
+button.loading {
+display: none;
+align-items: center;
+justify-content: center;
+gap: 10px;
+cursor: not-allowed;
+opacity: 0.8;
+}
+.hero-form button.loading {
+width:100%;
+background: var(--mustard);
+color: var(--forest) !important;
+font-weight: 800;
+font-size: 1.05rem;
+padding: 18px;
+border-radius: 12px;
+border:none;
+}
+.ml-custom-container button.loading {
+width:100% !important;
+background:var(--mustard) !important;
+color:var(--forest) !important;
+font-weight:800 !important;
+font-size:0.95rem !important;
+padding:16px !important;
+border:none !important;
+border-radius:10px !important;
+}
+.spinner {
+width: 18px;
+height: 18px;
+border: 3px solid rgba(23, 58, 30, 0.2);
+border-top-color: var(--forest);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+to { transform: rotate(360deg); }
+}
+
+/* TOAST PERSONALIZADO PARA ALERTAS */
+.toast-container {
+position: fixed;
+bottom: 24px;
+left: 50%;
+transform: translateX(-50%) translateY(100px);
+background: var(--darkbrown);
+color: var(--ivory);
+padding: 12px 24px;
+border-radius: 30px;
+box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+z-index: 10000;
+font-size: 0.88rem;
+font-weight: 600;
+transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+display: flex;
+align-items: center;
+gap: 10px;
+border: 1.5px solid var(--beige);
+text-align: center;
+pointer-events: none;
+}
+.toast-container.show {
+transform: translateX(-50%) translateY(0);
+}
+</style>
+
+<script>
+if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+if (window.location.hash) {
+var cleanUrl = window.location.pathname + window.location.search;
+history.replaceState(null, document.title, cleanUrl);
+}
+window.isPageLoading = true;
+const originalFocus = HTMLElement.prototype.focus;
+HTMLElement.prototype.focus = function(options) {
+if (window.isPageLoading) return;
+return originalFocus.apply(this, arguments);
+};
+const originalScrollIntoView = Element.prototype.scrollIntoView;
+Element.prototype.scrollIntoView = function(arg) {
+if (window.isPageLoading) return;
+return originalScrollIntoView.apply(this, arguments);
+};
+window.scrollTo(0, 0);
+</script>
+</head>
+<body>
+
+<div id="landing-point"></div>
+
+<!-- SUB-NAVEGACIÓN -->
+<div class="sub-nav">
+<div class="sub-nav-inner">
+<a class="nav-cta" href="#programa-gratis">Suscribirme Gratis</a>
+<a class="nav-wa" href="https://wa.me/50687071092?text=Hola%20Tatiana%2C%20tengo%20una%20consulta" target="_blank">
+<svg fill="currentColor" viewbox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2zm0 18.1h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 1 1 6.99 3.86zm4.48-6.13c-.24-.12-1.44-.71-1.67-.79-.22-.08-.38-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42-.14-.01-.3-.01-.46-.01s-.42.06-.64.3c-.22.24-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.71 2.61 4.14 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.15.2-.57.2-1.05.14-1.15-.06-.1-.22-.16-.46-.28z"></path></svg>
+WhatsApp
+</a>
+<a href="#test-section">Test de 1 minuto</a>
+<a href="#precios">Precios</a>
+<a href="#faq">Preguntas</a>
+</div>
+<div class="sub-nav-fade"></div>
+</div>
+
+<!-- HERO: imagen Salud Digestiva + CTA gigante -->
+<section class="hero-main">
+<div class="hero-grid">
+<div class="hero-visual">
+<img alt="Salud Digestiva - Programa Integral - Conexión Cerebro Intestino - Limpia, Restaura, Equilibra, Fortalece" src="https://blogger.googleusercontent.com/img/a/AVvXsEiq3qd0AGeLx9abhkx4suLaLrP__zfZpfjf1hmrUZDOShtNYDRUYnoxlJKSIk4136oSmOfo0NTB5CXQeD3_WCPW4UmGSvFjs5RVUyOiNdOR2ZJSzz-bCyOFwkp3eCG-hf0eN79Z2GgaE2tgpEYFi9iyymEfdibkHWiYg0WSsRYi_KhyVqznz3ZAeSL6VIg" />
+</div>
+<div class="hero-copy">
+<span class="eyebrow">✨ Programa gratuito de 4 semanas</span>
+<h1>Sane su colitis, reflujo o <em>gastritis</em> desde la raíz</h1>
+<p class="desc">
+Un enfoque holístico y práctico que conecta su cerebro y su intestino: limpia, restaura, equilibra y fortalece su sistema digestivo, sin dietas universales ni paliativos temporales.
+</p>
+
+<div class="hero-cta-box" id="programa-gratis">
+<h3>🌿 Suscríbase al Plan Gratis</h3>
+<p>Reciba su primer consejo práctico hoy mismo, directo a su correo.</p>
+
+<div class="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-43263991" id="mlb2-43263991">
+<div class="ml-form-align-center">
+<div class="ml-form-embedWrapper embedForm">
+<div class="ml-form-embedBody ml-form-embedBodyDefault row-form">
+
+<!-- IFRAME INVISIBLE DE REENVÍO PARA EVITAR REDIRECCIÓN DE PÁGINA -->
+<iframe id="ml-iframe-hero" name="ml-iframe-hero" style="display: none;"></iframe>
+
+<!-- FORMULARIO CABLEADO AL IFRAME -->
+<form action="https://assets.mailerlite.com/jsonp/2483050/forms/191795565514720934/subscribe" class="ml-block-form hero-form" data-code="" method="post" target="ml-iframe-hero">
+<div class="ml-form-fieldRow ml-last-item">
+<div class="ml-field-group ml-field-email ml-validate-email ml-validate-required">
+<input aria-label="email" aria-required="true" autocomplete="email" class="form-control" name="fields[email]" placeholder="Correo electrónico" required="" type="email" />
+</div>
+</div>
+<input name="ml-submit" type="hidden" value="1" />
+<div class="ml-form-embedSubmit">
+<button class="btn-giant primary" type="submit">Quiero mi Plan Gratis →</button>
+<button class="loading" disabled="disabled" type="button"><span class="spinner"></span> Enviando...</button>
+</div>
+<input name="anticsrf" type="hidden" value="true" />
+</form>
+
+</div>
+<div class="ml-form-successBody row-success hero-success" style="display: none;">
+<h4>¡Gracias por unirte! 🌱</h4>
+<p>Pronto te llegará el primer correo con herramientas inmediatas.</p>
+</div>
+</div>
+</div>
+</div>
+
+<p class="hero-microcopy">✓ 100% gratis &nbsp; ✓ sin tarjeta &nbsp; ✓ cancela cuando quiera</p>
+</div>
+
+<div class="hero-secondary-links">
+<a href="#test-section">¿No sabe por dónde empezar? Haga el test de 1 min</a>
+<a href="#precios">Ver plan personalizado y consultas</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Test opcional -->
+<section class="section quiz-section" id="test-section">
+<span class="section-label">Opcional · 1 minuto</span>
+<h3 class="section-title">¿Qué nivel de inflamación experimenta?</h3>
+<p class="section-subtitle">4 preguntas rápidas para saber qué perfil digestivo tiene y qué camino le conviene más hoy.</p>
+
+<div class="quiz-box">
+<div id="quiz-question-view">
+<div class="quiz-header">
+<div class="quiz-progress-text" id="quiz-progress-label">Pregunta 1 de 4</div>
+<div class="quiz-progress-outer"><div class="quiz-progress-inner" id="quiz-progress-bar"></div></div>
+</div>
+<h4 class="quiz-question" id="quiz-question-text">...Cargando Pregunta...</h4>
+<div class="quiz-options" id="quiz-options-container"></div>
+</div>
+
+<div class="quiz-result-view" id="quiz-results-view">
+<div class="quiz-profile-card">
+<h4 id="result-profile-title">Perfil: ...</h4>
+<p id="result-profile-desc">...</p>
+</div>
+<a class="btn-giant" href="#programa-gratis" style="text-decoration: none;">Ver mi plan recomendado →</a>
+<button class="quiz-btn-reset" onclick="resetQuiz()">Repetir la autoevaluación</button>
+</div>
+</div>
+</section>
+
+<!-- Detalle del programa gratis -->
+<section class="section free-program">
+<span class="section-label">Opción Gratuita</span>
+<h3 class="section-title">Guía Práctica de 4 Semanas Contra la Gastritis</h3>
+<p class="section-subtitle">Un plan enfocado y práctico para desinflamar y recuperar su ritmo digestivo, directo a su buzón de correo cada semana.</p>
+
+<div class="weeks-accordion">
+<div class="week-card">
+<div class="week-card-header">
+<div class="week-num-badge">1</div>
+<div class="week-card-title"><h4>Duerma mejor desde esta noche</h4><p>Semana 1</p></div>
+</div>
+<p class="week-card-body"><strong>Levante la cabecera de la cama:</strong> No utilice más almohadas. Lo que realmente puede ayudar es elevar toda la cabecera de la cama entre 10 y 15 cm, colocando dos bloques, tacos de madera o elevadores debajo de las dos patas de la cabecera. Al dormir con una ligera inclinación, la gravedad reduce el reflujo durante la noche.</p>
+</div>
+<div class="week-card">
+<div class="week-card-header">
+<div class="week-num-badge">2</div>
+<div class="week-card-title"><h4>Dele tiempo a su estómago</h4><p>Semana 2</p></div>
+</div>
+<p class="week-card-body"><strong>Procure terminar de comer al menos dos horas antes de acostarse:</strong> Cuando se acuesta inmediatamente después de cenar, es más fácil que el contenido del estómago suba hacia el esófago. Deje pasar unas dos horas entre la cena y el momento de ir a dormir.</p>
+</div>
+<div class="week-card">
+<div class="week-card-header">
+<div class="week-num-badge">3</div>
+<div class="week-card-title"><h4>Haga una prueba con el café</h4><p>Semana 3</p></div>
+</div>
+<p class="week-card-body"><strong>No tiene que dejar el café para siempre:</strong> En Costa Rica el café forma parte de nuestra cultura. En lugar de eliminarlo por completo, pruebe reducir la cantidad o suspenderlo por unos días si está en crisis de gastritis y observe la diferencia. Cada persona responde distinto.</p>
+</div>
+<div class="week-card">
+<div class="week-card-header">
+<div class="week-num-badge">4</div>
+<div class="week-card-title"><h4>Su gastritis no tiene por qué ser igual a la ajena</h4><p>Semana 4</p></div>
+</div>
+<p class="week-card-body"><strong>Olvídese de las listas universales de prohibidos:</strong> En internet encontrará cientos de listas restrictivas. La realidad es que cada persona reacciona de forma diferente. El objetivo no es copiar la dieta de otros, sino descubrir qué funciona lógicamente para usted.</p>
+</div>
+</div>
+
+<div class="ml-custom-container" id="mlb2-43263991-repeat">
+<h4>Suscripción al Programa</h4>
+<p>Ingrese su correo para recibir de inmediato el primer consejo práctico.</p>
+
+<!-- IFRAME INVISIBLE DE REENVÍO PARA EL FORMULARIO SECUNDARIO -->
+<iframe id="ml-iframe-bottom" name="ml-iframe-bottom" style="display: none;"></iframe>
+
+<form action="https://assets.mailerlite.com/jsonp/2483050/forms/191795565514720934/subscribe" class="ml-block-form" data-code="" method="post" target="ml-iframe-bottom">
+<div class="ml-form-fieldRow ml-last-item">
+<div class="ml-field-group ml-field-email ml-validate-email ml-validate-required">
+<input aria-label="email" aria-required="true" autocomplete="email" class="form-control" name="fields[email]" placeholder="Correo electrónico" required="" type="email" />
+</div>
+</div>
+<input name="ml-submit" type="hidden" value="1" />
+<div class="ml-form-embedSubmit">
+<button class="primary" type="submit">Suscribirme Gratis</button>
+<button class="loading" disabled="disabled" type="button"><span class="spinner"></span> Enviando...</button>
+</div>
+<input name="anticsrf" type="hidden" value="true" />
+</form>
+<div class="ml-form-successBody row-success ml-custom-success" style="display: none;">
+<h4>¡Gracias por unirte! 🌱</h4>
+<p>Pronto te llegará el primer correo explicativo con herramientas inmediatas.</p>
+</div>
+</div>
+</section>
+
+<!-- Precios: Gratis / PDF / WhatsApp -->
+<section class="section pricing-section" id="precios">
+<span class="section-label">Elija su camino</span>
+<h3 class="section-title">Tres formas de empezar hoy</h3>
+<p class="section-subtitle">Desde el programa gratuito hasta acompañamiento directo — usted elige el ritmo que necesita.</p>
+
+<div class="pricing-grid">
+
+<!-- GRATIS -->
+<div class="price-card">
+<div class="price-icon free">
+<svg fill="none" stroke-width="2" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 3c-1 3-4 4-4 8a4 4 0 008 0c0-4-3-5-4-8z" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-6" stroke-linecap="round"></path></path></svg>
+</div>
+<h4>Programa Gratis</h4>
+<div class="price-tag">₡0 <small>/ 4 semanas</small></div>
+<p class="price-alt">Por correo electrónico</p>
+<ul>
+<li>Un consejo práctico cada semana</li>
+<li>Pautas de sueño, alimentación y estrés</li>
+<li>100% a su ritmo, sin presión</li>
+</ul>
+<div class="btn-block">
+<div class="pricing-inline-wrapper">
+<iframe id="ml-iframe-pricing" name="ml-iframe-pricing" style="display: none;"></iframe>
+<form action="https://assets.mailerlite.com/jsonp/2483050/forms/191795565514720934/subscribe" class="ml-block-form pricing-inline-form" data-code="" method="post" target="ml-iframe-pricing">
+<div class="ml-form-fieldRow ml-last-item">
+<div class="ml-field-group ml-field-email ml-validate-email ml-validate-required">
+<input aria-label="email" aria-required="true" autocomplete="email" class="form-control" name="fields[email]" placeholder="Correo electrónico" required="" type="email" />
+</div>
+</div>
+<input name="ml-submit" type="hidden" value="1" />
+<div class="ml-form-embedSubmit">
+<button class="btn-mustard-outline" type="submit">Suscribirme Gratis</button>
+<button class="loading" disabled="disabled" style="background: var(--mustard); border-radius: 10px; border: none; color: var(--forest); font-size: 0.9rem; font-weight: 800; padding: 14px; width: 100%;" type="button"><span class="spinner"></span> Enviando...</button>
+</div>
+<input name="anticsrf" type="hidden" value="true" />
+</form>
+<div class="ml-form-successBody row-success pricing-inline-success" style="display: none;">
+<p>¡Gracias! Revise su correo. 🌱</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SESIÓN EN LÍNEA -->
+<div class="price-card featured">
+<span class="ribbon">Recomendado</span>
+<div class="price-icon online">
+<svg fill="none" stroke-width="2" stroke="currentColor" viewbox="0 0 24 24"><rect height="14" rx="2" stroke-linecap="round" stroke-linejoin="round" width="20" x="2" y="5"></rect><path d="M8 21h8M12 19v2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<h4>Sesión en Línea</h4>
+<div class="price-tag">USD 50 <small>/ 45 min</small></div>
+<p class="price-alt">₡25.000 vía SINPE Móvil</p>
+<ul>
+<li>Preguntas puntuales resueltas en vivo</li>
+<li>Ideal si prefiere hablar antes de decidir</li>
+<li>Coordinamos el horario que le acomode</li>
+</ul>
+<div class="btn-block">
+<a class="btn-whatsapp" href="https://wa.me/50687071092?text=Hola%20Tatiana%2C%20quiero%20agendar%20una%20sesi%C3%B3n%20en%20l%C3%ADnea%20de%2045%20minutos" target="_blank">
+<svg fill="currentColor" viewbox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2z"></path></svg>
+Agendar por WhatsApp
+</a>
+</div>
+</div>
+
+<!-- PDF PERSONALIZADO -->
+<div class="price-card">
+<div class="price-icon pdf">
+<svg fill="none" stroke-width="2" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<h4>Plan PDF Personalizado</h4>
+<div class="price-tag">USD 25</div>
+<p class="price-alt">₡11.000 vía SINPE Móvil</p>
+<ul>
+<li>Cuestionario clínico exhaustivo</li>
+<li>Plan a su medida en máx. 3 días</li>
+<li>Sin videollamadas, todo por correo</li>
+</ul>
+<div class="btn-block">
+<a class="btn-lavender" href="https://www.paypal.com/ncp/payment/CJMKXJ3MD2RWJ" target="_blank">Pagar con PayPal</a>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- Biografía -->
+<section class="section">
+<div class="bio-box">
+<a aria-label="Ver perfil de LinkedIn de Tatiana Fait Shaw" class="bio-avatar" href="https://www.linkedin.com/in/tatianafait/" target="_blank">
+<img alt="Master Tatiana Fait Shaw" src="https://blogger.googleusercontent.com/img/a/AVvXsEhv-mlYhNKbj4viBaiXYTm4zR_qqQen1bLxADqenhMAYLXD1J8i9mV-9NydFX0X1HSMoFsz2C10g_VN1fYn9D1wKZ73xvkzX1hYJB2MjuHEhTQvkn8JNnp0JFdmJuA5pCphCkh5pxLJ86kWnxQg06Rx1stNi0_dlns01OiNKLeSBLtw7h04A0M4TdmMlDg" />
+<span class="li-badge">
+<svg viewbox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.25H4.7V23H.24V8.25zM8.34 8.25h4.27v2.01h.06c.6-1.13 2.06-2.32 4.24-2.32 4.53 0 5.37 2.98 5.37 6.86V23h-4.46v-6.4c0-1.53-.03-3.49-2.13-3.49-2.13 0-2.46 1.66-2.46 3.38V23H8.34V8.25z"></path></svg>
+</span>
+</a>
+<div class="bio-text-area">
+<span class="bio-subtitle">Su Facilitadora</span>
+<h3>Master Tatiana Eugenia Fait Shaw</h3>
+<p class="bio-description">
+Psicóloga Holística y Transpersonal · Técnica Nutricionista · Profesora de Yoga · Medicina Natural · Fermentista. Una práctica integrada que combina ciencia nutricional, bienestar digestivo y psicología del cuerpo para acompañarle hacia una salud real y duradera.
+</p>
+<div class="bio-links">
+<a href="https://www.linkedin.com/in/tatianafait/" target="_blank">
+<svg fill="currentColor" viewbox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.25H4.7V23H.24V8.25zM8.34 8.25h4.27v2.01h.06c.6-1.13 2.06-2.32 4.24-2.32 4.53 0 5.37 2.98 5.37 6.86V23h-4.46v-6.4c0-1.53-.03-3.49-2.13-3.49-2.13 0-2.46 1.66-2.46 3.38V23H8.34V8.25z"></path></svg>
+LinkedIn
+</a>
+<a href="https://www.facebook.com/holisticaterapiacr" target="_blank">
+<svg fill="currentColor" viewbox="0 0 24 24"><path d="M22 12.06C22 6.53 17.52 2.04 12 2.04S2 6.53 2 12.06c0 5 3.66 9.13 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22c4.78-.81 8.44-4.94 8.44-9.94z"></path></svg>
+Facebook
+</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" style="background: #FAF7F2; border-top: 1px solid var(--beige);">
+<span class="section-label">Dudas Comunes</span>
+<h3 class="section-title">Preguntas Frecuentes</h3>
+<div class="faq-container">
+
+<div class="faq-card">
+<div class="faq-q" onclick="toggleFaq(this)">
+¿En qué se diferencian el camino gratis, el PDF y la consulta en línea?
+<svg class="faq-icon-arrow" fill="none" stroke-width="2" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="faq-a">
+El camino gratis son lecciones semanales por correo durante 4 semanas. El PDF personalizado (USD 25 / ₡11.000) es una estrategia individual: completa un cuestionario clínico y recibe su plan a medida en máximo 3 días, sin videollamadas. La consulta en línea (USD 50 / ₡25.000, 45 min) es para quienes prefieren hablar directamente conmigo antes de decidir o resolver dudas puntuales en vivo.
+</div>
+</div>
+
+<div class="faq-card">
+<div class="faq-q" onclick="toggleFaq(this)">
+¿Cómo pago el plan personalizado si estoy en Costa Rica?
+<svg class="faq-icon-arrow" fill="none" stroke-width="2" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="faq-a">
+Puede pagar con PayPal (USD 25) o por SINPE Móvil al 8707-1092 (₡11.000). Una vez confirmado el pago, le escribo por correo o WhatsApp para enviarle el cuestionario clínico.
+</div>
+</div>
+
+<div class="faq-card">
+<div class="faq-q" onclick="toggleFaq(this)">
+¿La consulta en línea requiere agendar con anticipación?
+<svg class="faq-icon-arrow" fill="none" stroke-width="2" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="faq-a">
+Sí. Escríbame al +506 8707-1092 con su disponibilidad y coordinamos el horario de 45 minutos que mejor le acomode. El pago se confirma antes de la sesión.
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+<h4>Master Tatiana Fait Shaw</h4>
+<p class="f-sub">Especialista en Medicina Natural &amp; Nutrición Digestiva</p>
+<div class="footer-social">
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/tatianafait/" target="_blank"><svg viewbox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.25H4.7V23H.24V8.25zM8.34 8.25h4.27v2.01h.06c.6-1.13 2.06-2.32 4.24-2.32 4.53 0 5.37 2.98 5.37 6.86V23h-4.46v-6.4c0-1.53-.03-3.49-2.13-3.49-2.13 0-2.46 1.66-2.46 3.38V23H8.34V8.25z"></path></svg></a>
+<a aria-label="Facebook" href="https://www.facebook.com/holisticaterapiacr" target="_blank"><svg viewbox="0 0 24 24"><path d="M22 12.06C22 6.53 17.52 2.04 12 2.04S2 6.53 2 12.06c0 5 3.66 9.13 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22c4.78-.81 8.44-4.94 8.44-9.94z"></path></svg></a>
+<a aria-label="WhatsApp" href="https://wa.me/50687071092" target="_blank"><svg viewbox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2zm0 18.1h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 1 1 6.99 3.86zm4.48-6.13c-.24-.12-1.44-.71-1.67-.79-.22-.08-.38-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42-.14-.01-.3-.01-.46-.01s-.42.06-.64.3c-.22.24-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.71 2.61 4.14 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.15.2-.57.2-1.05.14-1.15-.06-.1-.22-.16-.46-.28z"></path></svg></a>
+</div>
+<p class="f-desc">
+Nota de descargo: La información brindada en el programa de libre distribución, en el PDF personalizado o en la consulta en línea no reemplaza una consulta médica de emergencia o el tratamiento psiquiátrico de alta complejidad individual, sino que actúa como un excelente marco preventivo e integrado de bienestar.
+</p>
+<div class="footer-credits">© 2026 Master Tatiana Fait Shaw · Psicología Holística y Transpersonal · Costa Rica</div>
+</footer>
+
+<!-- Botón flotante de WhatsApp -->
+<a aria-label="Escribir por WhatsApp" class="wa-float" href="https://wa.me/50687071092?text=Hola%20Tatiana%2C%20tengo%20una%20consulta%20sobre%20salud%20digestiva" target="_blank">
+<svg viewbox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9S17.5 2 12.04 2zm0 18.1h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 1 1 6.99 3.86zm4.48-6.13c-.24-.12-1.44-.71-1.67-.79-.22-.08-.38-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42-.14-.01-.3-.01-.46-.01s-.42.06-.64.3c-.22.24-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.71 2.61 4.14 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.15.2-.57.2-1.05.14-1.15-.06-.1-.22-.16-.46-.28z"></path></svg>
+</a>
+
+<script>
+// TEXTOS DE JAVASCRIPT PROTEGIDOS EN UNICODE CONTRA LA CODIFICACIÓN XML DE BLOGGER
+const quizData = [
+{
+question: "\u00bfCon qu\u00e9 frecuencia experimenta inflamaci\u00f3n abdominal o gases despu\u00e9s de comer?",
+options: [
+{ text: "Pr\u00e1cticamente todos los d\u00edas", score: "gastritis" },
+{ text: "Principalmente bajo periodos de mucho estr\u00e9s", score: "stress" },
+{ text: "Solo con alimentos espec\u00edficos", score: "food" },
+{ text: "Casi nunca, mi digesti\u00f3n es estable", score: "none" }
+]
+},
+{
+question: "\u00bfSufre de acidez constante, ardor de garganta o reflujo?",
+options: [
+{ text: "S\u00ed, es un ardor constante en el pecho", score: "gastritis" },
+{ text: "Ocasionalmente si como r\u00e1pido o ceno tarde", score: "food" },
+{ text: "S\u00ed, sobre todo si me altero emocionalmente", score: "stress" },
+{ text: "No, nunca lo he experimentado", score: "none" }
+]
+},
+{
+question: "\u00bfC\u00f3mo describir\u00eda la regularidad de sus h\u00e1bitos de evacuaci\u00f3n?",
+options: [
+{ text: "Tiendo recurrentemente al estre\u00f1imiento", score: "food" },
+{ text: "Es muy irregular, paso de diarrea a estre\u00f1imiento", score: "stress" },
+{ text: "Suelo estar inflamado pero evac\u00fao con normalidad", score: "gastritis" },
+{ text: "Regular y dentro de los par\u00e1metros estables", score: "none" }
+]
+},
+{
+question: "\u00bfC\u00f3mo eval\u00faa su patr\u00f3n de descanso general?",
+options: [
+{ text: "Duermo mal y me despierto muy cansado", score: "stress" },
+{ text: "A veces la acidez estomacal me despierta a medianoche", score: "gastritis" },
+{ text: "Duermo bien pero amanezco con pesadez", score: "food" },
+{ text: "Mi descanso y mi energ\u00eda son \u00f3ptimos", score: "none" }
+]
+}
+];
+
+let currentQuestionIndex = 0;
+let scores = { gastritis: 0, stress: 0, food: 0, none: 0 };
+
+function renderQuestion() {
+const q = quizData[currentQuestionIndex];
+const qTextEl = document.getElementById('quiz-question-text');
+if (qTextEl) qTextEl.innerText = q.question;
+const pct = ((currentQuestionIndex + 1) / quizData.length) * 100;
+const progressBar = document.getElementById('quiz-progress-bar');
+if (progressBar) progressBar.style.width = pct + '%';
+const progressLabel = document.getElementById('quiz-progress-label');
+if (progressLabel) progressLabel.innerText = 'Pregunta ' + (currentQuestionIndex + 1) + ' de ' + quizData.length;
+const container = document.getElementById('quiz-options-container');
+if (container) {
+container.innerHTML = '';
+q.options.forEach((opt, idx) => {
+const btn = document.createElement('button');
+btn.className = 'quiz-opt-btn';
+btn.innerHTML = '<span class="quiz-opt-num">' + (idx + 1) + '</span><span>' + opt.text + '</span>';
+btn.onclick = () => {
+scores[opt.score]++;
+if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; renderQuestion(); }
+else { showResults(); }
+};
+container.appendChild(btn);
+});
+}
+}
+
+function showResults() {
+const qView = document.getElementById('quiz-question-view');
+const rView = document.getElementById('quiz-results-view');
+if (qView) qView.style.display = 'none';
+if (rView) rView.style.display = 'block';
+let maxKey = 'gastritis', maxVal = -1;
+for (let k in scores) { if (scores[k] > maxVal) { maxVal = scores[k]; maxKey = k; } }
+const titleEl = document.getElementById('result-profile-title');
+const descEl = document.getElementById('result-profile-desc');
+if (titleEl && descEl) {
+if (maxKey === 'stress') {
+titleEl.innerText = "Perfil sugerido: Eje Intestino-Cerebro Reactivo";
+descEl.innerText = "Sus malestares estomacales est\u00e1n fuertemente condicionados por sus ritmos emocionales y la tensi\u00f3n acumulada en su sistema nervioso. El plan gratis es un excelente inicio; si quiere algo m\u00e1s espec\u00edfico, el PDF personalizado o una consulta en l\u00ednea le dan pautas exactas.";
+} else if (maxKey === 'food') {
+titleEl.innerText = "Perfil sugerido: Sensibilidad Intestinal Alimentaria";
+descEl.innerText = "Sus s\u00edntomas sugieren desbalances inflamatorios detonados por ciertos alimentos. El plan gratis le ayuda a identificar patrones; el PDF personalizado le da sus combinaciones tolerables directamente.";
+} else {
+titleEl.innerText = "Perfil sugerido: Gastritis e Inflamaci\u00f3n \u00c1cida G\u00e1strica";
+descEl.innerText = "Presenta irritaci\u00f3n directa de la mucosa estomacal con reflujo asociado. Le conviene empezar con el programa gratuito, o ir directo a un plan de intervenci\u00f3n personalizado si quiere resultados m\u00e1s r\u00e1pido.";
+}
+}
+}
+
+function resetQuiz() {
+currentQuestionIndex = 0;
+scores = { gastritis: 0, stress: 0, food: 0, none: 0 };
+const qView = document.getElementById('quiz-question-view');
+const rView = document.getElementById('quiz-results-view');
+if (qView) qView.style.display = 'block';
+if (rView) rView.style.display = 'none';
+renderQuestion();
+}
+
+function toggleFaq(el) {
+const ans = el.nextElementSibling;
+const arrow = el.querySelector('.faq-icon-arrow');
+if (ans.style.display === 'block') { ans.style.display = 'none'; arrow.style.transform = 'rotate(0deg)'; }
+else { ans.style.display = 'block'; arrow.style.transform = 'rotate(180deg)'; }
+}
+
+function showToast(message) {
+let toast = document.getElementById('custom-toast');
+if (!toast) {
+toast = document.createElement('div');
+toast.id = 'custom-toast';
+toast.className = 'toast-container';
+document.body.appendChild(toast);
+}
+toast.innerText = message;
+toast.classList.add('show');
+setTimeout(() => {
+toast.classList.remove('show');
+}, 5000);
+}
+
+window.onload = function () {
+renderQuestion();
+
+var landingEl = document.getElementById('landing-point');
+
+function getLandingY() {
+if (!landingEl) return 0;
+return landingEl.getBoundingClientRect().top + window.pageYOffset;
+}
+
+var lockUntil = Date.now() + 1600;
+function holdAtLanding() {
+if (Date.now() < lockUntil) {
+var y = getLandingY();
+if (Math.abs(window.scrollY - y) > 2) {
+window.scrollTo(0, y);
+}
+requestAnimationFrame(holdAtLanding);
+} else {
+window.isPageLoading = false;
+}
+}
+holdAtLanding();
+
+// ============ PROCESADOR TOTALMENTE INVISIBLE PARA MAILERLITE ============
+document.querySelectorAll('form.ml-block-form').forEach(form => {
+form.addEventListener('submit', function(e) {
+// NOTA: NO HACEMOS e.preventDefault() para permitir que el form se envíe
+// físicamente de forma nativa al iframe invisible correspondiente.
+
+const submitBtn = form.querySelector('button[type="submit"]');
+const primaryBtn = form.querySelector('button.primary');
+const activeBtn = submitBtn || primaryBtn;
+
+const loadingBtn = form.querySelector('button.loading');
+const emailInput = form.querySelector('input[type="email"]');
+
+const wrapper = form.closest('.embedForm') || form.closest('.ml-custom-container') || form.closest('.hero-cta-box') || form.closest('.pricing-inline-wrapper');
+const formBody = wrapper ? (wrapper.querySelector('.row-form') || wrapper.querySelector('form') || form) : form;
+const successBody = wrapper ? wrapper.querySelector('.row-success') : null;
+
+if (!emailInput || !emailInput.value.trim()) {
+e.preventDefault();
+showToast("Por favor, ingres\u00e1 un correo electr\u00f3nico v\u00e1lido.");
+return;
+}
+
+// Transición al estado "Enviando..."
+if (activeBtn) activeBtn.style.display = 'none';
+if (loadingBtn) loadingBtn.style.display = 'flex';
+
+// Espera mínima física de envío de datos del navegador y cambio limpio de UI
+setTimeout(() => {
+if (activeBtn) activeBtn.style.display = 'block';
+if (loadingBtn) loadingBtn.style.display = 'none';
+if (formBody) formBody.style.display = 'none';
+if (successBody) successBody.style.display = 'block';
+}, 1200);
+});
+});
+};
+</script>
+
+</body>
+</html>
