@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi Jardín Digestivo | Salud Integral</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#F7F3E8">
+<base href="/assets/jardin/">
+<script>window.SITE_HOME={"es":"/","en":"/en/"};</script>
+<style>
+/* Concepto: juego de aventura casual sobre las ilustraciones de Salud Integral.
+   Mapa -> escena -> acción con las manos -> semillas -> vuelta al mapa. Marco quieto, la ilustración protagoniza. */
+@font-face{font-family:'Fraunces';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/fraunces-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:'Fraunces';font-style:italic;font-weight:100 900;font-display:swap;src:url(fonts/fraunces-latin-wght-italic.woff2) format('woff2')}
+@font-face{font-family:'Jost';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/jost-latin-wght-normal.woff2) format('woff2')}
+:root{
+  --ivory:#F7F3E8; --cream:#FBF8F1; --forest:#173A1E; --olive:#5F7318; --olive-d:#4B5C12;
+  --sage:#A8C08A; --mint:#DCE8D2; --sand:#D7C7A5; --wood:#8B6B4A; --terra:#D98B67; --terra-d:#A9552F;
+  --ink:#3A2C22; --ink-soft:#5A4A3E; --line:rgba(23,58,30,.16); --white:#FFFFFF;
+  --serif:'Fraunces','Iowan Old Style',Georgia,serif; --sans:'Jost','Segoe UI',system-ui,-apple-system,sans-serif;
+  --gut-l:max(16px,env(safe-area-inset-left,0px)); --gut-r:max(16px,env(safe-area-inset-right,0px));
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ivory);color:var(--ink);font-family:var(--sans);font-size:1.0625rem;line-height:1.45;-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+img,svg{display:block}
+:focus-visible{outline:3px solid var(--terra-d);outline-offset:2px;border-radius:8px}
+h1,h2,h3{font-family:var(--serif);color:var(--forest);font-weight:400;line-height:1.12;margin:0;text-wrap:balance}
+#app{height:100%;display:flex;flex-direction:column;background:var(--ivory)}
+
+/* ---------- Barra superior ---------- */
+.topbar{flex:none;display:flex;align-items:center;gap:10px;min-height:56px;padding:6px var(--gut-r) 6px var(--gut-l);background:var(--cream);border-bottom:1px solid var(--line)}
+.brand{font-family:var(--serif);font-size:1.15rem;color:var(--forest);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--forest);background:transparent;color:var(--forest);font-weight:600;font-size:.92rem}
+.pill{white-space:nowrap}
+.pill.seeds{margin-left:auto;border-color:var(--terra-d);color:var(--terra-d);font-variant-numeric:tabular-nums;cursor:default}
+.pill.back{border-color:var(--olive);background:var(--olive);color:#fff}
+.pill:hover:not(.seeds){background:var(--forest);color:var(--ivory)} .pill.back:hover{background:var(--olive-d)}
+.pill.gard{padding:0 12px}
+.pill.reset.ask{background:var(--terra-d);border-color:var(--terra-d);color:#fff}
+
+/* ---------- Escenario y dock ---------- */
+.stage{flex:1;min-height:0;position:relative;overflow:auto;overscroll-behavior:contain}
+.dock{flex:none;background:var(--cream);border-top:1px solid var(--line);padding:10px var(--gut-r) calc(10px + env(safe-area-inset-bottom,0px)) var(--gut-l);display:grid;gap:10px}
+.guide{display:flex;align-items:flex-end;gap:10px;max-width:980px;width:100%;margin:0 auto}
+.guide .brote{width:56px;height:56px;flex:none;border-radius:50%;object-fit:cover;background:var(--mint)}
+.bubble{position:relative;flex:1;min-width:0;background:var(--white);border:1.5px solid var(--line);border-radius:18px 18px 18px 6px;padding:10px 14px;font-size:1.02rem;color:var(--ink)}
+.bubble.shake{animation:shake .45s}
+.actions{display:flex;flex-wrap:wrap;gap:10px;max-width:980px;width:100%;margin:0 auto}
+.btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:54px;padding:0 22px;border-radius:999px;border:2px solid transparent;font-weight:600;font-size:1.08rem;text-align:center;line-height:1.15}
+.btn.primary{background:var(--olive);color:#fff} .btn.primary:hover{background:var(--olive-d)}
+.btn.terra{background:var(--terra-d);color:#fff}
+.btn.ghost{flex:none;background:transparent;border-color:var(--forest);color:var(--forest)} .btn.ghost:hover{background:var(--forest);color:var(--ivory)}
+.btn:active{transform:translateY(1px)}
+
+/* ---------- Bienvenida ---------- */
+.welcome{position:relative;height:100%;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 40%,var(--mint),var(--ivory) 70%)}
+.cover{position:relative;height:100%;aspect-ratio:2/3;max-width:100%;overflow:hidden;box-shadow:0 20px 60px -24px rgba(23,58,30,.5);container-type:inline-size}
+.cover img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover .ttl{position:absolute;left:10%;right:10%;top:6%;text-align:center;padding:5cqw 3cqw 6cqw;border-radius:50%;background:radial-gradient(ellipse at center,rgba(251,248,241,.82) 0%,rgba(251,248,241,.55) 55%,rgba(251,248,241,0) 78%)}
+.cover .eyebrow{font-size:3.2cqw;letter-spacing:.22em;text-transform:uppercase;color:var(--forest);font-weight:600;margin-bottom:.5em}
+.cover h1{font-size:13.5cqw;letter-spacing:-.02em;line-height:1}
+.cover h1 span{display:block}
+.cover h1 em{display:block;font-style:italic;color:var(--terra-d);font-size:.6em;margin-bottom:.05em}
+.cover .sub{font-family:var(--serif);font-style:italic;color:var(--forest);margin:.8em auto 0;font-size:4.6cqw;max-width:88%;line-height:1.25}
+.cover .go{position:absolute;left:50%;transform:translateX(-50%);bottom:8%;width:min(78%,340px);box-shadow:0 12px 30px -10px rgba(23,58,30,.6)}
+.langfloat{position:absolute;top:10px;right:var(--gut-r);z-index:3}
+
+/* ---------- Personaje ---------- */
+.char{max-width:560px;margin:0 auto;padding:16px var(--gut-r) 18px var(--gut-l);display:grid;gap:16px}
+.char h2{font-size:1.9rem;text-align:center}
+.preview{justify-self:center;width:150px;height:200px;border-radius:50% 50% 24px 24px/40% 40% 24px 24px;background:var(--mint);display:grid;place-items:end center;padding-bottom:10px;overflow:hidden;border:2px solid var(--sage)}
+.preview svg{height:92%}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg button{min-height:52px;border-radius:14px;border:2px solid var(--line);background:var(--white);font-weight:600;color:var(--forest);font-size:1.05rem}
+.seg button[aria-pressed="true"]{border-color:var(--olive);background:var(--mint);box-shadow:inset 0 0 0 1px var(--olive)}
+.field label,.lbl{display:block;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-soft);margin-bottom:8px}
+.sw{display:flex;gap:12px;flex-wrap:wrap}
+.sw button{width:48px;height:48px;border-radius:50%;border:3px solid var(--white);box-shadow:0 0 0 1.5px var(--line)}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--olive)}
+.field input{width:100%;min-height:52px;border-radius:14px;border:2px solid var(--line);background:var(--white);padding:0 14px;font:inherit;font-size:1.1rem;color:var(--ink)}
+.field input:focus{outline:3px solid var(--terra-d);outline-offset:1px;border-color:var(--olive)}
+
+/* ---------- Mapa ---------- */
+.mapstage{background:linear-gradient(180deg,var(--mint),var(--sand))}
+.mapscroll{height:100%;display:flex;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.map{position:relative;flex:none;height:100%;aspect-ratio:3/2;margin-inline:auto;user-select:none}
+.map img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.map .base{filter:grayscale(.85) brightness(1.04) contrast(.92)}
+.map .color{transition:-webkit-mask-image .6s,mask-image .6s}
+.zone{position:absolute;border:0;background:transparent;border-radius:28px;padding:0}
+.zone:hover{background:rgba(255,255,255,.1)}
+.zone.locked{cursor:not-allowed}
+.badge{position:absolute;z-index:4;width:clamp(30px,4.2%,46px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 4px 10px -3px rgba(0,0,0,.45);font-weight:700}
+.badge svg{width:62%;height:62%}
+.badge.done{background:var(--olive);color:#fff;border:2px solid #fff}
+.badge.lock{background:var(--forest);color:var(--ivory);border:2px solid var(--sand)}
+.badge.skip{background:var(--sand);color:var(--forest);border:2px dashed var(--wood)}
+.tapchip{position:absolute;z-index:6;transform:translate(-50%,-50%);pointer-events:none;background:var(--terra-d);color:#fff;font-weight:700;padding:8px 16px;border-radius:999px;font-size:1rem;white-space:nowrap;box-shadow:0 8px 20px -6px rgba(0,0,0,.5);animation:bob 1.3s ease-in-out infinite}
+.walker{position:absolute;z-index:7;width:6.2%;transform:translate(-50%,-100%);transition:left .95s ease-in-out,top .95s ease-in-out;pointer-events:none;filter:drop-shadow(0 6px 5px rgba(40,25,10,.4))}
+.walker svg{width:100%;height:auto}
+.steps{display:flex;align-items:center;justify-content:center;gap:0;max-width:980px;margin:0 auto;width:100%}
+.steps .st{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--white);font-weight:700;color:var(--ink-soft);display:grid;place-items:center;font-size:1rem}
+.steps .st.done{background:var(--olive);border-color:var(--olive);color:#fff}
+.steps .st.next{border-color:var(--terra-d);color:var(--terra-d);box-shadow:0 0 0 4px rgba(217,139,103,.28)}
+.steps .st.skip{border-style:dashed}
+.steps .st svg{width:55%}
+.steps .ln{flex:1;height:3px;background:var(--line);max-width:70px}
+.steps .ln.on{background:var(--olive)}
+
+/* ---------- Estación 1: pizarra ---------- */
+.scene{max-width:1080px;margin:0 auto;padding:12px var(--gut-r) 18px var(--gut-l);display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.scene h2{font-size:clamp(1.5rem,4.6vw,2.1rem)}
+.scene .kick{font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--terra-d);margin-bottom:4px}
+.boardwrap{position:relative}
+.board{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 14px 34px -18px rgba(23,58,30,.55);container-type:inline-size}
+.board img.bd{width:100%;height:auto}
+/* Un solo día: cada fila de la pizarra es un hábito (icono + nombre + respuesta en tiza) */
+.grid{position:absolute;left:13.93%;top:15.14%;width:72.2%;height:63.48%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:112fr 108fr 106fr 102fr 102fr 120fr}
+.brow{display:flex;align-items:stretch;min-width:0;min-height:0;padding:0;border:0;background:transparent;text-align:left;color:#EFE9D6}
+.bic{flex:0 0 14.04%;display:grid;place-items:center;padding:3px;min-width:0;min-height:0}
+.bic img{max-width:100%;max-height:100%;width:auto;height:100%;object-fit:contain;border-radius:6px;opacity:.38;filter:grayscale(.75);background:#fff}
+.brow.on .bic img{opacity:1;filter:none;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4);animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+.btx{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:2cqw;margin:3px 0 3px 2px;padding:0 2.4cqw;border-radius:5px;background:rgba(36,58,48,.93);box-shadow:inset 0 0 0 1px rgba(239,233,214,.22)}
+.brow:hover .btx{box-shadow:inset 0 0 0 1.5px rgba(246,231,166,.8)}
+.bnm{font-family:var(--serif);font-size:clamp(11px,3.1cqw,21px);line-height:1.1;opacity:.92}
+.bans{font-size:clamp(10.5px,2.9cqw,19px);line-height:1.1;font-style:italic;opacity:.6;text-align:right}
+.brow.on .bans{font-style:normal;font-weight:600;color:#F6E7A6;opacity:1}
+.tray{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tcard{position:relative;border:2px solid var(--line);background:var(--white);border-radius:18px;padding:6px 6px 8px;display:grid;gap:4px;text-align:center;font-weight:600;font-size:.98rem;color:var(--forest);transition:transform .15s,box-shadow .15s}
+.tcard:hover{transform:translateY(-2px);box-shadow:0 10px 22px -12px rgba(23,58,30,.5)}
+.tcard .ph{aspect-ratio:1.15;display:grid;place-items:center}
+.tcard img{width:auto;max-width:92%;height:94%;object-fit:contain}
+.tcard[aria-pressed="true"]{border-color:var(--olive);background:var(--mint);box-shadow:0 0 0 2px var(--olive)}
+.tcard .ck{position:absolute;top:-8px;right:-8px;width:30px;height:30px;border-radius:50%;background:var(--olive);color:#fff;display:none;place-items:center;border:2px solid #fff}
+.tcard .ck svg{width:60%}
+.tcard[aria-pressed="true"] .ck{display:grid}
+.qhead{font-family:var(--serif);font-size:1.3rem;color:var(--forest)}
+@media (min-width:700px){
+  .scene.two{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start}
+  .scene.two .full{grid-column:1/-1}
+  .scene.two .boardwrap{grid-column:1;grid-row:2}
+  .scene.two .trayblock{grid-column:2;grid-row:2}
+  /* Estación 1: fila de tarjetas arriba; pizarra y explicación lado a lado */
+  .scene.s1{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:stretch}
+  .scene.s1 .full{grid-column:1/-1}
+  .scene.s1 .trayblock{grid-column:1/-1;grid-row:2}
+  .scene.s1 .tray{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .scene.s1 .boardwrap{grid-column:1;grid-row:3}
+  .scene.s1 .notewrap{grid-column:2;grid-row:3;display:flex}
+  .scene.s1 .notewrap .habnote{flex:1;grid-template-columns:132px minmax(0,1fr);padding:18px;gap:6px 18px;align-content:center}
+  .scene.s1 .notewrap .habnote img{width:132px;height:132px}
+  .scene.s1 .notewrap .habnote h3{font-size:1.5rem}
+  .scene.s1 .notewrap .habnote p{font-size:1.12rem}
+  .scene.s1 .notewrap .habnote.empty{display:grid;place-items:center;text-align:center}
+}
+
+/* Estación 2: catálogo amplio. Plato y alimentos en zonas separadas, nunca superpuestas */
+@media (min-width:700px){.scene.s2 .boardwrap{position:sticky;top:8px;align-self:start}.scene.s2 .tray{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:699px){
+  .scene.s2{height:100%;padding-bottom:8px;grid-template-rows:auto auto minmax(0,1fr);gap:8px}
+  .scene.s2 .lead{display:none}
+  .scene.s2 h2{font-size:1.35rem}
+  .scene.s2 .boardwrap .pic{width:min(100%,calc(27vh*1.333));margin:0 auto}
+  .scene.s2 .trayblock{overflow-y:auto;min-height:0;padding:6px 6px 8px;margin:0 -6px;-webkit-overflow-scrolling:touch}
+  .scene.s2 .tray{gap:8px 6px}
+  .scene.s2 .tcard{font-size:.8rem;padding:4px 4px 6px;border-radius:14px;line-height:1.1}
+  .scene.s2 .tcard .ph{aspect-ratio:1.6}
+}
+
+/* Estación 3: la explicación aparece junto al círculo seleccionado */
+.pw{position:relative}
+.pw>img.bgi{width:100%;height:auto;display:block}
+.stepco{position:absolute;z-index:3;width:min(40%,360px);background:var(--cream);border:2px solid var(--olive);border-radius:16px;padding:10px 14px 12px;box-shadow:0 14px 30px -12px rgba(23,58,30,.7);display:grid;gap:4px;animation:pop2 .25s ease-out}
+.stepco .cok{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--terra-d)}
+.stepco b{font-family:var(--serif);font-weight:500;font-size:1.15rem;color:var(--forest);line-height:1.15}
+.stepco p{margin:0;font-size:1rem;line-height:1.35;color:var(--ink)}
+.stepco .dots2{justify-content:flex-start;margin-top:4px}
+.stepco.r::before,.stepco.l::before{content:"";position:absolute;top:22px;width:14px;height:14px;background:var(--cream);transform:rotate(45deg)}
+.stepco.r::before{left:-9px;border-left:2px solid var(--olive);border-bottom:2px solid var(--olive)}
+.stepco.l::before{right:-9px;border-right:2px solid var(--olive);border-top:2px solid var(--olive)}
+@keyframes pop2{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@container (max-width:640px){
+  .stepco{position:static;width:auto;border-radius:0;border:0;border-top:2px solid var(--olive);box-shadow:none;padding:10px 14px 12px;animation:none}
+  .stepco::before{display:none}
+}
+.scene.s3 .pic{justify-self:center;width:min(100%,calc((100dvh - 330px)*1.5));min-width:min(100%,340px)}
+@media (min-width:900px){.scene.s3 .pic{width:min(100%,calc((100dvh - 270px)*1.5))}}
+.scene.s3 .howto{padding:8px 14px}
+@media (max-width:699px) and (max-height:720px){.scene.s3 .howto{display:none}.scene.s3{gap:8px;padding-top:6px}.stepco p{font-size:.95rem}}
+
+.isteps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.istep{display:flex;gap:14px;align-items:center;background:var(--white);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;font-size:1.1rem}
+.inum{flex:none;width:36px;height:36px;border-radius:50%;background:var(--terra-d);color:#fff;display:grid;place-items:center;font-weight:700;font-variant-numeric:tabular-nums}
+.tcard .ans{font-size:.82rem;font-weight:500;color:var(--ink-soft);line-height:1.15;min-height:1.15em}
+.tcard .ans.on{color:var(--olive-d);font-weight:700}
+.cv{position:absolute;right:1px;bottom:1px;font-size:.58rem;line-height:1;background:var(--forest);color:#fff;border-radius:6px;padding:2px 4px;font-weight:700;pointer-events:none}
+.cell{position:relative}
+.sheetbg{position:fixed;inset:0;z-index:30;background:rgba(23,58,30,.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:min(560px,100%);background:var(--cream);border-radius:24px 24px 0 0;padding:18px var(--gut-r) calc(18px + env(safe-area-inset-bottom,0px)) var(--gut-l);display:grid;gap:14px;box-shadow:0 -20px 50px -20px rgba(0,0,0,.5);animation:up .25s ease-out}
+@media (min-width:700px){.sheetbg{align-items:center}.sheet{border-radius:24px}}
+.sh-top{display:flex;gap:14px;align-items:center}
+.sh-top img{width:84px;height:84px;object-fit:contain;background:#fff;border-radius:16px;flex:none}
+.sh-q{font-family:var(--serif);font-size:1.45rem;color:var(--forest);line-height:1.15}
+.sh-x{margin:0;font-size:1rem;line-height:1.35;color:var(--ink)}
+.sheet{max-height:94vh;max-height:94dvh;overflow:auto}
+.opts{display:grid;gap:10px}
+.opt{min-height:56px;border-radius:16px;border:2px solid var(--line);background:#fff;font-weight:600;font-size:1.1rem;color:var(--forest);text-align:center;padding:0 14px}
+.opt:hover{border-color:var(--olive)} .opt.sel{background:var(--mint);border-color:var(--olive);box-shadow:inset 0 0 0 1px var(--olive)}
+.sh-skip{flex:none;width:100%;min-height:46px;font-size:.98rem}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.pgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.phead{margin-bottom:4px;grid-template-columns:repeat(7,minmax(0,1fr));font-size:.8rem;font-weight:700;color:var(--ink-soft);text-align:center}
+.phead span:first-child{display:none}
+.prow2{padding:8px 0;border-top:1px solid var(--line);display:grid;gap:6px}
+.pname{display:flex;gap:8px;align-items:center;font-weight:600;color:var(--forest)}
+.pname img{width:34px;height:34px;object-fit:contain;border-radius:8px;background:#fff}
+.pc{display:grid;place-items:center;min-height:34px;border-radius:10px;background:var(--cream);border:1px solid var(--line);font-size:.8rem;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.pc.on{background:var(--mint);border-color:var(--sage);color:var(--forest)}
+.pc.warn{background:#FBEDE4;border-color:var(--terra);color:var(--terra-d)}
+/* ---------- Patrones ---------- */
+.card{background:var(--white);border:1.5px solid var(--line);border-radius:20px;padding:14px}
+.prow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.prow:last-child{border-bottom:0}
+.prow img{width:44px;height:44px;object-fit:contain;border-radius:8px;background:#fff}
+.prow .nm{font-weight:600;color:var(--forest)}
+.prow .ct{font-size:.9rem;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dots{display:flex;gap:5px;margin-top:4px}
+.dots i{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--sage);display:block;font-style:normal;font-size:.6rem;text-align:center;line-height:15px;color:var(--ink-soft)}
+.dots i.on{background:var(--olive);border-color:var(--olive);color:#fff}
+.note{font-size:.95rem;color:var(--ink-soft)}
+.cmp{display:grid;gap:6px;margin-top:8px;font-size:.98rem}
+.cmp div{padding:8px 10px;border-radius:12px;background:var(--cream);border:1px solid var(--line)}
+
+/* ---------- Señales de alarma ---------- */
+.alarm{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;min-height:56px;padding:12px 14px;border-radius:16px;border:2px solid var(--line);background:var(--white);font-size:1.02rem;color:var(--ink)}
+.alarm .bx{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--wood);display:grid;place-items:center;margin-top:1px;color:#fff}
+.alarm .bx svg{width:70%;opacity:0}
+.alarm[aria-pressed="true"]{border-color:var(--terra-d);background:#FBEDE4}
+.alarm[aria-pressed="true"] .bx{background:var(--terra-d);border-color:var(--terra-d)} .alarm[aria-pressed="true"] .bx svg{opacity:1}
+.alist{display:grid;gap:8px}
+.care{border-radius:20px;background:#FBEDE4;border:2px solid var(--terra);padding:16px;display:grid;gap:8px;color:var(--ink)}
+.care b{color:var(--terra-d)}
+
+/* ---------- Recompensa y estación en construcción ---------- */
+.reward{min-height:100%;display:grid;place-items:center;text-align:center;padding:24px var(--gut-r) 24px var(--gut-l);background:radial-gradient(ellipse at 50% 30%,var(--mint),var(--ivory) 70%);position:relative;overflow:hidden}
+.reward .inner{display:grid;gap:14px;justify-items:center;max-width:520px;position:relative;z-index:2}
+.reward h2{font-size:clamp(2rem,7vw,3rem)}
+.big{font-family:var(--serif);font-size:3.4rem;color:var(--terra-d);display:flex;align-items:center;gap:12px;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+.big svg{width:58px;height:58px}
+.fall{position:absolute;top:-40px;width:26px;opacity:.9;animation:fall linear forwards}
+.under{max-width:620px;margin:0 auto;padding:18px var(--gut-r) 18px var(--gut-l);display:grid;gap:14px;text-align:center}
+.crop{width:100%;border-radius:20px;overflow:hidden;box-shadow:0 14px 34px -18px rgba(23,58,30,.55);background-repeat:no-repeat;filter:grayscale(.5)}
+
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,139,103,.7)}100%{box-shadow:0 0 0 22px rgba(217,139,103,0)}}
+@keyframes bob{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 7px))}}
+@keyframes pop{0%{transform:scale(1.9);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(260deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.map{scroll-behavior:auto}.mapscroll{scroll-behavior:auto}}
+@media (min-width:900px){
+  .dock{display:flex;align-items:center;gap:22px}
+  .dock .guide{flex:1;max-width:none;margin:0}
+  .dock .actions{flex:none;width:auto;max-width:none;margin:0;min-width:300px}
+  .dock .steps{flex:none;width:auto;margin:0}
+  .steps .ln{flex:none;width:16px}
+}
+.mapbg{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(22px) saturate(.8) brightness(.95);opacity:.9}
+.hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:9;background:rgba(23,58,30,.88);color:#fff;border-radius:999px;padding:8px 16px;font-size:.92rem;font-weight:600;pointer-events:none;transition:opacity .4s;white-space:nowrap}
+.hint.off{opacity:0}
+.sdwrap{position:sticky;bottom:10px;height:0;overflow:visible;z-index:6;pointer-events:none;display:flex;justify-content:center}
+.sdown{pointer-events:auto;transform:translateY(-100%);display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:2px solid #fff;background:var(--terra-d);color:#fff;font-weight:700;font-size:.95rem;box-shadow:0 8px 20px -6px rgba(0,0,0,.5);animation:bob2 1.4s ease-in-out infinite}
+.sdown[hidden]{display:none}
+.sdown svg{flex:none}
+@keyframes bob2{0%,100%{margin-top:0}50%{margin-top:6px}}
+@media (max-width:560px){.hide-sm{display:none}.brand{display:none}.pill.reset .long{display:none}}
+@media (max-width:420px){.brand{font-size:1rem}.pill{padding:0 11px;font-size:.88rem}.topbar{gap:6px}}
+
+/* ---------- Estaciones 2 a 5 ---------- */
+.pic{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 14px 34px -18px rgba(23,58,30,.55);container-type:inline-size;background:var(--mint)}
+.pic>img.bgi{width:100%;height:auto}
+.thumb{position:absolute;width:11%;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 3px rgba(40,25,10,.45));animation:pop .35s cubic-bezier(.2,1.6,.4,1);pointer-events:none}
+.hot{position:absolute;transform:translate(-50%,-50%);width:clamp(34px,6.4%,50px);aspect-ratio:1;border-radius:50%;background:var(--terra-d);color:#fff;font-weight:700;font-size:1.05rem;border:3px solid #fff;box-shadow:0 6px 14px -4px rgba(0,0,0,.55);animation:pulse 1.8s ease-out infinite;display:grid;place-items:center;padding:0}
+.hot.seen{background:var(--olive);animation:none}
+.hot svg{width:60%}
+.ring{position:absolute;transform:translate(-50%,-50%);width:clamp(54px,14%,120px);aspect-ratio:1;border-radius:50%;border:4px solid #fff;background:rgba(217,139,103,.35);box-shadow:0 0 0 3px var(--terra-d);animation:pulse 1.6s ease-out infinite;padding:0}
+.cnt{display:inline-flex;gap:6px;align-items:center;font-weight:600;color:var(--ink-soft);font-size:.95rem}
+.gcard{border:2px solid var(--line);background:var(--white);border-radius:18px;padding:14px;display:grid;gap:6px}
+.chipwrap{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.88rem;font-weight:700;border:1.5px solid var(--line);background:var(--cream);color:var(--ink-soft)}
+.legend{display:grid;gap:6px;font-size:.95rem}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:8px;vertical-align:-2px}
+.pies{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:center;font-weight:600;color:var(--forest)}
+.pies svg{width:100%;max-width:200px;margin:0 auto 6px}
+.obs{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:start;padding:12px 14px;border-radius:16px;background:#fff;border:1.5px solid var(--line)}
+.obs b{display:block;color:var(--forest)}
+.tag{padding:3px 10px;border-radius:999px;font-size:.8rem;font-weight:700;color:#fff;white-space:nowrap}
+.tag.ok{background:var(--olive)} .tag.sk{background:var(--wood)} .tag.no{background:var(--terra-d)}
+.tchoice{display:grid;gap:10px}
+.tc{min-height:56px;border-radius:16px;border:2px solid var(--line);background:#fff;font-weight:600;font-size:1.08rem;color:var(--forest);padding:8px 14px;text-align:left}
+.tc[aria-pressed="true"]{border-color:var(--olive);background:var(--mint);box-shadow:inset 0 0 0 1px var(--olive)}
+.plan{position:absolute;left:55%;top:43%;width:34%;font-family:var(--serif);font-style:italic;color:#27422a;font-size:2.7cqw;line-height:1.35;transform:rotate(-3deg)}
+.plan li{margin:0 0 .6em}
+.plan ol{margin:0;padding-left:1.2em}
+.stepcard{display:grid;gap:6px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;font-size:1.12rem}
+.dots2{display:flex;gap:6px;justify-content:center}
+.dots2 i{width:12px;height:12px;border-radius:50%;border:2px solid var(--sage);display:block}
+.dots2 i.on{background:var(--olive);border-color:var(--olive)}
+.infoimg{width:84px;height:84px;object-fit:contain;background:#fff;border-radius:16px;flex:none}
+.habnote{display:grid;grid-template-columns:84px minmax(0,1fr);gap:4px 14px;align-items:start;align-content:start;padding:14px;border-radius:18px;background:var(--white);border:2px solid var(--sage)}
+.habnote img{width:84px;height:84px;object-fit:contain;background:#fff;border-radius:16px;border:1.5px solid var(--line)}
+.habnote h3{font-size:1.25rem;margin:0 0 4px}
+.habnote p{margin:0;font-size:1.02rem}
+.notewrap{margin-top:0}
+.habnote.empty{display:block;border-style:dashed;border-color:var(--line);background:var(--cream);color:var(--ink-soft)}
+.habnote.empty p{font-size:1rem}
+.tcard.focus{border-color:var(--terra-d);box-shadow:0 0 0 2px var(--terra-d)}
+.tcard.dim{opacity:.5}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.lead{margin:6px 0 0;font-size:1.08rem;color:var(--ink-soft);max-width:60ch}
+.howto{display:flex;gap:12px;align-items:center;background:var(--white);border:2px solid var(--terra);border-radius:18px;padding:12px 14px;font-size:1.1rem;font-weight:500;color:var(--forest)}
+.howto .dot{flex:none;width:34px;height:34px;border-radius:50%;background:var(--terra-d);border:3px solid #fff;box-shadow:0 0 0 2px var(--terra-d);display:grid;place-items:center;color:#fff;font-weight:700;font-size:.95rem}
+.cnt3{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:10px;font-weight:600;color:var(--forest)}
+.cnt3 .dots2 i{width:16px;height:16px}
+.plate .thumb{pointer-events:auto;border:0;background:none;padding:0;cursor:pointer;width:22%;display:block}
+.plate .thumb img{width:100%;height:auto}
+.plate .thumb:hover{filter:drop-shadow(0 3px 3px rgba(40,25,10,.45)) brightness(1.06)}
+.plate .thumb .x{position:absolute;top:-4px;right:-2px;width:24px;height:24px;border-radius:50%;background:var(--forest);color:#fff;display:grid;place-items:center;font-size:.9rem;line-height:1;border:2px solid #fff}
+.plate.fixed .thumb{pointer-events:none}
+.flist{display:grid;gap:8px}
+.fitem{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:center;background:var(--white);border:1.5px solid var(--line);border-radius:16px;padding:8px 12px}
+.fitem img{width:64px;height:48px;object-fit:contain}
+.fitem b{display:block;color:var(--forest)}
+.fitem span{font-size:.98rem;color:var(--ink-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.btn.wide{flex:1 1 100%} .btn.half{flex:1 1 calc(50% - 6px);padding:0 10px}
+.plan{font-size:3.3cqw}
+.planlist{margin:0;padding-left:1.3em;display:grid;gap:6px;font-size:1.1rem}
+
+/* ---------- Estación 3: exploración con explicación junto al círculo ---------- */
+.hot svg{width:58%;height:58%}
+.pg3{display:flex;align-items:center;gap:8px}
+.pg3 b{color:var(--forest)}
+.pg3 .dots2 i{width:11px;height:11px;border-width:2px}
+.tres{font-weight:600;color:var(--olive-d)}
+.concl{border-color:var(--olive);background:var(--mint)}
+@keyframes tpop{0%{transform:translate(-50%,-50%) scale(1.6);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.plate .thumb{animation:tpop .35s cubic-bezier(.2,1.6,.4,1)}
+
+/* ---------- Estación 4: cierre ---------- */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.trio img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:14px;box-shadow:0 10px 24px -16px rgba(23,58,30,.6)}
+.pairs{display:grid;gap:10px}
+.pair{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;background:var(--white);border:1.5px solid var(--line);border-radius:18px;padding:10px}
+.pair>div{display:grid;gap:2px;border-radius:12px;padding:8px 12px}
+.pair b{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+.pa{background:#F3EBD6}.pa b{color:var(--wood)}
+.pb{background:var(--mint)}.pb b{color:var(--olive-d)}
+@media (min-width:640px){.pair{grid-template-columns:1fr 1fr}}
+
+/* ---------- Estación 5: hábitos y plan ---------- */
+.hgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:760px){.hgrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}}
+.hcard{position:relative;display:grid;grid-template-rows:auto auto 1fr;gap:6px;text-align:left;padding:6px 6px 10px;border:2px solid var(--line);background:var(--white);border-radius:18px;transition:transform .15s,box-shadow .15s}
+.hcard:hover{transform:translateY(-2px);box-shadow:0 10px 22px -12px rgba(23,58,30,.5)}
+.hcard img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:13px}
+.hcard .ht{font-family:var(--serif);font-size:1.04rem;line-height:1.15;color:var(--forest);padding:0 4px}
+.hcard .hd{font-size:.88rem;line-height:1.28;color:var(--ink-soft);padding:0 4px}
+.hcard[aria-pressed="true"]{border-color:var(--olive);background:var(--mint);box-shadow:0 0 0 2px var(--olive)}
+.hcard .ck{position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;background:var(--olive);color:#fff;display:none;place-items:center;border:2px solid #fff;z-index:2}
+.hcard .ck svg{width:60%}
+.hcard[aria-pressed="true"] .ck{display:grid}
+.hcard.dim{opacity:.5}
+.plans{display:grid;gap:12px}
+.plancard{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr;background:var(--white);border:1.5px solid var(--line);border-radius:20px;overflow:hidden}
+.plancard>img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.pcb{padding:12px 14px 14px;display:grid;gap:6px;align-content:start}
+.pcb h3{font-size:1.3rem}
+.pcb p{margin:0;font-size:1.02rem}
+.pcb .pcue{color:var(--ink-soft)}
+.wchips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}
+.wchips .tc{text-align:center;min-height:48px;padding:6px 8px;font-size:1rem}
+@media (min-width:760px){.plans{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.fin{display:grid;gap:14px}.fform{display:grid;gap:8px}.fq{font-family:var(--serif,inherit);font-size:1.35rem;font-weight:600;color:var(--forest)}
+.fform input{width:100%;min-height:56px;border-radius:14px;border:2px solid var(--line);background:var(--white);padding:0 16px;font:inherit;font-size:1.15rem;color:var(--ink)}
+.fform input:focus{outline:3px solid var(--olive);outline-offset:2px;border-color:var(--olive)}.fform input[aria-invalid="true"]{border-color:var(--terra-d)}
+.ferr{min-height:1.2em;color:var(--terra-d);font-weight:600}.fsub{background:var(--mint,#DCE8D2)}.fbtn{flex:none;width:100%;text-decoration:none;text-align:center}
+.fbtn[hidden]{display:none}.fsrow{display:flex;gap:8px;flex-wrap:wrap}.fsrow input{flex:1 1 180px;min-width:0;min-height:48px;padding:10px 14px;border:2px solid var(--line,#d8d2c0);border-radius:12px;font:inherit;background:#fff;color:inherit}.fsrow .btn{flex:0 0 auto}.fsmsg{min-height:1.2em;font-weight:600;font-size:.92em}.fsmsg.err{color:var(--terra-d)}.fsmsg.ok{color:var(--forest,#1B4332)}.fsnote{margin:0;font-size:.82em;opacity:.8}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.fdone{gap:10px}.fdone .btn{width:100%;flex:none}
+</style>
+<style>a.pill{text-decoration:none}</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+/* ====== Datos ====== */
+const SKIN=['#F6D7B8','#E8B98E','#C98E5F','#9C6439','#6B4226'];
+const HAIR=['#2B1B12','#6B3F1F','#B8782E','#E6C27A','#9A9A9A'];
+const ROWS=[
+  {id:'sol',img:'img/tarjeta-sol.webp',es:'Sol',en:'Sunlight',
+   q:{es:'¿Saliste al sol o a la luz natural?',en:'Did you get out in the sun or natural light?'},
+   x:{es:['Sol y vitamina D','La luz solar permite que el cuerpo produzca vitamina D, que ayuda a absorber el calcio y a mantener los huesos sanos. Disfruta del aire libre teniendo en cuenta la protección frente a la radiación UV.'],
+      en:['Sunlight and vitamin D','Sunlight lets the body make vitamin D, which helps absorb calcium and keep bones healthy. Enjoy the outdoors while taking protection from UV radiation into account.']},
+   o:[['Sí, un buen rato','Yes, for a good while','Sí','Yes'],['Solo un momento','Only for a moment','Poco','Brief'],['No','No','No','No']]},
+  {id:'plato',img:'img/tarjeta-plato-vacio.webp',es:'Comidas',en:'Meals',
+   q:{es:'¿Cuántas comidas hiciste?',en:'How many meals did you have?'},
+   x:{es:['Comidas con ritmo','Comer sin prisa y a horas parecidas ayuda a que tu cuerpo siga un ritmo y a que notes cómo te sientan los alimentos. No existe un número perfecto de comidas: depende de cada persona.'],
+      en:['Meals with a rhythm','Eating without rushing and at similar times helps your body keep a rhythm and helps you notice how foods sit with you. There is no perfect number of meals: it depends on each person.']},
+   o:[['1 comida','1 meal','1','1'],['2 comidas','2 meals','2','2'],['3 comidas','3 meals','3','3'],['4 o más','4 or more','4+','4+']]},
+  {id:'agua',img:'img/tarjeta-vaso-de-agua.webp',es:'Agua',en:'Water',
+   q:{es:'¿Cuántos vasos de agua tomaste?',en:'How many glasses of water did you drink?'},
+   x:{es:['Agua y digestión','El cuerpo necesita agua para digerir y absorber los nutrientes, y ayuda a que las heces se mantengan blandas y fáciles de evacuar. Cuánta necesitas depende de tu clima, tu actividad y tu cuerpo.'],
+      en:['Water and digestion','Your body needs water to digest food and absorb nutrients, and it helps keep stools soft and easy to pass. How much you need depends on your climate, your activity and your body.']},
+   o:[['1 a 2 vasos','1 to 2 glasses','1–2','1–2'],['3 a 5 vasos','3 to 5 glasses','3–5','3–5'],['6 o más','6 or more','6+','6+']]},
+  {id:'mov',img:'img/tarjeta-caminante.webp',es:'Movimiento',en:'Movement',
+   q:{es:'¿Cuánto te moviste?',en:'How much did you move?'},
+   x:{es:['Moverse y digerir','La actividad física, como caminar, ayuda a que el intestino se mueva con regularidad y puede aliviar el estreñimiento. También favorece el ánimo y el descanso.'],
+      en:['Movement and digestion','Physical activity, such as walking, helps your gut move regularly and can ease constipation. It also supports mood and rest.']},
+   o:[['Casi nada','Hardly at all','0','0'],['Menos de 30 minutos','Less than 30 minutes','<30','<30'],['30 minutos o más','30 minutes or more','30+','30+']]},
+  {id:'sueno',img:'img/tarjeta-cama.webp',es:'Sueño',en:'Sleep',
+   q:{es:'¿Cuántas horas dormiste anoche?',en:'How many hours did you sleep last night?'},
+   x:{es:['Dormir y digerir','Mientras duermes, el cuerpo se repara y regula funciones como el apetito y la digestión. Dormir poco o mal puede alterar el hambre y cómo te sientes al día siguiente.'],
+      en:['Sleep and digestion','While you sleep, your body repairs itself and regulates functions such as appetite and digestion. Sleeping too little or poorly can change your hunger and how you feel the next day.']},
+   o:[['Menos de 6 horas','Less than 6 hours','<6h','<6h'],['6 a 8 horas','6 to 8 hours','6–8h','6–8h'],['Más de 8 horas','More than 8 hours','>8h','>8h']]},
+  {id:'mol',img:'img/tarjeta-molestias.webp',es:'Molestias',en:'Discomfort',
+   q:{es:'¿Tuviste molestias digestivas?',en:'Did you have digestive discomfort?'},
+   x:{es:['Escuchar a tu intestino','Notar hinchazón, gases, dolor o cambios en tus deposiciones te ayuda a conocer cómo responde tu cuerpo a lo que comes y haces. Es observar, no diagnosticar. Si algo es fuerte o dura varias semanas, consúltalo con un profesional de la salud.'],
+      en:['Listening to your gut','Noticing bloating, gas, pain or changes in your bowel movements helps you learn how your body responds to what you eat and do. It is observing, not diagnosing. If something is strong or lasts several weeks, talk to a health professional.']},
+   o:[['No','No','No','No'],['Leves','Mild','Leve','Mild'],['Fuertes','Strong','Fuerte','Strong']]}
+];
+const DAYS={es:['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'],en:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']};
+const DAYS3={es:['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']};
+const STN={es:['El sendero de mis hábitos','La cocina del jardín','El taller de fermentos','Los secretos bajo la tierra','Mi rincón de cultivo'],
+           en:['The Path of My Habits','The Garden Kitchen','The Fermentation Workshop','Secrets Beneath the Soil','My Growing Corner']};
+/* zonas tocables (% del mapa), insignias (en el letrero) y puntos donde camina el personaje */
+const ZONES=[
+  {x:1, y:2, w:33,h:52, bx:24, by:6,  walk:[22,58], tip:[15,24],  mask:[17,28,26,36], crop:[0,0,34,55]},
+  {x:40,y:7, w:28,h:40, bx:60, by:8,  walk:[43,53], tip:[52,27],  mask:[53,27,22,30], crop:[38,6,32,42]},
+  {x:72,y:5, w:28,h:45, bx:95, by:9,  walk:[72,51], tip:[85,26],  mask:[86,26,22,34], crop:[68,4,32,46]},
+  {x:1, y:53,w:40,h:42, bx:29, by:56, walk:[30,73], tip:[19,73], mask:[20,75,26,28], crop:[0,52,42,44]},
+  {x:58,y:52,w:42,h:46, bx:95, by:54, walk:[62,82], tip:[80,75], mask:[80,76,26,28], crop:[56,50,44,50]}
+];
+const START=[40,67];
+const ALARMS=[
+ ['a1','Sangre en las heces, o heces negras','Blood in your stool, or black stools'],
+ ['a2','Vómito con sangre o con aspecto de café molido','Vomiting blood, or vomit that looks like coffee grounds'],
+ ['a3','Dolor de barriga fuerte o que empezó de golpe','Severe belly pain, or pain that started suddenly'],
+ ['a4','Fiebre de 39 °C (102 °F) o más junto con síntomas digestivos','A fever of 39 °C (102 °F) or higher along with digestive symptoms'],
+ ['a5','Signos de deshidratación: sed intensa, boca seca, poca orina u orina oscura, mareo al pararte','Signs of dehydration: strong thirst, dry mouth, little or dark urine, dizziness when standing'],
+ ['a6','Pérdida de peso sin una razón clara','Weight loss without a clear reason'],
+ ['a7','Un cambio en tus deposiciones que dura unas 3 semanas','A change in your bowel movements that lasts about 3 weeks'],
+ ['a8','Diarrea que dura más de 2 días, o vómitos que siguen después de unos días','Diarrhea that lasts more than 2 days, or vomiting that continues after a few days'],
+ ['a9','Un bulto en la barriga','A lump in your belly'],
+ ['a10','Diarrea que vuelve con frecuencia','Diarrhea that keeps coming back']
+];
+const L={
+ es:{title:'Mi Jardín Digestivo',eyebrow:'Salud Integral',sub:'Tu guía práctica para una mejor digestión y bienestar',start:'Empezar',
+  charH:'Crea tu personaje',charB:'¡Hola! Soy Brote, tu guía en el jardín. Elige cómo quieres verte. Tu nombre es opcional.',
+  woman:'Mujer',man:'Hombre',skin:'Piel',hair:'Cabello',name:'Tu nombre (opcional)',namePh:'Escribe tu nombre',enter:'Entrar al jardín',
+  seeds:'Semillas',garden:'Jardín',again:'Empezar de nuevo',sure:'¿Seguro? Toca otra vez',
+  mapHi:(n)=>`¡Hola${n?', '+n:''}! Este es tu jardín. Toca el letrero de la estación 1 para empezar.`,
+  mapNext:(i)=>`¡Muy bien! Ahora toca la estación ${i}.`,
+  goSt:(i)=>`Ir a la estación ${i}`,locked:(i)=>`Primero termina la estación ${i}. Así el jardín despierta poco a poco.`,
+  skipped:'En el modo cuidadoso esta estación se omite.',
+  s1k:'Estación 1',s1h:'Mi día digestivo',
+  dayB:'Toca una tarjeta, responde y descubre por qué ese hábito importa.',
+  introSteps:['Piensa en un día reciente.','Toca cada tarjeta y responde una pregunta corta. Al lado verás por qué importa ese hábito.','Al final ves cómo fue tu día.'],introBtn:'Empezar',introBro:'Vamos a mirar un día, tarjeta por tarjeta.',
+  seePat:'Ver mi día',
+  tapCards:()=>'Toca una tarjeta para responder',askSkip:'Dejar sin responder',tapAns:'Toca para responder',
+  noteEmpty:'Toca una tarjeta y aquí verás por qué importa ese hábito.',
+  patH:'Así fue tu día',patB:'Este es el resumen de tu día.',
+  noMol:'No anotaste molestias en este día.',
+  mol:'Anotaste molestias digestivas en este día.',
+  empty:'La pizarra quedó vacía. Puedes volver y completarla cuando quieras.',
+  patNote:'Es una mirada a tu día. No es un diagnóstico ni una evaluación.',
+  cont:'Continuar',
+  alH:'Señales que conviene consultar',alB:'Marca las que te han pasado, si alguna. Si no, sigue.',
+  alSrc:'Basado en información de Mayo Clinic y del NHS (Reino Unido).',
+  careH:'Gracias por contarlo',
+  careB:'Te recomendamos hablarlo con un profesional de la salud. Si algo es fuerte o apareció de repente, busca atención médica urgente.',
+  careN:'En el taller de fermentos verás una advertencia antes de empezar.',warnH:'Antes de fermentar',warnB:'Marcaste señales que conviene consultar. Habla primero con un profesional de la salud antes de probar o consumir alimentos fermentados.',
+  rewH:'¡Estación 1 completa!',rewB:(s)=>`Ganaste ${s} semillas. Vuelve al jardín: se despertó la siguiente estación.`,back:'Volver al jardín',
+  underH:'Esta estación se construye después',underB:'Para esta vista previa solo está lista la estación 1. Cuando apruebes cómo se ve y se juega, construyo las demás.',
+  underBro:'Esta estación aún no está lista en la vista previa.',rewBro:'¡Lo lograste! Vuelve al jardín cuando quieras.'},
+ en:{title:'My Digestive Garden',eyebrow:'Salud Integral',sub:'Your practical guide to better digestion and wellbeing',start:'Start',
+  charH:'Create your character',charB:"Hi! I'm Brote, your guide in the garden. Choose how you want to look. Your name is optional.",
+  woman:'Woman',man:'Man',skin:'Skin',hair:'Hair',name:'Your name (optional)',namePh:'Type your name',enter:'Enter the garden',
+  seeds:'Seeds',garden:'Garden',again:'Start over',sure:'Sure? Tap again',
+  mapHi:(n)=>`Hi${n?', '+n:''}! This is your garden. Tap the sign for station 1 to begin.`,
+  mapNext:(i)=>`Well done! Now tap station ${i}.`,
+  goSt:(i)=>`Go to station ${i}`,locked:(i)=>`Finish station ${i} first. That way the garden wakes up little by little.`,
+  skipped:'In careful mode this station is skipped.',
+  s1k:'Station 1',s1h:'My digestive day',
+  dayB:'Tap a card, answer, and find out why that habit matters.',
+  introSteps:['Think about a recent day.','Tap each card and answer one short question. Next to it you will see why that habit matters.','At the end you see how your day went.'],introBtn:'Start',introBro:"Let's look at one day, card by card.",
+  seePat:'See my day',
+  tapCards:()=>'Tap a card to answer',askSkip:'Leave unanswered',tapAns:'Tap to answer',
+  noteEmpty:'Tap a card and you will see here why that habit matters.',
+  patH:'How your day went',patB:'This is the summary of your day.',
+  noMol:"You didn't note any discomfort on this day.",
+  mol:'You noted digestive discomfort on this day.',
+  empty:'The board was left empty. You can come back and fill it in anytime.',
+  patNote:'This is a look at your day. It is not a diagnosis or an evaluation.',
+  cont:'Continue',
+  alH:'Signs worth talking to a professional about',alB:'Mark the ones that have happened to you, if any. If none, continue.',
+  alSrc:'Based on information from Mayo Clinic and the NHS (UK).',
+  careH:'Thank you for sharing',
+  careB:'We recommend talking to a health professional. If something is strong or appeared suddenly, seek urgent medical care.',
+  careN:'In the fermentation workshop you will see a warning before you start.',warnH:'Before fermenting',warnB:'You marked signs worth talking about. Talk to a health professional first before trying or eating fermented foods.',
+  rewH:'Station 1 complete!',rewB:(s)=>`You earned ${s} seeds. Go back to the garden: the next station woke up.`,back:'Back to the garden',
+  underH:'This station is built later',underB:'Only station 1 is ready in this preview. Once you approve how it looks and plays, I build the rest.',
+  underBro:'This station is not ready yet in the preview.',rewBro:'You did it! Go back to the garden whenever you like.'}
+};
+/* ====== Estado (en memoria; sin rutas #/ ni confirm) ====== */
+const S={lang:(document.documentElement.lang==='en'?'en':'es'),screen:'map',p:{name:''},seeds:0,done:{},cautious:false,
+  at:null,note:null,shake:false,under:1,askReset:false,
+  st1:{phase:'board',cells:{},alarms:{},last:null,q:null,focus:null}};
+const t=()=>L[S.lang];
+const T=(a,b)=>S.lang==='es'?a:b;
+const ACT={},ENTER={},RESET=[];
+S.rew=1;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function nextStation(){for(let n=1;n<=5;n++){if(!S.done[n])return n}return 0}
+function zstate(n){if(S.done[n])return 'done';return n===nextStation()?'next':'locked'}
+function prevOpen(n){for(let k=n-1;k>=1;k--){if(!S.done[k])return k}return n}
+
+/* ====== Dibujos ====== */
+const ICON={
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>',
+ lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>',
+ dash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 12h12"/></svg>',
+ seed:'<svg viewBox="0 0 40 52" aria-hidden="true"><path d="M20 2C32 14 38 26 34 38c-3 8-10 12-14 12S9 46 6 38C2 26 8 14 20 2z" fill="#D98B67" stroke="#A9552F" stroke-width="2.2"/><path d="M20 12v30" stroke="#A9552F" stroke-width="2" stroke-linecap="round" fill="none"/></svg>'
+};
+function brote(){return '<img class="brote" src="img/brote.webp" alt="" width="56" height="56">'}
+
+/* ====== Pantallas ====== */
+function topbar(){
+  const tt=t(),sc=S.screen,inScene=/^st\d$/.test(sc)||sc==='reward'||sc==='final';
+  const left=inScene?`<button class="pill back" data-act="back" aria-label="${T('Atrás','Back')}">← ${T('Atrás','Back')}</button><button class="pill gard" data-act="toMap" aria-label="${tt.back}">⌂<span class="hide-sm"> ${tt.garden}</span></button>`:`<a class="pill gard" href="${SITE_HOME[S.lang]}" aria-label="Salud Integral">←<span class="hide-sm"> Salud Integral</span></a>`;
+  const seeds=`<span class="pill seeds" aria-label="${tt.seeds}">${ICON.seed.replace('<svg','<svg width="14" height="18"')}${S.seeds}</span>`;
+  const rst=(sc==='map'||inScene)?`<button class="pill reset ${S.askReset?'ask':''}" data-act="reset" aria-label="${tt.again}">${S.askReset?tt.sure:'↺<span class="long"> '+tt.again+'</span>'}</button>`:'';
+  return `<header class="topbar">${left}<span class="brand">${inScene?'':tt.title}</span>${seeds}${rst}<button class="pill" data-act="lang" aria-label="Idioma / Language">${S.lang==='es'?'EN':'ES'}</button></header>`;
+}
+function maskCSS(){
+  const on=[[52,58,20,18]];
+  ZONES.forEach((z,i)=>{const s=zstate(i+1);if(s==='done'||s==='next')on.push(z.mask)});
+  const g=on.map(m=>`radial-gradient(ellipse ${m[2]}% ${m[3]}% at ${m[0]}% ${m[1]}%,#000 55%,transparent 100%)`).join(',');
+  return `-webkit-mask-image:${g};mask-image:${g}`;
+}
+function vMap(){
+  const tt=t(),nx=nextStation();
+  let zones='',badges='',chip='';
+  ZONES.forEach((z,i)=>{
+    const n=i+1,s=zstate(n);
+    zones+=`<button class="zone ${s}" data-act="zone" data-n="${n}" style="left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%" aria-label="${n}. ${STN[S.lang][i]}"></button>`;
+    if(s==='done')badges+=`<span class="badge done" style="left:${z.bx}%;top:${z.by}%">${ICON.check}</span>`;
+    else if(s==='locked')badges+=`<span class="badge lock" style="left:${z.bx}%;top:${z.by}%">${ICON.lock}</span>`;
+    else if(s==='skip')badges+=`<span class="badge skip" style="left:${z.bx}%;top:${z.by}%">${ICON.dash}</span>`;
+    else if(s==='next')chip=`<span class="tapchip" style="left:${z.tip[0]}%;top:${z.tip[1]}%">${S.lang==='es'?'Toca aquí':'Tap here'}</span>`;
+  });
+  const steps=[1,2,3,4,5].map(n=>{const s=zstate(n);return (n>1?`<span class="ln ${S.done[n-1]?'on':''}"></span>`:'')+`<button class="st ${s}" data-act="step" data-n="${n}" aria-label="${n}. ${STN[S.lang][n-1]}">${s==='done'?ICON.check:s==='skip'?ICON.dash:n}</button>`}).join('');
+  const bro=S.note||(nx===1&&!S.done[1]?tt.mapHi(''):nx?tt.mapNext(nx):T('¡Tu jardín está lleno de color! Crea tu PDF o toca una estación para repasarla.','Your garden is full of color! Create your PDF or tap a station to review it.'));
+  const act=nx?`<button class="btn primary" data-act="zone" data-n="${nx}">${tt.goSt(nx)}</button>`:`<button class="btn terra" data-act="final">${S.pdf?T('Descargar mi PDF','Download my PDF'):T('Crear mi PDF','Create my PDF')}</button>`;
+  return {stage:`<div class="mapstage" style="height:100%;position:relative"><img class="mapbg" src="img/mapa-${S.lang}.webp" alt=""><div class="mapscroll" id="ms" style="position:relative"><div class="map" id="mp">
+    <img class="base" src="img/mapa-${S.lang}.webp" alt="${STN[S.lang].join(', ')}">
+    <img class="color" style="${maskCSS()}" src="img/mapa-${S.lang}.webp" alt="">
+    ${zones}${badges}${chip}</div></div><div class="hint" id="hint" hidden>↔ ${S.lang==='es'?'Desliza para recorrer el jardín':'Swipe to explore the garden'}</div></div>`,
+    bro,actions:act,steps:`<div class="steps">${steps}</div>`,shake:S.shake};
+}
+function ans(r){const v=S.st1.cells[r];return v===undefined?null:v}
+function short(r){const v=ans(r);return v===null?'':ROWS[r].o[v][S.lang==='es'?2:3]}
+function rowsHTML(){
+  const tt=t(),l=S.lang;
+  return ROWS.map((r,i)=>{const v=ans(i),on=v!==null,pop=S.st1.last===i;
+    return `<button class="brow ${on?'on':''}" style="grid-row:${i+1}" data-act="place" data-r="${i}" aria-label="${r[l]}: ${on?r.o[v][l==='es'?0:1]:tt.tapAns}"><span class="bic"><img src="${r.img}" alt="" ${on&&!pop?'style="animation:none"':''}></span><span class="btx"><span class="bnm">${r[l]}</span><span class="bans">${on?r.o[v][l==='es'?0:1]:tt.tapAns}</span></span></button>`}).join('');
+}
+function sheetHTML(){
+  const q=S.st1.q;if(q===null)return '';
+  const l=S.lang,r=ROWS[q],cur=ans(q),tt=t();
+  const opts=r.o.map((o,i)=>`<button class="opt ${cur===i?'sel':''}" data-act="opt" data-i="${i}">${o[l==='es'?0:1]}</button>`).join('');
+  return `<div class="sheetbg" data-act="closeq"><div class="sheet" role="dialog" aria-label="${r.q[l]}"><div class="sh-top"><img src="${r.img}" alt=""><div><div class="kick" style="margin:0 0 2px">${r.x[l][0]}</div><p class="sh-x">${r.x[l][1]}</p></div></div><div class="sh-q">${r.q[l]}</div><div class="opts">${opts}</div><button class="btn ghost sh-skip" data-act="clearq">${tt.askSkip}</button></div></div>`;
+}
+function vBoard(){
+  const tt=t(),st=S.st1,l=S.lang;
+  const tray=ROWS.map((r,i)=>{const v=ans(i);return `<button class="tcard ${st.focus===i?'focus':''}" data-act="place" data-r="${i}" aria-pressed="${v!==null}"><span class="ck">${ICON.check}</span><span class="ph"><img src="${r.img}" alt=""></span><span>${r[l]}</span><span class="ans ${v!==null?'on':''}">${v!==null?r.o[v][l==='es'?0:1]:tt.tapAns}</span></button>`}).join('');
+  const fr=st.focus!==null?ROWS[st.focus]:null;
+  const note=fr?`<div class="habnote" role="status"><img src="${fr.img}" alt=""><div><h3>${fr.x[l][0]}</h3><p>${fr.x[l][1]}</p></div></div>`:`<div class="habnote empty"><p>${tt.noteEmpty}</p></div>`;
+  return {stage:`<div class="scene two s1"><div class="full"><div class="kick">${tt.s1k}</div><h2>${tt.s1h}</h2></div>
+    <div class="trayblock"><div class="qhead" style="margin-bottom:10px">${tt.tapCards()}</div><div class="tray">${tray}</div></div><div class="notewrap">${note}</div>
+    <div class="boardwrap"><div class="board"><img class="bd" src="img/pizarra.webp" alt=""><div class="grid">${rowsHTML()}</div></div></div></div>
+    <div class="sdwrap"><button class="sdown" id="sdown" data-act="sdown" hidden>${T('Desliza hacia abajo para ver tu pizarra','Swipe down to see your board')} <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button></div>`,
+    bro:tt.dayB,sheet:sheetHTML(),
+    actions:`<button class="btn primary" data-act="toPatterns">${tt.seePat}</button>`};
+}
+function vPatterns(){
+  const tt=t(),l=S.lang;
+  const total=ROWS.filter((_,r)=>ans(r)!==null).length;
+  const rows=ROWS.map((r,i)=>{const v=ans(i);return `<div class="prow"><img src="${r.img}" alt=""><div class="nm">${r[l]}</div><div class="ct" style="white-space:normal;text-align:right">${v!==null?r.o[v][l==='es'?0:1]:'·'}</div></div>`}).join('');
+  const m=ans(5),mol=m===null?'':(m>0?tt.mol:tt.noMol);
+  return {stage:`<div class="scene" style="max-width:640px"><div><div class="kick">${tt.s1k}</div><h2>${tt.patH}</h2></div>
+    ${total?`<div class="card">${rows}</div>${mol?`<div class="card"><p style="margin:0">${mol}</p></div>`:''}<p class="note" style="margin:0">${tt.patNote}</p>`:`<div class="card"><p style="margin:0">${tt.empty}</p></div>`}</div>`,bro:tt.patB,actions:`<button class="btn ghost" data-act="backBoard">←</button><button class="btn primary" data-act="toAlarms">${tt.cont}</button>`};
+}
+function vAlarms(){
+  const tt=t(),l=S.lang,a=S.st1.alarms,idx=S.lang==='es'?1:2;
+  const list=ALARMS.map(x=>`<button class="alarm" data-act="alarm" data-id="${x[0]}" aria-pressed="${!!a[x[0]]}"><span class="bx">${ICON.check}</span><span>${x[idx]}</span></button>`).join('');
+  return {stage:`<div class="scene" style="max-width:720px"><div><div class="kick">${tt.s1k}</div><h2>${tt.alH}</h2></div><div class="alist">${list}</div></div>`,
+    bro:tt.alB,actions:`<button class="btn primary" data-act="alarmsDone">${tt.cont}</button>`};
+}
+function vCare(){
+  const tt=t();
+  return {stage:`<div class="scene" style="max-width:640px"><div class="care"><h2 style="font-size:1.6rem">${tt.careH}</h2><p style="margin:0">${tt.careB}</p><p style="margin:0"><b>${tt.careN}</b></p></div></div>`,
+    bro:tt.careH+'.',actions:`<button class="btn primary" data-act="claim">${tt.cont}</button>`};
+}
+function vReward(n){
+  const tt=t();let f='';
+  for(let i=0;i<9;i++)f+=`<span class="fall" style="left:${6+i*11}%;animation-duration:${2.4+(i%4)*.5}s;animation-delay:${(i%5)*.18}s">${ICON.seed}</span>`;
+  const last=n===5;
+  return {stage:`<div class="reward">${f}<div class="inner"><h2>${last?T('¡Tu jardín está completo!','Your garden is complete!'):T('¡Estación '+n+' completa!','Station '+n+' complete!')}</h2><div class="big">+5 ${ICON.seed}</div><p style="margin:0;font-size:1.15rem">${last?T('Ganaste 5 semillas. Ya puedes descargar tu PDF personalizado con todo lo que hiciste.','You earned 5 seeds. You can now download your personalized PDF with everything you did.'):T('Ganaste 5 semillas. Vuelve al jardín y elige la siguiente estación que quieras explorar.','You earned 5 seeds. Go back to the garden and choose the next station you want to explore.')}</p></div></div>`,
+    bro:last?T('¡Lo lograste! Descarga tu PDF cuando quieras.','You did it! Download your PDF whenever you like.'):tt.rewBro,actions:(last?`<button class="btn terra" data-act="pdf">${T('Descargar mi PDF','Download my PDF')}</button>`:'')+`<button class="btn ${last?'ghost':'primary'}" data-act="toMap">${tt.back}</button>`};
+}
+function vUnder(){
+  const tt=t(),n=S.under,z=ZONES[n-1],c=z.crop,l=S.lang;
+  const bs=`${10000/c[2]}% ${10000/c[3]}%`,bp=`${c[0]/(100-c[2])*100}% ${c[1]/(100-c[3])*100}%`;
+  return {stage:`<div class="under"><div class="kick" style="color:var(--terra-d);font-weight:600;letter-spacing:.16em;text-transform:uppercase;font-size:.8rem">${l==='es'?'Estación':'Station'} ${n}</div><h2>${STN[l][n-1]}</h2>
+    <div class="crop" style="aspect-ratio:${(c[2]*1536)/(c[3]*1024)};background-image:url(img/mapa-${l}.webp);background-size:${bs};background-position:${bp}"></div>
+    ${n===3&&S.cautious?`<div class="care" style="text-align:left"><h3 style="font-size:1.3rem;color:var(--terra-d)">${tt.warnH}</h3><p style="margin:0">${tt.warnB}</p></div>`:''}<h3 style="font-size:1.3rem">${tt.underH}</h3><p style="margin:0">${tt.underB}</p></div>`,bro:tt.underBro,actions:`<button class="btn primary" data-act="toMap">${tt.back}</button>`};
+}
+const VIEW={map:vMap,st1(){const ph=S.st1.phase;return ph==='board'?vBoard():ph==='patterns'?vPatterns():ph==='alarms'?vAlarms():ph==='care'?vCare():vReward(1)},reward:()=>vReward(S.rew||1)};
+
+/* ====== Render ====== */
+function render(keep){
+  if(!keep)S.t0=Date.now();
+  const app=document.getElementById('app'),old=app.querySelector('.stage'),sy=old?old.scrollTop:0;
+  const v=VIEW[S.screen](),tt=t();
+  const dock=v.bare?'':`<div class="dock">${v.steps||''}<div class="guide">${brote()}<div class="bubble ${v.shake?'shake':''}" role="status">${v.bro}</div></div>${v.actions?`<div class="actions">${v.actions}</div>`:''}</div>${v.sheet||''}`;
+  app.innerHTML=(v.bare?'':topbar())+`<main class="stage">${v.stage}</main>`+dock;
+  document.title=tt.title;document.documentElement.lang=S.lang;
+  const st=app.querySelector('.stage');if(keep)st.scrollTop=sy;
+  if(S.screen==='map'){centerMap(nextStation()||S.at||1,true);const ms=document.getElementById('ms'),h=document.getElementById('hint');
+    if(ms&&h&&ms.scrollWidth>ms.clientWidth+40&&!S.hinted){h.hidden=false;ms.addEventListener('scroll',()=>{S.hinted=true;h.classList.add('off')},{once:true});setTimeout(()=>{S.hinted=true;h.classList.add('off')},6000)}}
+  S.shake=false;
+  hintDown();
+}
+function hintDown(){
+  const st=document.querySelector('.stage'),h=document.getElementById('sdown'),bw=document.querySelector('.boardwrap');if(!st||!h||!bw)return;
+  const upd=()=>{const r=bw.getBoundingClientRect(),sr=st.getBoundingClientRect(),vis=Math.min(r.bottom,sr.bottom)-Math.max(r.top,sr.top);h.hidden=!(r.height>0&&vis<r.height*.97&&r.bottom>sr.bottom-2)};
+  st.addEventListener('scroll',upd,{passive:true});upd();setTimeout(upd,120);
+}
+window.addEventListener('resize',()=>{try{hintDown()}catch(e){}});
+function centerMap(n,instant){
+  const ms=document.getElementById('ms'),mp=document.getElementById('mp');if(!ms||!mp)return;
+  const z=ZONES[n-1],cx=(z.mask[0]/100)*mp.offsetWidth,target=Math.max(0,cx-ms.clientWidth/2);
+  if(instant){ms.style.scrollBehavior='auto';ms.scrollLeft=target;ms.style.scrollBehavior=''}else ms.scrollTo({left:target,behavior:reduce?'auto':'smooth'});
+}
+function go(screen){S.screen=screen;S.note=null;S.askReset=false;render()}
+function walkTo(n){
+  S.at=n;
+  if(n===1){S.st1.phase='board';S.st1.q=null;go('st1')}
+  else{if(ENTER[n])ENTER[n]();go('st'+n)}
+}
+function resetAll(){
+  S.screen='map';S.p={name:''};S.seeds=0;S.done={};S.cautious=false;S.at=null;S.note=null;S.askReset=false;
+  S.st1={phase:'board',cells:{},alarms:{},last:null,q:null,focus:null};S.rew=1;S.sel=null;RESET.forEach(f=>f());render();
+}
+/* ====== Eventos ====== */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act,tt=t();
+  /* Un doble toque en un botón que queda en el mismo lugar de la pantalla siguiente activaba también ese botón y saltaba una pantalla. */
+  if((b.closest('.actions')||a==='zone'||a==='step'||a==='toMap'||a==='back'||a==='final')&&Date.now()-(S.t0||0)<450)return;
+  switch(a){
+    case 'lang':S.lang=S.lang==='es'?'en':'es';render(true);break;
+    case 'reset':if(S.askReset){resetAll()}else{S.askReset=true;render(true);setTimeout(()=>{if(S.askReset){S.askReset=false;render(true)}},3500)}break;
+    case 'back':goBack();break;
+    case 'toMap':S.st1.phase=S.st1.phase==='reward'?'board':S.st1.phase;go('map');break;
+    case 'zone':case 'step':{
+      const n=+b.dataset.n,s=zstate(n);
+      if(s==='locked'){S.note=tt.locked(nextStation());S.shake=true;render(true);return}
+      if(s==='skip'){S.note=tt.skipped;S.shake=true;render(true);return}
+      if(s==='done'&&n===1){walkTo(1);return}
+      if(s==='done'){walkTo(n);return}
+      walkTo(n);break}
+    case 'sdown':{const bw=document.querySelector('.boardwrap');if(bw)bw.scrollIntoView({behavior:reduce?'auto':'smooth',block:'end'});break}
+    case 'toPatterns':S.st1.phase='patterns';render();break;
+    case 'backBoard':S.st1.phase='board';render();break;
+    case 'place':S.st1.q=+b.dataset.r;S.st1.focus=S.st1.q;S.st1.last=null;render(true);break;
+    case 'opt':{const k=S.st1.q;S.st1.cells[k]=+b.dataset.i;S.st1.last=k;S.st1.focus=k;S.st1.q=null;render(true);break}
+    case 'clearq':{const k=S.st1.q;delete S.st1.cells[k];S.st1.last=null;S.st1.q=null;render(true);break}
+    case 'closeq':if(e.target===b){S.st1.q=null;render(true)}break;
+    case 'toAlarms':S.st1.phase='alarms';render();break;
+    case 'alarm':{const id=b.dataset.id;if(S.st1.alarms[id])delete S.st1.alarms[id];else S.st1.alarms[id]=1;render(true);break}
+    case 'alarmsDone':if(Object.keys(S.st1.alarms).length){S.cautious=true;S.st1.phase='care'}else{S.cautious=false;S.st1.phase='reward'}render();break;
+    case 'claim':S.st1.phase='reward';render();finish1();break;
+    default:if(ACT[a])ACT[a](b,e);
+  }
+  if(a==='alarmsDone'&&S.st1.phase==='reward')finish1();
+});
+/* Atrás un paso: vuelve a la pantalla anterior de la estación; desde la primera pantalla vuelve al jardín. */
+function goBack(){
+  const sc=S.screen;S.sel=null;S.note=null;
+  if(sc==='final'){S.st5.phase='plan';go('st5');return}
+  if(sc==='st1'){const s=S.st1;
+    if(s.q!==null){s.q=null;render(true);return}
+    const prev={patterns:'board',alarms:'patterns',care:'alarms'}[s.phase];
+    if(prev){s.phase=prev;render();return}}
+  else if(sc==='st2'){if(S.st2.phase==='result'){S.st2.phase='build';render();return}}
+  else if(sc==='st3'){const s=S.st3,last=s.pick?FERM[s.pick].steps.length-1:0;
+    if(s.phase==='steps'){if(s.step>0){s.step--;render(true)}else{s.phase='pick';render()}return}
+    if(s.phase==='temp'){s.phase='steps';s.step=last;render();return}
+    if(s.phase==='check'){if(s.pick==='chucrut')s.phase='temp';else{s.phase='steps';s.step=last}render();return}}
+  else if(sc==='st4'){const prev={gut:'soil',micro:'gut',close:'micro'}[S.st4.phase];if(prev){S.st4.phase=prev;render();return}}
+  else if(sc==='st5'){if(S.st5.phase==='plan'){S.st5.phase='pick';render();return}}
+  S.st1.phase=S.st1.phase==='reward'?'board':S.st1.phase;go('map');
+}
+function finish1(){if(!S.done[1]){S.done[1]=true;S.seeds+=5;const el=document.querySelector('.pill.seeds');if(el)el.lastChild.textContent=S.seeds}}
+function finish(n){if(!S.done[n]){S.done[n]=true;S.seeds+=5}S.rew=n;S.sel=null;S.screen='reward';S.note=null;render()}
+</script>
+<script src="/privado/jardin/core2.js"></script>
+<script src="/privado/jardin/st2.js"></script>
+<script src="/privado/jardin/st3.js"></script>
+<script src="/privado/jardin/st4.js"></script>
+<script src="/privado/jardin/st5.js"></script>
+<script src="/privado/jardin/pdf.js"></script>
+<script src="/privado/jardin/boot.js"></script>
+
+</body></html>

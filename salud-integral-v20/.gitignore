@@ -1,0 +1,36 @@
+# Local secrets, credentials, and per-machine configuration
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+!.dev.vars.*.example
+!.dev.vars.ejemplo
+.env
+.env.*
+!.env.example
+!.env.*.example
+**/.npmrc
+.wrangler/
+**/.wrangler/
+*.pem
+*.p12
+*.pfx
+*.key
+*.jks
+*.keystore
+credentials.json
+credentials.local.*
+client_secret*.json
+token.json
+tokens.json
+secrets.json
+secrets.local.*
+
+# Local dependencies, caches, and test output
+**/node_modules/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.playwright/
+playwright-report/
+test-results/
+prev/

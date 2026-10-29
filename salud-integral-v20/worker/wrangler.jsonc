@@ -1,0 +1,22 @@
+{
+  // Worker de pagos unificado (hábitos + equilibrio + jardín). Aún NO desplegado.
+  "name": "saludintegral",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "../dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/privado/*"]
+  },
+  "kv_namespaces": [{ "binding": "PAGOS", "id": "4a6d28ce6fb14b6aacc661fb2bec7d86" }],
+  "vars": {
+    "PAYPAL_RECEIVER": "lolaita42@gmail.com",
+    "PRICE_HABITOS": "9.99",
+    "PRICE_EQUILIBRIO": "12.99",
+    "PRICE_JARDIN": "25",
+    "CURRENCY": "USD",
+    "REDEEM_DAYS": "30",
+    "MAX_REDEEMS": "5",
+    "TOKEN_HOURS": "24"
+  }
+}

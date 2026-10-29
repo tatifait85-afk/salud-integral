@@ -1,0 +1,96 @@
+# -*- coding: utf-8 -*-
+"""Página Acompañamiento / One-on-one session. Texto ES entregado por la propietaria (27/10/2026), sin cambios; EN = traducción.
+Producto: solo la sesión en línea de 45 minutos (USD 50 · ₡25.000), idéntica a las otras páginas."""
+from content_spiritual import _SES_ES, _SES_EN
+
+SESSION = {
+"es": dict(
+  title="Acompañamiento de Salud Integral | Salud Integral",
+  desc="Un espacio individual de acompañamiento en línea para cuidar de usted, fortalecer sus hábitos y cultivar su bienestar. Sesión de 45 minutos, US$50.",
+  eyebrow="ACOMPAÑAMIENTO INDIVIDUAL", h1="Acompañamiento de Salud Integral",
+  lead="Un espacio para cuidar de usted, fortalecer sus hábitos y cultivar su bienestar.",
+  cta="Reservar mi sesión", hero_img="acompanamiento-45", hero_alt="Laptop sobre un escritorio de madera con la pantalla de Acompañamiento individual, plantas, una taza y un cuaderno frente a un paisaje al atardecer",
+  intro_p1="En Salud Integral le ofrecemos un espacio individual de acompañamiento en línea, adaptado a sus necesidades, objetivos y estilo de vida. El propósito es brindarle herramientas prácticas para el autocuidado, la regulación emocional y la construcción de hábitos saludables, respetando su ritmo y sus circunstancias personales.",
+  areas_h2="Cada sesión se adapta a los temas que usted desea trabajar",
+  areas_p="Podemos integrar diferentes prácticas y recursos de bienestar, según sus intereses y objetivos:",
+  areas=[
+    ("heart","Bienestar emocional","Herramientas de autorregulación, manejo del estrés y ejercicios basados en principios de la terapia cognitivo-conductual, orientados a identificar patrones de pensamiento y desarrollar estrategias prácticas para afrontar los desafíos cotidianos."),
+    ("wind","Respiración y relajación","Ejercicios respiratorios y prácticas de atención consciente para favorecer la calma y la conexión con el momento presente."),
+    ("move","Yoga y Qigong","Prácticas adaptadas a sus posibilidades, enfocadas en el movimiento consciente, la respiración y la conexión entre cuerpo y mente."),
+    ("bowl","Nutrición y hábitos saludables","Orientación educativa para desarrollar una relación más consciente con la alimentación, organizar sus rutinas y construir hábitos sostenibles."),
+    ("sprout","Fermentación casera","Aprendizaje práctico sobre la elaboración y el manejo de fermentos alimentarios, como el kéfir, y su incorporación a una alimentación variada."),
+    ("wave","Bienestar durante las diferentes etapas de la vida","Acompañamiento en la adaptación a cambios de hábitos y rutinas relacionados con etapas como la menopausia, así como apoyo en la organización del autocuidado cotidiano."),
+  ],
+  areas_extra="También podemos trabajar en objetivos personales relacionados con el bienestar y los hábitos de vida de personas que conviven con condiciones como la diabetes, la ansiedad o la depresión, desde el ámbito del autocuidado, la educación y el acompañamiento complementario.",
+  how_h2="¿Cómo funcionan las sesiones?",
+  facts=[("Modalidad","100 % en línea, mediante Google Meet."),
+         ("Enlace de acceso","Recibirá el enlace para conectarse 30 minutos antes de la sesión."),
+         ("Inversión","US$50 por sesión."),
+         ("Forma de pago","El pago se realiza por adelantado para confirmar y reservar su sesión.")],
+  how_p="Cada encuentro es un espacio individual en el que definimos los temas prioritarios y las herramientas que mejor se ajustan a sus objetivos. La intención es que pueda llevarse ideas y ejercicios prácticos para integrar progresivamente en su vida cotidiana.",
+  appr_h2="Un enfoque integral, a su ritmo",
+  appr_p="El bienestar se construye mediante pequeños pasos, decisiones conscientes y prácticas que tengan sentido para usted. Este acompañamiento busca brindarle recursos educativos y herramientas de autocuidado que pueda incorporar de manera realista y sostenible.",
+  scope_h2="Alcance del servicio",
+  scope_p="El acompañamiento de Salud Integral tiene un enfoque educativo y de bienestar complementario.",
+),
+"en": dict(
+  title="Salud Integral One-on-One Support | Salud Integral",
+  desc="An individual online support space to care for yourself, strengthen your habits and cultivate your wellbeing. 45-minute session, US$50.",
+  eyebrow="ONE-ON-ONE SUPPORT", h1="Salud Integral One-on-One Support",
+  lead="A space to care for yourself, strengthen your habits and cultivate your wellbeing.",
+  cta="Book my session", hero_img="session-45", hero_alt="Laptop on a wooden desk showing the Individual Coaching Session screen, with plants, a mug and a notebook in front of a sunset landscape",
+  intro_p1="At Salud Integral we offer an individual online support space, adapted to your needs, goals and lifestyle. The purpose is to give you practical tools for self-care, emotional regulation and building healthy habits, respecting your pace and your personal circumstances.",
+  areas_h2="Each session is adapted to the topics you want to work on",
+  areas_p="We can integrate different wellbeing practices and resources, according to your interests and goals:",
+  areas=[
+    ("heart","Emotional wellbeing","Self-regulation tools, stress management and exercises based on principles of cognitive behavioral therapy, aimed at identifying thought patterns and developing practical strategies to face everyday challenges."),
+    ("wind","Breathing and relaxation","Breathing exercises and mindful attention practices to foster calm and connection with the present moment."),
+    ("move","Yoga and Qigong","Practices adapted to your abilities, focused on mindful movement, breathing and the connection between body and mind."),
+    ("bowl","Nutrition and healthy habits","Educational guidance to develop a more conscious relationship with food, organize your routines and build sustainable habits."),
+    ("sprout","Home fermentation","Practical learning about making and handling fermented foods, such as kefir, and including them in a varied diet."),
+    ("wave","Wellbeing through the different stages of life","Support in adapting to changes in habits and routines related to stages such as menopause, as well as help organizing everyday self-care."),
+  ],
+  areas_extra="We can also work on personal goals related to wellbeing and lifestyle habits for people who live with conditions such as diabetes, anxiety or depression, from the standpoint of self-care, education and complementary support.",
+  how_h2="How do the sessions work?",
+  facts=[("Format","100% online, through Google Meet."),
+         ("Access link","You will receive the link to connect 30 minutes before the session."),
+         ("Investment","US$50 per session."),
+         ("Payment","Payment is made in advance to confirm and reserve your session.")],
+  how_p="Each meeting is an individual space in which we define the priority topics and the tools that best fit your goals. The intention is that you can take away practical ideas and exercises to gradually integrate into your everyday life.",
+  appr_h2="A comprehensive approach, at your own pace",
+  appr_p="Wellbeing is built through small steps, conscious decisions and practices that make sense to you. This support aims to give you educational resources and self-care tools that you can incorporate in a realistic and sustainable way.",
+  scope_h2="Scope of the service",
+  scope_p="Salud Integral's support has an educational and complementary wellbeing focus.",
+),
+}
+
+PRODUCTS_SESSION = {
+"es": dict(
+  h2="Reserve su sesión", p="Una sesión individual en línea, a su ritmo.",
+  incl="Qué incluye", deliv="Plazo", note="",
+  items=[_SES_ES],
+  pay_h2="Cómo pagar", pay_p="Elija la opción según su ubicación. El proceso es directo y seguro.",
+  pay_cr="Pagos de la sesión en Costa Rica", pay_cr_l=["SINPE Móvil: +506 7221-2372","Tarjeta de débito o crédito","PayPal"],
+  pay_int="Pagos internacionales de la sesión", pay_int_l=["Tarjeta de débito o crédito","PayPal"],
+  pay_steps=[
+    "Escriba por WhatsApp al +506 7221-2372 para coordinar su pago (SINPE Móvil, tarjeta o PayPal) y agendar su cita.",
+    "El pago se realiza por adelantado para confirmar y reservar su sesión.",
+    "Una vez confirmado el pago, coordinamos el día y la hora, y recibirá el enlace de Google Meet 30 minutos antes de la sesión.",
+  ],
+  pay_wa="Escribir por WhatsApp", pay_wa_msg="Hola Tatiana, tengo una consulta sobre cómo pagar",
+),
+"en": dict(
+  h2="Book your session", p="An individual online session, at your own pace.",
+  incl="What's included", deliv="Timing", note="",
+  items=[_SES_EN],
+  pay_h2="How to pay", pay_p="Choose the option for what you want to get.",
+  pay_cr="Session payments", pay_cr_l=["Debit or credit card","PayPal"],
+  pay_int=None, pay_int_l=[],
+  pay_steps=[
+    "Write to us on WhatsApp at +506 7221-2372 to arrange your payment and book your appointment.",
+    "Payment is made in advance to confirm and reserve your session.",
+    "Once the payment is confirmed, we agree on the day and time, and you will receive the Google Meet link 30 minutes before the session.",
+  ],
+  pay_wa="Write on WhatsApp", pay_wa_msg="Hello Tatiana, I have a question about how to pay",
+),
+}

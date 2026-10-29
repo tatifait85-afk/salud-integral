@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /privado/
+Disallow: /api/
+Sitemap: https://www.saludintegral.site/sitemap.xml
