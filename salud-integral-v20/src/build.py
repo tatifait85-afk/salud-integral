@@ -147,6 +147,7 @@ def footer(lang):
       <li><a href="{CONTACT["linkedin"]}" target="_blank" rel="noopener">{E(c["linkedin"])}</a></li></ul></div>
   </div>
   <div class="container fbase"><p class="disc">{E(c["disclaimer"])}</p><p class="copy"><a href="{url(lang,"privacy")}">{E(c["privacy"])}</a> · <a href="{url(lang,"terms")}">{E(c["terms"])}</a> · {E(c["copyright"])}</p></div>
+  <div class="container fcredit"><a href="https://webartesanal.site" target="_blank" rel="noopener" aria-label="{'Creado por Web Artesanal' if lang=='es' else 'Created by Web Artesanal'} (webartesanal.site)"><img src="/assets/img/webartesanal-logo.webp" alt="" width="40" height="40" loading="lazy" decoding="async"><span>{'Creado por' if lang=='es' else 'Created by'} <strong>Web Artesanal</strong> · webartesanal.site</span></a></div>
 </footer>'''
 
 def tail(lang):
