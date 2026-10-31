@@ -120,7 +120,7 @@ def build_garden(lang, B):
   <h2>{E(t["how_h"])}</h2><ol class="mp-steps">{steps}</ol>
   <h2>{E(t["priv_h"])}</h2><p>{E(t["priv"])}</p>
 </div></section>
-<section class="bridge bridge-note"><div class="container"><p>{E(t["note"])}</p></div></section>
+{B.related(lang, "garden")}<section class="bridge bridge-note"><div class="container"><p>{E(t["note"])}</p></div></section>
 </main>
 {B.footer(lang)}
 {B.tail(lang)}'''

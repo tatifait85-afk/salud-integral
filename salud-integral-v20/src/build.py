@@ -2,7 +2,7 @@
 import os, json, shutil, html, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from config import *
-import catalog, assistant, mapa, jardin
+import catalog, assistant, mapa, jardin, seo
 from content import COMMON, HOME
 from content_food import FOOD, PRODUCTS
 from content_spiritual import SPIRIT, PRODUCTS_SPIRIT
@@ -76,12 +76,45 @@ def nav_label(lang, c, k):
 def nav_href(lang, k):
     return ((BLOG_BASE if lang == "es" else EN_BLOG) + "/") if k == "blog" else url(lang, k)
 
-def head(lang, key, title, desc, og_img="/assets/img/hero-home.webp"):
+NOINDEX = {"map_access", "map_quiz", "garden_access"}   # páginas de acceso: noindex y fuera del sitemap
+DEFAULT_OG = "/assets/img/hero-home.webp"
+
+def og_social(src):
+    """Imagen para redes sociales: JPG 1200×630 en static/img/og/ (lo genera tools/make_og_images.py); si no existe, la imagen original."""
+    n = os.path.basename(src)
+    if n.endswith(".webp") and os.path.exists(os.path.join(ROOT, "static", "img", "og", n[:-5] + ".jpg")):
+        return "/assets/img/og/" + n[:-5] + ".jpg", True
+    return src, False
+
+def seo_item(lang, key, label):
+    """Producto o servicio que presenta la página, para los datos estructurados (solo nombres y precios ya publicados). None si no aplica."""
+    if key == "session":
+        it = PRODUCTS_SESSION[lang]["items"][0]
+        return dict(kind="Service", name=it["name"], price_text=it["price"])
+    if key not in PROD_KEYS or key == "free":
+        return None
+    it = prod_item(lang, key); es = lang == "es"
+    kind = {"map": "Product", "garden": "Product", "eq": "Product", "mind_p": "Course" if es else "Book", "kab": "Course" if es else "Product"}[key]
+    return dict(kind=kind, name=label(key) if (key == "kab" and es) else it["name"], price_text=it["price"], buy=prod_buy(it))
+
+def head(lang, key, title, desc, og_img=DEFAULT_OG):
     other = "en" if lang == "es" else "es"
+    if (key, lang) in seo.META: title, desc = seo.META[(key, lang)]   # título y descripción únicos por página (src/seo.py)
+    if og_img == DEFAULT_OG and key in PROD_KEYS: og_img = "/assets/img/" + prod_item(lang, key)["img"] + ".webp"
     canon = SITE_URL + url(lang, key)
-    alts = "" if not (has_page("es", key) and has_page("en", key)) else (f'<link rel="alternate" hreflang="es" href="{SITE_URL}{url("es", key)}">'
-            f'<link rel="alternate" hreflang="en" href="{SITE_URL}{url("en", key)}">'
-            f'<link rel="alternate" hreflang="x-default" href="{SITE_URL}{url("es", key)}">')
+    es_ok, en_ok = has_page("es", key), has_page("en", key)
+    alts = ""
+    if es_ok:   # español siempre es la versión por defecto; la inglesa solo se declara si existe
+        alts = f'<link rel="alternate" hreflang="es" href="{SITE_URL}{url("es", key)}">'
+        if en_ok: alts += f'<link rel="alternate" hreflang="en" href="{SITE_URL}{url("en", key)}">'
+        alts += f'<link rel="alternate" hreflang="x-default" href="{SITE_URL}{url("es", key)}">'
+    img, social = og_social(og_img)
+    indexable = key not in NOINDEX
+    c = COMMON[lang]; label = lambda k: nav_label(lang, c, k)
+    robots = '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">\n' if indexable else ""
+    loc, loc_alt = ("es_LA", "en_US") if lang == "es" else ("en_US", "es_LA")
+    og_dims = ('<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/jpeg">' if social else "")
+    ld = seo.script(seo.graph(lang, key, title, desc, SITE_URL + img, label, seo_item(lang, key, label))) + "\n" if indexable else ""
     return f'''<!doctype html>
 <html lang="{lang}">
 <head>
@@ -89,11 +122,14 @@ def head(lang, key, title, desc, og_img="/assets/img/hero-home.webp"):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{E(title)}</title>
 <meta name="description" content="{E(desc)}">
-<link rel="canonical" href="{canon}">
+{robots}<link rel="canonical" href="{canon}">
 {alts}
 <meta property="og:type" content="website"><meta property="og:site_name" content="Salud Integral">
+<meta property="og:locale" content="{loc}">{f'<meta property="og:locale:alternate" content="{loc_alt}">' if (es_ok and en_ok) else ""}
 <meta property="og:title" content="{E(title)}"><meta property="og:description" content="{E(desc)}">
-<meta property="og:url" content="{canon}"><meta property="og:image" content="{SITE_URL}{og_img}">
+<meta property="og:url" content="{canon}"><meta property="og:image" content="{SITE_URL}{img}">{og_dims}<meta property="og:image:alt" content="{E(title)}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{E(title)}"><meta name="twitter:description" content="{E(desc)}">
+<meta name="twitter:image" content="{SITE_URL}{img}"><meta name="twitter:image:alt" content="{E(title)}">
 <meta name="theme-color" content="#F7F3E8">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
@@ -102,7 +138,7 @@ def head(lang, key, title, desc, og_img="/assets/img/hero-home.webp"):
 <link rel="preload" href="/assets/fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
-</head>
+{ld}</head>
 <body class="page-{key}">
 {sprite()}'''
 
@@ -763,6 +799,13 @@ def data_js(lang):
 BUILDERS = {"terms": terms, "home": home, "food": food, "habits": habits, "spiritual": spiritual, "weight": weight, "mind": mind, "session": session, "contact": contact, "resources": resources, "about": about, "privacy": privacy}
 
 # ------------------------------------------------------------------ PÁGINA DE PRODUCTO (genérica)
+def related(lang, key):
+    """Bloque «Siga explorando»: enlaces internos hacia la página temática del producto, la sesión y los recursos (solo páginas que existen)."""
+    c = COMMON[lang]; ks = [k for k in (seo.PARENT.get(key), "session", "resources") if k and k != key and has_page(lang, k)]
+    li = "".join(f'<li><a href="{url(lang,k)}">{E(nav_label(lang,c,k))}</a></li>' for k in ks)
+    h = "Siga explorando" if lang == "es" else "Keep exploring"
+    return f'<section class="section related"><div class="container related-in"><h2>{h}</h2><ul class="related-list">{li}</ul></div></section>\n'
+
 def product_page(key):
     def build(lang):
         it = prod_item(lang, key); c = COMMON[lang]; es = lang == "es"
@@ -798,7 +841,7 @@ def product_page(key):
   <h2>{E(P["incl"])}</h2><ul class="offer-list">{inc}</ul>
   <h2>{E(P["deliv"])}</h2><p>{E(it["delivery"])}</p>
 </div></section>
-<section class="bridge bridge-note"><div class="container"><p>{E(P["note"] if P.get("note") else c["disclaimer"])}</p></div></section>
+{related(lang, key)}<section class="bridge bridge-note"><div class="container"><p>{E(P["note"] if P.get("note") else c["disclaimer"])}</p></div></section>
 </main>
 {footer(lang)}
 {tail(lang)}'''
@@ -811,7 +854,6 @@ for _k, _fn in mapa.BUILDERS.items():
     BUILDERS[_k] = (lambda f: (lambda lang: f(lang, _self)))(_fn)
 for _k, _fn in jardin.BUILDERS.items():
     BUILDERS[_k] = (lambda f: (lambda lang: f(lang, _self)))(_fn)
-NOINDEX = {"map_access", "map_quiz", "garden_access"}
 
 def main():
     if os.path.exists(DIST): shutil.rmtree(DIST)
@@ -825,7 +867,14 @@ def main():
     for lang in ("es", "en"):
         write(f"/assets/js/data-{lang}.js", data_js(lang))
         write(f"/assets/js/search-{lang}.js", search_js(lang))
-    urls = "".join(f"<url><loc>{SITE_URL}{url(l,k)}</loc></url>" for l, k in built if k not in NOINDEX)
+    def _sm(l, k):   # alternativas de idioma (xhtml:link) solo cuando la página existe en ambos idiomas; ES siempre es x-default
+        a = ""
+        if has_page("es", k):
+            a = f'<xhtml:link rel="alternate" hreflang="es" href="{SITE_URL}{url("es",k)}"/>'
+            if has_page("en", k): a += f'<xhtml:link rel="alternate" hreflang="en" href="{SITE_URL}{url("en",k)}"/>'
+            a += f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE_URL}{url("es",k)}"/>'
+        return f"<url><loc>{SITE_URL}{url(l,k)}</loc>{a}</url>"
+    urls = "".join(_sm(l, k) for l, k in built if k not in NOINDEX)
     # Archivos del producto: se publican bajo /privado/ (el Worker los entrega solo con acceso válido)
     pv = os.path.join(DIST, "privado"); os.makedirs(pv)
     src = os.path.join(ROOT, "static_privado")
@@ -844,7 +893,7 @@ def main():
         fnt[n] = base64.b64encode(open(os.path.join(pa, n + ".ttf"), "rb").read()).decode()
     logo = base64.b64encode(open(os.path.join(pa, "logo.png"), "rb").read()).decode()
     open(os.path.join(pv, "mapa-fuentes.js"), "w").write("window.MAPA_FONTS=" + json.dumps(fnt) + ";window.MAPA_LOGO='data:image/png;base64," + logo + "';window.MAPA_PORTADA=" + json.dumps({l: "data:image/jpeg;base64," + base64.b64encode(open(os.path.join(pa, "portada-" + l + ".jpg"), "rb").read()).decode() for l in ("es", "en")}) + ";")
-    write("/sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>')
+    write("/sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">{urls}</urlset>')
     shutil.copy(os.path.join(ROOT, "static", "img", "favicon.ico"), os.path.join(DIST, "favicon.ico"))
     write("/robots.txt", f"User-agent: *\nAllow: /\nDisallow: /privado/\nDisallow: /api/\nSitemap: {SITE_URL}/sitemap.xml\n")
     # Los archivos de /assets/ no llevan huella en el nombre: solo las fuentes (nunca cambian) son "immutable"; el resto se revalida

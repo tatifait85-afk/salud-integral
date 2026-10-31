@@ -427,3 +427,5 @@ section[id]{scroll-margin-top:5rem}
 .fcredit a:hover{opacity:1;text-decoration:underline}
 .fcredit img{width:40px;height:40px;border-radius:10px;background:#fff;flex:none}
 .fcredit strong{font-weight:600;color:#fff}
+
+.related-in{max-width:46rem}.related h2{font-size:1.15rem;margin:0 0 .6rem}.related-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem 1.4rem}.related-list a{text-decoration:underline;text-underline-offset:3px}

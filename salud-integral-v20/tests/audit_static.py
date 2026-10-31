@@ -156,6 +156,38 @@ rob = open(os.path.join(DIST, "robots.txt"), encoding="utf-8").read()
 if "Sitemap:" not in rob: err("robots.txt", "sin Sitemap")
 if "/privado/" not in rob: warn("robots.txt", "no excluye /privado/ (el Worker lo protege con cookie, pero conviene excluirlo del rastreo)")
 
+# --- SEO: títulos/descripciones únicos, JSON-LD válido, imágenes sociales, alternativas hreflang del sitemap ---
+import json as _json
+from collections import defaultdict as _dd
+_t, _d = _dd(list), _dd(list)
+for url in pages:
+    if url in NOINDEX_OK or url == "/equilibrio/": continue
+    h = open(os.path.join(DIST, url.lstrip("/"), "index.html"), encoding="utf-8").read()
+    m = re.search(r"<title>(.*?)</title>", h, re.S); t = m.group(1) if m else ""
+    m = re.search(r'<meta name="description" content="([^"]*)"', h); d = m.group(1) if m else ""
+    _t[t].append(url); _d[d].append(url)
+    if len(t) > 65: err(url, f"title de {len(t)} caracteres (>65)")
+    if not 70 <= len(d) <= 160: err(url, f"description de {len(d)} caracteres (70–160)")
+    if 'name="robots" content="index,follow' not in h: err(url, "falta meta robots index")
+    if 'name="twitter:card"' not in h: err(url, "falta twitter:card")
+    blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', h, re.S)
+    if len(blocks) != 1: err(url, f"{len(blocks)} bloques JSON-LD"); continue
+    try: g = _json.loads(blocks[0])["@graph"]
+    except Exception as ex: err(url, f"JSON-LD inválido: {ex}"); continue
+    types = {x["@type"] for x in g}
+    if not {"Organization", "WebSite", "WebPage"} & types and not any(str(x).endswith("Page") for x in types): err(url, "JSON-LD sin WebPage")
+    for x in g:
+        if "aggregateRating" in x or "review" in x: err(url, "JSON-LD con reseñas/valoraciones (no permitido)")
+    mi = re.search(r'property="og:image" content="([^"]+)"', h)
+    if mi and not exists(mi.group(1).replace(SITE, "")): err(url, f"og:image no existe: {mi.group(1)}")
+for k, us in _t.items():
+    if len(us) > 1: err("SEO", f"title duplicado: {us}")
+for k, us in _d.items():
+    if len(us) > 1: err("SEO", f"description duplicada: {us}")
+_alts = re.findall(r'<xhtml:link rel="alternate" hreflang="[^"]+" href="([^"]+)"', sm)
+for a in _alts:
+    if not exists(a.replace(SITE, "")): err("sitemap.xml", f"alternativa hreflang inexistente: {a}")
+
 print(f"Páginas auditadas: {len(pages)}")
 for w in warns: print("AVISO ", w)
 for e in errors: print("ERROR ", e)
