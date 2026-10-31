@@ -2,7 +2,7 @@
 /* Estación 3: El taller de fermentos (flujo original). La explicación de cada paso aparece junto al círculo. Datos de extensión universitaria (NCHFP/Oregon State/Washington State) y USU. */
 S.st3={phase:'pick',pick:null,step:0,temp:null,made:{}};
 RESET.push(()=>{S.st3={phase:'pick',pick:null,step:0,temp:null,made:{}}});
-ENTER[3]=()=>{S.st3.phase=S.cautious?'warn':'pick';S.st3.pick=null;S.st3.step=0;S.note=null};
+ENTER[3]=()=>{const s=S.st3;if(S.cautious&&s.phase==='pick')s.phase='warn';S.note=null};
 const FERM={
  chucrut:{es:'Chucrut casero',en:'Homemade sauerkraut',sign:[80,17],jar:[73,55],
   steps:[
@@ -43,18 +43,18 @@ function vSt3(){
   if(ph==='pick'){
     const made=s.made,btn=k=>`<button class="btn half ${made[k]?'ghost':'primary'}" data-act="st3pick" data-k="${k}">${made[k]?'✓ ':''}${FERM[k][l]}</button>`;
     const any=made.chucrut||made.kefir;
-    const rings=['kefir','chucrut'].map(k=>`<button class="ring" style="left:${FERM[k].jar[0]}%;top:${FERM[k].jar[1]}%" data-act="st3pick" data-k="${k}" aria-label="${FERM[k][l]}"></button>`).join('');
-    return {stage:`<div class="scene s3" style="max-width:880px"><div><div class="kick">${T('Estación 3','Station 3')}</div><h2>${T('¿Qué fermento quieres hacer?','Which ferment do you want to make?')}</h2></div>${howto(T('Toca los círculos para explorar el kéfir de leche y el chucrut.','Tap the circles to explore milk kefir and sauerkraut.'))}${pic(sceneImg(),rings,T('Taller de fermentos: kéfir de leche y chucrut casero','Fermentation workshop: milk kefir and homemade sauerkraut'))}</div>`,
-      bro:any?T('¡Bien! Puedes hacer el otro fermento o terminar el taller.','Well done! You can make the other ferment or finish the workshop.'):T('Toca un cartel para empezar.','Tap a sign to start.'),
+    const rings=['kefir','chucrut'].map((k,i)=>`<button class="hot ${made[k]?'seen':''}" style="left:${FERM[k].jar[0]}%;top:${FERM[k].jar[1]}%" data-act="st3pick" data-k="${k}" aria-label="${FERM[k][l]}">${made[k]?ICON.check:i+1}<span class="rlab">${FERM[k][l]}</span></button>`).join('');
+    return {stage:`<div class="scene s3" style="max-width:880px"><div><div class="kick">${T('Estación 3','Station 3')}</div><h2>${T('¿Qué fermento quieres hacer?','Which ferment do you want to make?')}</h2></div>${pic(sceneImg(),rings,T('Taller de fermentos: kéfir de leche y chucrut casero','Fermentation workshop: milk kefir and homemade sauerkraut'))}</div>`,
+      bro:any?T('¡Bien! Puedes hacer el otro fermento o terminar el taller.','Well done! You can make the other ferment or finish the workshop.'):T('Toca los círculos para explorar el kéfir de leche y el chucrut.','Tap the circles to explore milk kefir and sauerkraut.'),
       actions:(any?`<button class="btn terra wide" data-act="st3end">${T('Terminar el taller','Finish the workshop')}</button>`:'')+btn('kefir')+btn('chucrut')};
   }
   const F=FERM[s.pick];
   if(ph==='steps'){
     const st=F.steps[s.step],n=F.steps.length,x=st.at[0],y=st.at[1],right=x<50;
-    const ring=`<button class="ring" style="left:${x}%;top:${y}%" data-act="st3next" aria-label="${st.es[idx]}"></button>`;
+    const ring=`<button class="hot" style="left:${x}%;top:${y}%" data-act="st3next" aria-label="${st.es[idx]}">${s.step+1}</button>`;
     const dots=`<span class="dots2">${F.steps.map((_,k)=>`<i class="${k<=s.step?'on':''}"></i>`).join('')}</span>`;
     const co=`<div class="stepco ${right?'r':'l'}" role="status" style="top:${Math.max(3,Math.min(y-14,56))}%;${right?`left:${Math.min(x+8,56)}%`:`right:${Math.min(100-x+8,56)}%`}"><div class="cok">${T('Paso','Step')} ${s.step+1} ${T('de','of')} ${n}</div><b>${st.es[idx]}</b><p>${st.tx[idx]}</p>${dots}</div>`;
-    return {stage:`<div class="scene s3" style="max-width:880px"><div><div class="kick">${F[l]}</div></div>${howto(T('Toca el círculo brillante para seguir con el siguiente paso.','Tap the glowing circle to go to the next step.'))}<div class="pic"><div class="pw"><img class="bgi" src="${sceneImg()}" alt="${F[l]}">${ring}</div>${co}</div></div>`,
+    return {stage:`<div class="scene s3" style="max-width:880px"><div><div class="kick">${F[l]}</div></div><div class="pic"><div class="pw"><img class="bgi" src="${sceneImg()}" alt="${F[l]}">${ring}</div>${co}</div></div>`,
       bro:T('Toca el círculo brillante o el botón.','Tap the glowing circle or the button.'),
       actions:(s.step>0?`<button class="btn ghost" data-act="st3prev" aria-label="${T('Paso anterior','Previous step')}">←</button>`:`<button class="btn ghost" data-act="st3back" aria-label="${T('Volver','Back')}">←</button>`)+`<button class="btn primary" data-act="st3next">${s.step===n-1?T('Hecho, seguir','Done, continue'):T('Hecho','Done')}</button>`};
   }
@@ -69,7 +69,7 @@ function vSt3(){
 }
 VIEW.st3=vSt3;
 ACT.st3ok=()=>{S.st3.phase='pick';render()};
-ACT.st3pick=b=>{const s=S.st3;s.pick=b.dataset.k;s.step=0;s.temp=null;s.phase='steps';render()};
+ACT.st3pick=b=>{const s=S.st3;s.pick=b.dataset.k;s.step=0;s.temp=null;s.phase='steps';render(true)};
 ACT.st3next=()=>{const s=S.st3,F=FERM[s.pick];if(s.step<F.steps.length-1){s.step++;render(true)}else{s.phase=s.pick==='chucrut'?'temp':'check';render()}};
 ACT.st3prev=()=>{S.st3.step--;render(true)};
 ACT.st3back=()=>{S.st3.phase='pick';render()};

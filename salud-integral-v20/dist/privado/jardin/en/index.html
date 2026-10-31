@@ -267,7 +267,6 @@ h1,h2,h3{font-family:var(--serif);color:var(--forest);font-weight:400;line-heigh
   .dock .steps{flex:none;width:auto;margin:0}
   .steps .ln{flex:none;width:16px}
 }
-.mapbg{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(22px) saturate(.8) brightness(.95);opacity:.9}
 .hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:9;background:rgba(23,58,30,.88);color:#fff;border-radius:999px;padding:8px 16px;font-size:.92rem;font-weight:600;pointer-events:none;transition:opacity .4s;white-space:nowrap}
 .hint.off{opacity:0}
 .sdwrap{position:sticky;bottom:10px;height:0;overflow:visible;z-index:6;pointer-events:none;display:flex;justify-content:center}
@@ -388,6 +387,152 @@ h1,h2,h3{font-family:var(--serif);color:var(--forest);font-weight:400;line-heigh
 .fform input:focus{outline:3px solid var(--olive);outline-offset:2px;border-color:var(--olive)}.fform input[aria-invalid="true"]{border-color:var(--terra-d)}
 .ferr{min-height:1.2em;color:var(--terra-d);font-weight:600}.fsub{background:var(--mint,#DCE8D2)}.fbtn{flex:none;width:100%;text-decoration:none;text-align:center}
 .fbtn[hidden]{display:none}.fsrow{display:flex;gap:8px;flex-wrap:wrap}.fsrow input{flex:1 1 180px;min-width:0;min-height:48px;padding:10px 14px;border:2px solid var(--line,#d8d2c0);border-radius:12px;font:inherit;background:#fff;color:inherit}.fsrow .btn{flex:0 0 auto}.fsmsg{min-height:1.2em;font-weight:600;font-size:.92em}.fsmsg.err{color:var(--terra-d)}.fsmsg.ok{color:var(--forest,#1B4332)}.fsnote{margin:0;font-size:.82em;opacity:.8}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.fdone{gap:10px}.fdone .btn{width:100%;flex:none}
+
+/* ---------- Ajustes responsive (rediseño) ---------- */
+/* Taller de fermentos: etiquetas pequeñas bajo los círculos; la explicación del paso aparece junto al círculo (en pantallas pequeñas va debajo de la foto) */
+.hot{touch-action:manipulation}
+.hot .rlab{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:2px 8px;border-radius:999px;background:rgba(251,248,241,.94);color:var(--forest);font-family:var(--sans);font-weight:600;font-size:clamp(10px,1.9cqw,13px);line-height:1.2;box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:none}
+/* Imágenes protagonistas: aprovechan el alto disponible en pantallas anchas */
+@media (min-width:900px) and (min-height:600px){
+  .scene.s3,.scene:has(.hot){max-width:min(1280px,100%)!important}
+  .scene:has(.hot) .pic{width:min(100%,calc((100dvh - 250px)*1.5));margin-inline:auto}
+  .scene.s3 .pic{width:min(100%,calc((100dvh - 270px)*1.5))}
+}
+@media (min-width:900px) and (min-height:600px){.scene.s3:has(.stepco) .pic{width:min(100%,calc((100dvh - 410px)*1.5))}}
+/* Pantallas anchas pero bajas (laptops, ventanas pequeñas): Brote y las acciones se quedan abajo, en una franja compacta; el espacio se usa para la escena */
+@media (min-width:900px) and (max-height:520px){
+  .topbar{min-height:46px;padding-top:3px;padding-bottom:3px}
+  .pill{min-height:36px}
+  .dock{padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom,0px));gap:14px}
+  .dock .guide .brote{width:38px;height:38px}
+  .dock .bubble{padding:6px 12px;font-size:.92rem}
+  .dock .btn{min-height:44px;font-size:1rem;padding:0 16px}
+  .steps .st{width:36px;height:36px;font-size:.92rem}
+  .scene{padding-top:8px;padding-bottom:10px;gap:10px}
+  .scene h2{font-size:1.35rem}
+  .scene.s3 .pic{width:min(100%,calc((100dvh - 190px)*1.5));min-width:0}
+}
+@media (min-width:1100px){.scene.two,.scene.s1{max-width:min(1320px,100%)}}
+/* Tabletas en vertical: el mapa se ve completo (sin recorte); en teléfonos se desliza para conservar el tamaño legible */
+@media (min-width:600px) and (orientation:portrait){.mapscroll{align-items:center}.map{height:auto;width:100%;max-height:100%}}
+/* Teléfonos en horizontal (y pantallas muy bajas): el panel de la guía pasa a una columna a la derecha y la escena usa todo el alto */
+@media (orientation:landscape) and (max-height:520px) and (max-width:899px){
+  #app{display:grid;grid-template-columns:minmax(0,1fr) clamp(230px,32vw,300px);grid-template-rows:auto minmax(0,1fr)}
+  #app>.topbar{grid-column:1/-1;min-height:46px;padding-top:3px;padding-bottom:3px}
+  #app>.stage{grid-column:1;grid-row:2;min-height:0}
+  #app>.dock{grid-column:2;grid-row:2;display:grid;align-content:start;gap:8px;overflow-y:auto;border-top:0;border-left:1px solid var(--line);padding:10px var(--gut-r) 10px 12px;min-height:0}
+  .dock .guide{max-width:none;margin:0}
+  .dock .guide .brote{width:40px;height:40px}
+  .dock .bubble{padding:8px 12px;font-size:.95rem}
+  .dock .actions{max-width:none;margin:0;min-width:0}
+  .dock .btn{min-height:48px;font-size:1rem;padding:0 14px}
+  .dock .steps{margin:0;order:-1}
+  .steps .st{width:36px;height:36px;font-size:.92rem}
+  .steps .ln,.dock .steps .ln{flex:none;width:8px}
+  .pill{min-height:36px}
+  .scene{padding-top:8px;padding-bottom:12px;gap:10px}
+  .scene h2{font-size:1.35rem}
+  .scene.s3 .pic{width:min(100%,calc((100dvh - 190px)*1.5));min-width:0}
+  .scene.s3 .howto{display:none}
+  .scene:has(.hot) .pic{width:min(100%,calc((100dvh - 150px)*1.5));margin-inline:auto}
+  .scene.two,.scene.s1{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+  .scene.s2 .boardwrap{position:sticky;top:6px;align-self:start}
+  .cover{height:100%}
+  .tcard{font-size:.8rem;padding:4px 4px 6px;line-height:1.1;min-width:0;overflow-wrap:anywhere}
+  .scene.s2 .trayblock{padding-right:10px}
+}
+
+/* ---------- Mapa rediseñado: jardín completo + navegación integrada ---------- */
+#app:has(.mv){display:flex;flex-direction:column}
+#app:has(.mv)>.stage{grid-column:auto;grid-row:auto;overflow:hidden}
+.mv{--hh:60px;--mw:100%;height:100%;display:grid;background:var(--ivory);overflow:hidden;position:relative}
+.mv[data-mode="bar"]{grid-template-columns:minmax(0,1fr);grid-template-rows:var(--hh) minmax(0,1fr) var(--nh);grid-template-areas:"head" "map" "nav"}
+.mv[data-mode="below"]{grid-template-columns:minmax(0,1fr);grid-template-rows:var(--hh) minmax(0,1fr) calc(var(--mw)/1.5) auto minmax(0,1.2fr);grid-template-areas:"head" "." "map" "nav" "."}
+.mv[data-mode="phoneP"]{grid-template-columns:minmax(0,1fr);grid-template-rows:var(--hh) minmax(0,1fr) auto;grid-template-areas:"head" "map" "nav"}
+.mv[data-mode="phoneL"]{grid-template-columns:minmax(0,1fr) clamp(210px,32vw,270px);grid-template-rows:var(--hh) minmax(0,1fr);grid-template-areas:"head head" "map nav"}
+/* Encabezado */
+.mvhead{grid-area:head;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;height:var(--hh);padding:0 var(--gut-r) 0 var(--gut-l);background:var(--cream);border-bottom:1px solid var(--line);min-width:0}
+.mvhead .hl{justify-self:start;min-width:0}
+.mvhead .hr{justify-self:end;display:flex;align-items:center;gap:8px}
+.mvhead .pill.seeds{margin-left:0}
+.pill.site{text-decoration:none;border-color:var(--line);color:var(--ink-soft);font-weight:500;background:#fff}
+.pill.site:hover{background:var(--forest);color:var(--ivory);border-color:var(--forest)}
+.pill.cont{background:var(--forest);border-color:var(--forest);color:var(--ivory)}
+.pill.cont:hover{background:var(--olive-d)!important}
+.pill.burger{padding:0;width:40px;justify-content:center}
+.mvtitle{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;font-family:var(--serif);font-size:clamp(1.15rem,2.3vw,1.9rem);color:var(--forest);line-height:1.1;white-space:nowrap}
+.mvtitle span{overflow:hidden;text-overflow:ellipsis}
+.mvtitle svg{width:1.15em;height:1.15em;flex:none;color:var(--olive)}
+.mv[data-hdr="d"] .burger,.mv[data-hdr="t"] .cont,.mv[data-hdr="p"] .cont,.mv[data-hdr="p"] .langbtn{display:none}
+.mv[data-hdr="t"] .pill.site{font-size:.82rem;padding:0 10px}
+.mv[data-hdr="p"] .mvhead{grid-template-columns:minmax(0,1fr) auto}
+.mv[data-hdr="p"] .hl{display:none}
+.mv[data-hdr="p"] .mvtitle{justify-self:start;font-size:1.15rem}
+.mv:not([data-hdr="p"]) .m-site,.mv:not([data-hdr="p"]) .m-lang{display:none}
+a.opt{display:grid;place-items:center;text-decoration:none;color:var(--forest)}
+/* Jardín */
+.mvmap{grid-area:map;position:relative;overflow:hidden;container-type:size;display:grid;place-items:center;background:var(--ivory);min-width:0;min-height:0}
+.mvcanvas{position:relative;width:min(100cqw,150cqh);aspect-ratio:3/2;flex:none}
+.mvimg{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.mvcanvas .zone{z-index:1}
+.arrow{position:absolute;z-index:3;transform:translate(-50%,-50%);width:clamp(24px,2.5%,34px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:var(--forest);color:#fff;display:grid;place-items:center;box-shadow:0 2px 7px rgba(0,0,0,.45);transition:transform .15s,background .15s}
+.arrow::after{content:"";position:absolute;inset:-10px;border-radius:50%}
+.arrow svg{width:56%;height:56%}
+.arrow:hover{background:var(--olive-d);transform:translate(-50%,-50%) scale(1.12)}
+.mv[data-mode^="phone"] .mvmap{display:block;touch-action:pan-y}
+.mv[data-mode^="phone"] .mvcanvas{position:absolute;left:0;top:0;aspect-ratio:auto;will-change:transform}
+.mvdots{position:absolute;left:0;right:0;bottom:8px;display:none;justify-content:center;gap:8px;z-index:6;pointer-events:none}
+.mv[data-mode^="phone"] .mvdots{display:flex}
+.mvdots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.7);border:1.5px solid rgba(23,58,30,.6);display:block}
+.mvdots i.on{background:var(--forest);border-color:#fff;transform:scale(1.25)}
+/* Navegación inferior / lateral */
+.mvnav{grid-area:nav;min-width:0;min-height:0;background:var(--ivory);display:flex;gap:16px;overflow:auto;padding:14px var(--gut-r) calc(14px + env(safe-area-inset-bottom,0px)) var(--gut-l)}
+.mvsteps{display:flex}
+.mvstep{position:relative;border:0;background:transparent;padding:0;display:flex;align-items:center;gap:10px;text-align:left;color:var(--forest);font-weight:600;font-size:.95rem;line-height:1.15;min-width:0}
+.mvstep .num{position:relative;z-index:1;flex:none;width:var(--sd,40px);height:var(--sd,40px);border-radius:50%;border:2px solid var(--sage);background:#fff;display:grid;place-items:center;font-weight:700;font-size:1.05rem;color:var(--forest);transition:background .15s,color .15s}
+.mvstep:hover .num{border-color:var(--olive)}
+.mvstep.sel .num{background:var(--forest);border-color:var(--forest);color:#fff}
+.mvstep .dn{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:var(--olive);color:#fff;border:2px solid var(--cream);display:grid;place-items:center;font-style:normal}
+.mvstep .dn svg{width:68%;height:68%}
+.brotecard{display:none;align-items:center;gap:14px;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:12px 14px}
+.brotecard .brote{width:64px;height:64px;flex:none;border-radius:50%;object-fit:cover;background:var(--mint)}
+.brotecard p{margin:0;font-size:1rem;line-height:1.4;color:var(--ink)}
+/* Escritorio y tablet horizontal: jardín arriba y una sola franja inferior con los cinco accesos y la tarjeta de Brote */
+.mv[data-mode="bar"] .mvmap{display:flex;flex-direction:column;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(23,58,30,.35) transparent;container-type:normal}
+.mv[data-mode="bar"] .mvcanvas{width:100%;aspect-ratio:3/2;margin:auto 0;flex:none}
+.mv[data-mode="bar"] .mvnav{--sd:38px;align-items:center;gap:30px;padding:6px clamp(16px,3vw,44px);overflow:hidden;border-top:1px solid var(--line);background:var(--cream)}
+.mv[data-mode="bar"] .mvsteps{flex:1 1 56%;min-width:0}
+.mv[data-mode="bar"] .brotecard{display:flex;flex:1 1 40%;max-width:600px;min-width:0;padding:8px 14px;gap:12px}
+.mv[data-mode="bar"] .brotecard .brote{width:46px;height:46px}
+.mv[data-mode="bar"] .brotecard p{font-size:clamp(.8rem,1.05vw,.95rem);line-height:1.35}
+.mv[data-mode="bar"] .mvstep .num{font-size:1.1rem}
+/* Debajo (pantallas altas) y teléfono vertical: cinco accesos en fila */
+.mv[data-mode="below"] .mvnav,.mv[data-mode="phoneP"] .mvnav,.mv[data-mode="bar"] .mvnav{align-items:center;justify-content:center}
+.mv[data-mode="below"] .mvsteps,.mv[data-mode="phoneP"] .mvsteps,.mv[data-mode="bar"] .mvsteps{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.mv[data-mode="below"] .mvstep,.mv[data-mode="phoneP"] .mvstep,.mv[data-mode="bar"] .mvstep{flex-direction:column;gap:7px;text-align:center;align-items:center;font-size:.9rem}.mv[data-mode="bar"] .mvstep{font-size:clamp(.74rem,1vw,.9rem);gap:6px}
+.mv[data-mode="below"] .mvstep+.mvstep::before,.mv[data-mode="phoneP"] .mvstep+.mvstep::before,.mv[data-mode="bar"] .mvstep+.mvstep::before{content:"";position:absolute;top:calc(var(--sd,40px)/2);right:50%;width:100%;height:2px;background:var(--line)}
+.mv[data-mode="below"] .mvnav{--sd:60px;padding:30px 20px 20px;overflow:visible}.mv[data-mode="below"] .mvstep{font-size:1.02rem}.mv[data-mode="below"] .mvstep .num{font-size:1.3rem}
+.mv[data-mode="phoneP"] .mvnav{--sd:34px;padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.mv[data-mode="phoneP"] .mvstep{font-size:.66rem;gap:5px}
+.mv[data-mode="phoneP"] .mvstep .num{font-size:.95rem}
+.mv[data-mode="phoneP"] .mvstep .dn{width:15px;height:15px;top:-4px;right:-4px}
+/* Teléfono horizontal: lista lateral compacta */
+.mv[data-mode="phoneL"] .mvnav{--sd:30px;flex-direction:column;justify-content:center;padding-top:8px;padding-bottom:8px}
+.mv[data-mode="phoneL"] .mvsteps{flex-direction:column;gap:2px}
+.mv[data-mode="phoneL"] .mvstep{padding:4px 6px;border-radius:12px;font-size:.8rem}
+.mv[data-mode="phoneL"] .mvstep.sel{background:var(--mint)}
+.mv[data-mode="phoneL"] .mvstep .num{font-size:.85rem}
+.mv[data-mode="phoneL"] .mvstep .dn{width:14px;height:14px;top:-4px;right:-4px}
+
+/* Estación 3: la ilustración usa todo el ancho (si no cabe en alto, se desplaza) y los círculos son un aro blanco transparente */
+.scene.s3{max-width:none!important}
+.scene.s3 .pic{width:100%!important;max-width:none;min-width:0}
+@keyframes pulsew{0%{box-shadow:0 0 0 0 rgba(255,255,255,.75),0 1px 6px rgba(0,0,0,.35)}100%{box-shadow:0 0 0 18px rgba(255,255,255,0),0 1px 6px rgba(0,0,0,.35)}}
+.scene.s3 .hot,.scene.s3 .hot.seen{background:transparent;border:3px solid #fff;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8);box-shadow:0 1px 6px rgba(0,0,0,.35)}
+.scene.s3 .hot{animation:pulsew 1.8s ease-out infinite}
+.scene.s3 .hot.seen{animation:none}
+/* La foto reserva su alto desde el inicio: al pasar de paso la página se queda donde estaba */
+.scene.s3 .pic img.bgi{aspect-ratio:1280/853}
 </style>
 <style>a.pill{text-decoration:none}</style>
 </head>
@@ -524,7 +669,7 @@ S.rew=1;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function nextStation(){for(let n=1;n<=5;n++){if(!S.done[n])return n}return 0}
-function zstate(n){if(S.done[n])return 'done';return n===nextStation()?'next':'locked'}
+function zstate(n){if(S.done[n])return 'done';return n===nextStation()?'next':'open'}
 function prevOpen(n){for(let k=n-1;k>=1;k--){if(!S.done[k])return k}return n}
 
 /* ====== Dibujos ====== */
@@ -550,26 +695,71 @@ function maskCSS(){
   const g=on.map(m=>`radial-gradient(ellipse ${m[2]}% ${m[3]}% at ${m[0]}% ${m[1]}%,#000 55%,transparent 100%)`).join(',');
   return `-webkit-mask-image:${g};mask-image:${g}`;
 }
+/* ====== Mapa (rediseño): jardín completo a todo color + navegación integrada ====== */
+const SIGNS=[{c:[15.5,12],a:[23.2,17.2]},{c:[51.8,17],a:[58.9,23.2]},{c:[87,13],a:[94.6,19.4]},{c:[18.5,62],a:[27.3,68]},{c:[86.5,61],a:[95.2,70.4]}];
+const SITE_HOME={es:'https://www.saludintegral.site/',en:'https://www.saludintegral.site/en/'};
+const LEAF='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 28C4 14 12 5 28 4c0 15-8 24-21 24z" fill="currentColor"/><path d="M5 27C11 19 17 14 24 9" fill="none" stroke="#FBF8F1" stroke-width="1.7" stroke-linecap="round"/></svg>';
+const ARW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const BURGER='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
 function vMap(){
-  const tt=t(),nx=nextStation();
-  let zones='',badges='',chip='';
-  ZONES.forEach((z,i)=>{
-    const n=i+1,s=zstate(n);
-    zones+=`<button class="zone ${s}" data-act="zone" data-n="${n}" style="left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%" aria-label="${n}. ${STN[S.lang][i]}"></button>`;
-    if(s==='done')badges+=`<span class="badge done" style="left:${z.bx}%;top:${z.by}%">${ICON.check}</span>`;
-    else if(s==='locked')badges+=`<span class="badge lock" style="left:${z.bx}%;top:${z.by}%">${ICON.lock}</span>`;
-    else if(s==='skip')badges+=`<span class="badge skip" style="left:${z.bx}%;top:${z.by}%">${ICON.dash}</span>`;
-    else if(s==='next')chip=`<span class="tapchip" style="left:${z.tip[0]}%;top:${z.tip[1]}%">${S.lang==='es'?'Toca aquí':'Tap here'}</span>`;
-  });
-  const steps=[1,2,3,4,5].map(n=>{const s=zstate(n);return (n>1?`<span class="ln ${S.done[n-1]?'on':''}"></span>`:'')+`<button class="st ${s}" data-act="step" data-n="${n}" aria-label="${n}. ${STN[S.lang][n-1]}">${s==='done'?ICON.check:s==='skip'?ICON.dash:n}</button>`}).join('');
-  const bro=S.note||(nx===1&&!S.done[1]?tt.mapHi(''):nx?tt.mapNext(nx):T('¡Tu jardín está lleno de color! Crea tu PDF o toca una estación para repasarla.','Your garden is full of color! Create your PDF or tap a station to review it.'));
-  const act=nx?`<button class="btn primary" data-act="zone" data-n="${nx}">${tt.goSt(nx)}</button>`:`<button class="btn terra" data-act="final">${S.pdf?T('Descargar mi PDF','Download my PDF'):T('Crear mi PDF','Create my PDF')}</button>`;
-  return {stage:`<div class="mapstage" style="height:100%;position:relative"><img class="mapbg" src="img/mapa-${S.lang}.webp" alt=""><div class="mapscroll" id="ms" style="position:relative"><div class="map" id="mp">
-    <img class="base" src="img/mapa-${S.lang}.webp" alt="${STN[S.lang].join(', ')}">
-    <img class="color" style="${maskCSS()}" src="img/mapa-${S.lang}.webp" alt="">
-    ${zones}${badges}${chip}</div></div><div class="hint" id="hint" hidden>↔ ${S.lang==='es'?'Desliza para recorrer el jardín':'Swipe to explore the garden'}</div></div>`,
-    bro,actions:act,steps:`<div class="steps">${steps}</div>`,shake:S.shake};
+  const tt=t(),l=S.lang,sel=S.msel||S.at||1;
+  const zones=ZONES.map((z,i)=>`<button class="zone ${zstate(i+1)}" data-act="zone" data-n="${i+1}" style="left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%" tabindex="-1" aria-hidden="true"></button>`).join('');
+  const arrows=SIGNS.map((g,i)=>`<button class="arrow" data-act="zone" data-n="${i+1}" style="left:${g.a[0]}%;top:${g.a[1]}%" aria-label="${i+1}. ${STN[l][i]}">${ARW}</button>`).join('');
+  const steps=[1,2,3,4,5].map(n=>`<button class="mvstep ${n===sel?'sel':''} ${S.done[n]?'done':''}" data-act="step" data-n="${n}" aria-label="${n}. ${STN[l][n-1]}"><span class="num">${n}${S.done[n]?`<i class="dn">${ICON.check}</i>`:''}</span><span class="mvl">${STN[l][n-1]}</span></button>`).join('');
+  const dots=[1,2,3,4,5].map(n=>`<i class="${n===sel?'on':''}"></i>`).join('');
+  const contL=T('Continuar donde quedé','Continue where I left off');
+  const doneAll=!nextStation(),pdfL=S.pdf?T('Descargar mi PDF','Download my PDF'):T('Crear mi PDF','Create my PDF');
+  const msg=T('¡Hola! Este es tu jardín. Elige cualquiera de las cinco estaciones y recórrelas en el orden que prefieras.','Hi! This is your garden. Pick any of the five stations and explore them in the order you prefer.');
+  const seeds=`<span class="pill seeds" aria-label="${tt.seeds}">${ICON.seed.replace('<svg','<svg width="14" height="18"')}${S.seeds}</span>`;
+  const menu=S.menu?`<div class="sheetbg" data-act="menuX"><div class="sheet" role="dialog" aria-label="${T('Menú','Menu')}"><div class="opts"><a class="opt m-site" href="${SITE_HOME[l]}">← Salud Integral</a><button class="opt" data-act="${doneAll?'final':'cont'}">${doneAll?pdfL:contL}</button><button class="opt m-lang" data-act="lang">${l==='es'?'English':'Español'}</button><button class="opt ${S.askReset?'sel':''}" data-act="reset">${S.askReset?tt.sure:tt.again}</button></div></div></div>`:'';
+  return {bare:true,bro:'',actions:'',stage:`<div class="mv" id="mv" data-mode="bar" data-hdr="d">
+   <header class="mvhead"><div class="hl"><a class="pill site" href="${SITE_HOME[l]}">← Salud Integral</a></div>
+    <div class="mvtitle">${LEAF}<span>${tt.title}</span></div>
+    <div class="hr">${seeds}<button class="pill cont" data-act="${doneAll?'final':'cont'}">${doneAll?pdfL:'↻ '+contL}</button><button class="pill langbtn" data-act="lang" aria-label="Idioma / Language">${l==='es'?'EN':'ES'}</button><button class="pill burger" data-act="menu" aria-label="${T('Menú','Menu')}" aria-expanded="${!!S.menu}">${BURGER}</button></div></header>
+   <section class="mvmap" id="mvmap"><div class="mvcanvas" id="mvc"><img class="mvimg" src="img/mapa-${l}.webp" alt="${STN[l].join(', ')}" draggable="false">${zones}${arrows}</div><div class="mvdots" aria-hidden="true">${dots}</div></section>
+   <aside class="mvnav"><nav class="mvsteps">${steps}</nav><div class="brotecard">${brote()}<p>${msg}</p></div></aside>${menu}</div>`};
 }
+/* Distribución según la proporción del jardín (3:2): el mapa conserva su proporción, sin recorte ni desenfoque; si no cabe, se desplaza en vertical (teléfono: encuadre por estación) */
+function mvLayout(){
+  const mv=document.getElementById('mv');if(!mv)return;
+  const W=mv.clientWidth,H=mv.clientHeight,phone=Math.min(W,H)<=500,land=W>H;
+  const hdr=phone?'p':(W<1100?'t':'d'),hh=phone?(land?46:52):(W<1100?54:56);
+  let mode,mw=0;
+  if(phone)mode=land?'phoneL':'phoneP';
+  else if(W/H<1.1){const nav=104;mode='below';mw=Math.min(W,1.5*(H-hh-nav))}
+  else mode='bar';
+  mv.dataset.mode=mode;mv.dataset.hdr=hdr;mv.style.setProperty('--hh',hh+'px');
+  if(mw)mv.style.setProperty('--mw',Math.floor(mw)+'px');
+  const NH=94;mv.style.setProperty('--nh',NH+'px');
+  const win=document.getElementById('mvmap'),c=document.getElementById('mvc');
+  if(phone){c.style.left='';c.style.top='';const ww=win.clientWidth,wh=win.clientHeight;let cw=ww*(land?2.4:3.3);if(cw/1.5<wh)cw=wh*1.5;
+    c.style.width=cw+'px';c.style.height=(cw/1.5)+'px';mv._geo={cw,ch:cw/1.5,ww,wh}}
+  else{c.style.width='';c.style.height='';c.style.left='';c.style.top='';c.style.transform='';mv._geo=null}
+  mvFocus(S.msel||S.at||1,false);
+}
+function mvFocus(n,anim){
+  const mv=document.getElementById('mv');if(!mv)return;S.msel=n;
+  mv.querySelectorAll('.mvstep').forEach((b,i)=>b.classList.toggle('sel',i+1===n));
+  mv.querySelectorAll('.mvdots i').forEach((d,i)=>d.classList.toggle('on',i+1===n));
+  const g=mv._geo;if(!g)return;
+  const c=document.getElementById('mvc'),f=SIGNS[n-1].c,fy=f[1]+(f[1]<30?9:3);
+  let tx=g.ww/2-f[0]/100*g.cw,ty=g.wh/2-fy/100*g.ch;
+  tx=Math.min(0,Math.max(g.ww-g.cw,tx));ty=Math.min(0,Math.max(g.wh-g.ch,ty));
+  c.style.transition=anim&&!reduce?'transform .35s ease':'none';c.style.transform=`translate(${tx}px,${ty}px)`;
+}
+function mvStep(d){const n=Math.min(5,Math.max(1,(S.msel||S.at||1)+d));S.sw=Date.now();mvFocus(n,true)}
+function mvInit(){
+  mvLayout();
+  const w=document.getElementById('mvmap');if(!w)return;let x0=null,y0=null;
+  w.addEventListener('pointerdown',e=>{x0=e.clientX;y0=e.clientY});
+  w.addEventListener('pointercancel',()=>{x0=null});
+  w.addEventListener('pointerup',e=>{if(x0===null)return;const dx=e.clientX-x0,dy=e.clientY-y0;x0=null;const mv=document.getElementById('mv');
+    if(mv&&/^phone/.test(mv.dataset.mode)&&Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.2)mvStep(dx<0?1:-1)});
+}
+window.addEventListener('resize',()=>{try{mvLayout()}catch(e){}});
+ACT.menu=()=>{S.menu=!S.menu;render(true)};
+ACT.menuX=(b,e)=>{if(e.target===b){S.menu=false;render(true)}};
+ACT.cont=()=>{S.menu=false;const n=S.at||nextStation();if(!n){S.at=5;S.note=null;go('final');return}walkTo(n)};
 function ans(r){const v=S.st1.cells[r];return v===undefined?null:v}
 function short(r){const v=ans(r);return v===null?'':ROWS[r].o[v][S.lang==='es'?2:3]}
 function rowsHTML(){
@@ -639,8 +829,7 @@ function render(keep){
   app.innerHTML=(v.bare?'':topbar())+`<main class="stage">${v.stage}</main>`+dock;
   document.title=tt.title;document.documentElement.lang=S.lang;
   const st=app.querySelector('.stage');if(keep)st.scrollTop=sy;
-  if(S.screen==='map'){centerMap(nextStation()||S.at||1,true);const ms=document.getElementById('ms'),h=document.getElementById('hint');
-    if(ms&&h&&ms.scrollWidth>ms.clientWidth+40&&!S.hinted){h.hidden=false;ms.addEventListener('scroll',()=>{S.hinted=true;h.classList.add('off')},{once:true});setTimeout(()=>{S.hinted=true;h.classList.add('off')},6000)}}
+  if(S.screen==='map')mvInit();
   S.shake=false;
   hintDown();
 }
@@ -657,12 +846,12 @@ function centerMap(n,instant){
 }
 function go(screen){S.screen=screen;S.note=null;S.askReset=false;render()}
 function walkTo(n){
-  S.at=n;
-  if(n===1){S.st1.phase='board';S.st1.q=null;go('st1')}
+  S.at=n;S.msel=n;S.menu=false;
+  if(n===1){if(S.st1.phase==='reward')S.st1.phase='board';S.st1.q=null;go('st1')}
   else{if(ENTER[n])ENTER[n]();go('st'+n)}
 }
 function resetAll(){
-  S.screen='map';S.p={name:''};S.seeds=0;S.done={};S.cautious=false;S.at=null;S.note=null;S.askReset=false;
+  S.screen='map';S.p={name:''};S.seeds=0;S.done={};S.cautious=false;S.at=null;S.msel=null;S.menu=false;S.note=null;S.askReset=false;
   S.st1={phase:'board',cells:{},alarms:{},last:null,q:null,focus:null};S.rew=1;S.sel=null;RESET.forEach(f=>f());render();
 }
 /* ====== Eventos ====== */
@@ -671,8 +860,9 @@ document.addEventListener('click',e=>{
   const a=b.dataset.act,tt=t();
   /* Un doble toque en un botón que queda en el mismo lugar de la pantalla siguiente activaba también ese botón y saltaba una pantalla. */
   if((b.closest('.actions')||a==='zone'||a==='step'||a==='toMap'||a==='back'||a==='final')&&Date.now()-(S.t0||0)<450)return;
+  if(a==='zone'&&Date.now()-(S.sw||0)<350)return;
   switch(a){
-    case 'lang':S.lang=S.lang==='es'?'en':'es';render(true);break;
+    case 'lang':S.lang=S.lang==='es'?'en':'es';S.menu=false;render(true);break;
     case 'reset':if(S.askReset){resetAll()}else{S.askReset=true;render(true);setTimeout(()=>{if(S.askReset){S.askReset=false;render(true)}},3500)}break;
     case 'back':goBack();break;
     case 'toMap':S.st1.phase=S.st1.phase==='reward'?'board':S.st1.phase;go('map');break;

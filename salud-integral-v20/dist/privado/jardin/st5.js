@@ -38,7 +38,7 @@ const HAB_BY=Object.fromEntries(HAB.map(h=>[h.id,h]));
 const WHEN=[['hoy','Hoy','Today'],['man','Mañana','Tomorrow'],['sem','Esta semana','This week']];
 S.st5={phase:'pick',picks:[],when:{}};
 RESET.push(()=>{S.st5={phase:'pick',picks:[],when:{}}});
-ENTER[5]=()=>{S.st5.phase=S.done[5]&&S.st5.picks.length===NHAB?'plan':'pick';S.note=null};
+ENTER[5]=()=>{S.st5.phase=S.done[5]&&S.st5.picks.length===NHAB?'plan':S.st5.phase;S.note=null};
 function habAction(h){return (h.id==='ferm'&&S.cautious)?T('Aprende cómo se elabora un fermento. Antes de probarlo, habla con un profesional de la salud.','Learn how a ferment is made. Before trying it, talk to a health professional.'):h.a[S.lang]}
 function whenLabel(id){const w=WHEN.find(x=>x[0]===S.st5.when[id]);return w?T(w[1],w[2]):''}
 function vSt5(){

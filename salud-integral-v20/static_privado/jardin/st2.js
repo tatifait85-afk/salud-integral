@@ -32,7 +32,7 @@ const ING_BY=Object.fromEntries(ING.map(i=>[i.id,i]));
 const SLOTS={1:[[50,50]],2:[[37,50],[63,50]],3:[[50,41],[37.5,59],[62.5,59]]};
 S.st2={phase:'build',list:[]};
 RESET.push(()=>{S.st2={phase:'build',list:[]}});
-ENTER[2]=()=>{S.st2.phase=S.done[2]&&S.st2.list.length?'result':'build';S.note=null};
+ENTER[2]=()=>{S.st2.phase=S.done[2]&&S.st2.list.length?'result':S.st2.phase;S.note=null};
 function plateThumbs(list,live){const pos=SLOTS[list.length]||[];
   return list.map((id,i)=>`<${live?'button':'span'} class="thumb" ${live?`data-act="ing" data-id="${id}" aria-label="${T('Quitar','Remove')}: ${ING_BY[id][S.lang]}"`:''} style="left:${pos[i][0]}%;top:${pos[i][1]}%"><img src="img/ing-${id}.webp" alt="">${live?'<span class="x" aria-hidden="true">×</span>':''}</${live?'button':'span'}>`).join('')}
 function plateScene(list,live){
