@@ -51,14 +51,35 @@ def icon(name, cls="ic"):
 LOGO = '<img class="logo-mark" src="/assets/img/logo.webp" width="46" height="46" alt="" aria-hidden="true">'
 
 NAV_KEYS = ["home", "food", "habits", "mind", "weight", "spiritual", "resources", "session", "about", "blog", "contact"]
-NAV_SUB = {"resources": ["map", "garden"]}
+PROD_KEYS = ["map", "garden", "eq", "free", "mind_p", "kab"]
+NAV_SUB = {"resources": PROD_KEYS}
+PROD_NAV = {"es": dict(eq="Mi mapa de equilibrio", free="Programa gratuito por correo", mind_p="Cuando tu cabeza no para", kab="Cábala Hermética Práctica"),
+            "en": dict(eq="My Balance Map", mind_p="Overcome Depression", kab="Magickal Kabbalah Bundle")}
+def has_page(lang, k): return PAGES[k][lang] is not None
+def prod_item(lang, k):
+    return {"map": lambda: PRODUCTS_HABITS[lang]["items"][0],
+            "garden": lambda: PRODUCTS[lang]["items"][1 if lang == "es" else 0],
+            "eq": lambda: PRODUCTS_WEIGHT[lang]["items"][0],
+            "free": lambda: PRODUCTS["es"]["items"][0],
+            "mind_p": lambda: PRODUCTS_MIND[lang]["items"][0],
+            "kab": lambda: PRODUCTS_SPIRIT[lang]["items"][1]}[k]()
+def prod_buy(it):
+    return LINKS["paypal_mapa"] if it.get("href") == "PAYPAL_MAPA" else it.get("href")
+def info_key(it):
+    if it["kind"] == "wa": return "session"
+    for k in PROD_KEYS:
+        for lg in ("es", "en"):
+            if has_page(lg, k) and prod_item(lg, k)["img"] == it["img"]: return k
+    return None
+def nav_label(lang, c, k):
+    return PROD_NAV[lang][k] if k in PROD_NAV[lang] else c["nav"][k]
 def nav_href(lang, k):
     return ((BLOG_BASE if lang == "es" else EN_BLOG) + "/") if k == "blog" else url(lang, k)
 
 def head(lang, key, title, desc, og_img="/assets/img/hero-home.webp"):
     other = "en" if lang == "es" else "es"
     canon = SITE_URL + url(lang, key)
-    alts = (f'<link rel="alternate" hreflang="es" href="{SITE_URL}{url("es", key)}">'
+    alts = "" if not (has_page("es", key) and has_page("en", key)) else (f'<link rel="alternate" hreflang="es" href="{SITE_URL}{url("es", key)}">'
             f'<link rel="alternate" hreflang="en" href="{SITE_URL}{url("en", key)}">'
             f'<link rel="alternate" hreflang="x-default" href="{SITE_URL}{url("es", key)}">')
     return f'''<!doctype html>
@@ -91,10 +112,10 @@ def header(lang, key):
     def _li(k, sub=False):
         cur = ' aria-current="page"' if k == key else ""
         ext = ' target="_blank" rel="noopener"' if k == "blog" else ""
-        return f'<a href="{nav_href(lang,k)}"{cur}{ext}>{E(c["nav"][k])}</a>'
+        return f'<a href="{nav_href(lang,k)}"{cur}{ext}>{E(nav_label(lang, c, k))}</a>'
     for k in NAV_KEYS:
         if k in NAV_SUB:
-            subs = "".join(f"<li>{_li(x, True)}</li>" for x in NAV_SUB[k])
+            subs = "".join(f"<li>{_li(x, True)}</li>" for x in NAV_SUB[k] if has_page(lang, x))
             items.append(f'<li class="has-sub">{_li(k)}<ul class="sub">{subs}</ul></li>')
         else:
             items.append(f"<li>{_li(k)}</li>")
@@ -104,7 +125,7 @@ def header(lang, key):
     <a class="brand" href="{url(lang,"home")}" aria-label="Salud Integral">{LOGO}<span class="brand-text"><span class="brand-name">Salud Integral</span><span class="brand-tag">{E(c["brand_tag"])}</span></span></a>
     <nav class="nav" id="nav" aria-label="{'Principal' if lang=='es' else 'Main'}"><ul>{"".join(items)}</ul></nav>
     <button class="search-btn" type="button" aria-label="{E(c["search"])}" aria-haspopup="dialog" data-src="/assets/js/search-{lang}.js" data-ph="{E(c["search_ph"])}" data-none="{E(c["search_none"])}" data-hint="{E(c["search_hint"])}" data-close="{E(c["close"])}">{icon("search")}</button>
-    <a class="lang" href="{url(other,key)}" hreflang="{other}" lang="{other}" aria-label="{E(c["other_label"])}">{E(c["other_lang"])}</a>
+    <a class="lang" href="{url(other,key) if has_page(other,key) else url(other,"home")}" hreflang="{other}" lang="{other}" aria-label="{E(c["other_label"])}">{E(c["other_lang"])}</a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="{E(c["menu"])}">{icon("menu")}</button>
   </div>
 </header>'''
@@ -141,7 +162,7 @@ def home(lang):
     img = {"food": "salud-digestiva", "habits": "habitos", "mind": "mente-tranquila", "spiritual": "espiritual-card", "weight": "bajar-peso", "contact": "contacto"}
     sup = "".join(f'<li>{icon(i)}<span>{E(t)}</span></li>' for i, t in h["supports"])
     areas = "".join(f'''<article class="card area">
-        <div class="card-img"><img src="/assets/img/{img[k]}-m.webp" alt="{E(alt)}" width="720" height="405" loading="lazy" decoding="async"></div>
+        <div class="card-img"><a href="{url(lang,k)}" tabindex="-1" aria-label="{E(t)}"><img src="/assets/img/{img[k]}-m.webp" alt="{E(alt)}" width="720" height="405" loading="lazy" decoding="async"></a></div>
         <div class="card-body"><h3>{E(t)}</h3><p>{E(d)}</p>
         <a class="more" href="{url(lang,k)}">{E(cta)}</a></div></article>''' for k, _i, t, d, cta, alt in h["areas"])
     tools = "".join(f'<li><span class="ico">{icon(i,"ic ic-lg")}</span><span>{E(t)}</span></li>' for i, t in h["tools"])
@@ -231,6 +252,13 @@ def article_cards(lang, page, read_label, items=None):
           <a class="more" href="{href}" target="_blank" rel="noopener">{E(read_label)} →</a></div></article>''')
     return "".join(out)
 
+def img_link(lang, it, href=None, blank=False):
+    k = info_key(it)
+    href = href or (url(lang, k) if k else None)
+    im = f'<img src="/assets/img/{it["img"]}.webp" alt="{E(it["alt"])}" width="1200" height="800" loading="lazy" decoding="async">'
+    if not href: return im
+    return f'<a href="{href}" aria-label="{E(it["name"])}"{" target=_blank rel=noopener" if blank else ""}>{im}</a>'
+
 def products_html(lang, data=None):
     """Sección comercial (productos) + «Cómo pagar». Independiente de la sección editorial de artículos."""
     P = data or PRODUCTS[lang]
@@ -251,7 +279,7 @@ def products_html(lang, data=None):
             action = f'<a class="btn btn-primary" href="{href}" target="_blank" rel="noopener">{E(it["cta"])} →</a>'
         extra = (f'<p class="prod-extra"><a href="{url(lang, it["extra_key"])}">{E(it["extra_text"])}</a></p>' if it.get("extra_key") else "")
         cards.append(f'''<article class="card prod">
-      <div class="card-img{" contain" if it.get("contain") else ""}{" tall" if it.get("contain") == "tall" else ""}"><img src="/assets/img/{it["img"]}.webp" alt="{E(it["alt"])}" width="1200" height="800" loading="lazy" decoding="async"></div>
+      <div class="card-img{" contain" if it.get("contain") else ""}{" tall" if it.get("contain") == "tall" else ""}">{img_link(lang, it)}</div>
       <div class="card-body">
         <h3>{E(it["name"])}</h3>
         <p class="prod-desc">{E(it["desc"])}</p>
@@ -300,7 +328,7 @@ def food(lang):
     sup = "".join(f'<li>{icon(i)}<span>{E(t)}</span></li>' for i, t in f["supports"])
     items = "".join(f"<li>{E(x)}</li>" for x in f["rep_items"])
     progs = "".join(f'''<div class="feature-in">
-    <div class="feature-img"><img src="/assets/img/{im}.webp" alt="{E(alt)}" width="1400" height="{788 if im == "salud-digestiva" else 933}" loading="lazy" decoding="async"></div>
+    <div class="feature-img"><a href="{url(lang,k)}" aria-label="{E(t)}"><img src="/assets/img/{im}.webp" alt="{E(alt)}" width="1400" height="{788 if im == "salud-digestiva" else 933}" loading="lazy" decoding="async"></a></div>
     <div><p class="eyebrow">{E(f["prog_eyebrow"])}</p><h3 class="feature-title">{E(t)}</h3>
       <p>{E(d)}</p>
       <p class="feature-row"><span class="price price-lg">{E(price)}</span></p>
@@ -563,21 +591,16 @@ def resources(lang):
             return f'<a class="btn btn-primary" href="{href}" target="_blank" rel="noopener">{E(it["cta"])} →</a>'
         if it["kind"] == "wa":
             return f'<a class="btn btn-primary" href="{wa_link(lang, it["msg"], it["msg"])}" target="_blank" rel="noopener">{E(it["cta"])} →</a>'
-        return f'<a class="btn btn-primary" href="{url(lang, page_key)}#productos">{E(it["cta"])} →</a>'
+        return f'<a class="btn btn-primary" href="{url(lang, page_key)}#programa">{E(it["cta"])} →</a>'
     def card(it, page_key):
         tall = it.get("contain") == "tall"
         cont = " contain" if it.get("contain") else ""
         return f'''<article class="card prod res-card">
-      <div class="card-img{cont}{" tall" if tall else ""}"><img src="/assets/img/{it["img"]}.webp" alt="{E(it["alt"])}" width="1200" height="800" loading="lazy" decoding="async"></div>
+      <div class="card-img{cont}{" tall" if tall else ""}">{img_link(lang, it, url(lang, page_key))}</div>
       <div class="card-body"><h3>{E(it["name"])}</h3><p class="prod-desc">{E(it.get("short", it["desc"]))}</p>
         <div class="offer-row"><span class="price price-lg">{E(it["price"])}</span></div>
         {pay_btn(it, page_key)}</div></article>'''
-    if es:
-        sel = [(PRODUCTS_HABITS["es"]["items"][0], "map"), (PRODUCTS["es"]["items"][1], "garden"), (PRODUCTS_WEIGHT["es"]["items"][0], "weight"),
-               (PRODUCTS_MIND["es"]["items"][0], "mind"), (PRODUCTS_SPIRIT["es"]["items"][1], "spiritual"), (PRODUCTS["es"]["items"][0], "food")]
-    else:
-        sel = [(PRODUCTS_HABITS["en"]["items"][0], "map"), (PRODUCTS["en"]["items"][0], "garden"), (PRODUCTS_WEIGHT["en"]["items"][0], "weight"),
-               (PRODUCTS_MIND["en"]["items"][0], "mind"), (PRODUCTS_SPIRIT["en"]["items"][1], "spiritual")]
+    sel = [(prod_item(lang, k), k) for k in ["map", "garden", "eq", "mind_p", "kab", "free"] if has_page(lang, k)]
     cards = "".join(card(i, k) for i, k in sel)
     ses = (PRODUCTS_SESSION[lang]["items"][0])
     ses_inc = "".join(f"<li>{E(x)}</li>" for x in ses["inc"])
@@ -600,7 +623,7 @@ def resources(lang):
 </div></section>
 
 <section class="section ses-band" id="acompanamiento"><div class="container ses-in">
-  <div class="ses-img"><img src="/assets/img/{ses["img"]}.webp" alt="{E(ses["alt"])}" width="1200" height="800" loading="lazy" decoding="async"></div>
+  <div class="ses-img"><a href="{url(lang,"session")}" aria-label="{E(ses["name"])}"><img src="/assets/img/{ses["img"]}.webp" alt="{E(ses["alt"])}" width="1200" height="800" loading="lazy" decoding="async"></a></div>
   <div class="ses-copy"><p class="eyebrow">{E(f["ses_h2"]).upper()}</p><h2>{E(ses["name"])}</h2><p>{E(ses.get("short", ses["desc"]))}</p>
     <ul class="offer-list">{ses_inc}</ul>
     <div class="offer-row"><span class="price price-lg">{E(ses["price"])}</span></div>
@@ -707,8 +730,8 @@ def search_js(lang):
     def add(t, d, u, kw="", ext=False):
         if u in seen: return
         seen.add(u); out.append(dict(t=t, d=d, u=u, k=kw, x=1 if ext else 0))
-    for k in ["food", "habits", "mind", "weight", "spiritual", "resources", "session", "map", "garden", "about", "contact", "privacy", "terms"]:
-        add(c["nav"][k], "", url(lang, k))
+    for k in ["food", "habits", "mind", "weight", "spiritual", "resources", "session", "map", "garden", "eq", "free", "mind_p", "kab", "about", "contact", "privacy", "terms"]:
+        if has_page(lang, k): add(nav_label(lang, c, k), "", url(lang, k))
     for r in cat:
         add(r["title"], r.get("subtitle", ""), r["url"], " ".join(r.get("keywords", [])), r.get("external", False))
     done = set()
@@ -737,6 +760,51 @@ def data_js(lang):
     return "window.SI_DATA=" + blob + ";window.SI_CATALOG=" + json.dumps([r for r in cat if r["id"] != "informe"], ensure_ascii=False) + ";"
 
 BUILDERS = {"terms": terms, "home": home, "food": food, "habits": habits, "spiritual": spiritual, "weight": weight, "mind": mind, "session": session, "contact": contact, "resources": resources, "about": about, "privacy": privacy}
+
+# ------------------------------------------------------------------ PÁGINA DE PRODUCTO (genérica)
+def product_page(key):
+    def build(lang):
+        it = prod_item(lang, key); c = COMMON[lang]; es = lang == "es"
+        P = {"eq": PRODUCTS_WEIGHT, "free": PRODUCTS, "mind_p": PRODUCTS_MIND, "kab": PRODUCTS_SPIRIT}[key][lang]
+        inc = "".join(f"<li>{E(x)}</li>" for x in it["inc"])
+        if it["kind"] == "form":
+            f = FOOD["es"]
+            action = f'''<form class="rm-form" data-ml="{LINKS["mailerlite_programa"]}" data-ok="{E(f["free_ok"])}" data-err="{E(f["free_err"])}" novalidate>
+          <input type="email" name="fields[email]" required autocomplete="email" placeholder="{E(f["free_ph"])}" aria-label="{E(f["free_label"])}">
+          <button type="submit">{E(it["cta"])}</button></form>
+          <p class="offer-note" role="status" aria-live="polite" data-ml-msg></p>
+          <p class="offer-fine">Al suscribirse acepta recibir este programa por correo; puede darse de baja en cualquier mensaje. Más información en la <a href="{url(lang,"privacy")}">política de privacidad</a>.</p>'''
+            img_href = "#programa"; blank = False
+        else:
+            buy = prod_buy(it)
+            action = f'<a class="btn btn-primary" href="{buy}" target="_blank" rel="noopener">{E(it["cta"])} →</a>'
+            img_href = buy; blank = True
+        img = f'<a class="pp-img" href="{img_href}" aria-label="{E(it["name"])}"{" target=_blank rel=noopener" if blank else ""}><img src="/assets/img/{it["img"]}.webp" alt="{E(it["alt"])}" width="1200" height="800" fetchpriority="high"></a>'
+        return f'''{head(lang, key, nav_label(lang, c, key) + " | Salud Integral", it.get("short", it["desc"]), "/assets/img/" + it["img"] + ".webp")}
+{header(lang, key)}
+<main id="main">
+<section class="pp-hero"><div class="container pp-in">
+  {img}
+  <div class="pp-copy" id="programa">
+    <p class="eyebrow">{E(c["nav"]["resources"])}</p>
+    <h1>{E(it["name"])}</h1><p class="lead">{E(it.get("short", it["desc"]))}</p>
+    <p class="mp-price"><span class="price price-lg">{E(it["price"])}</span></p>
+    {action}
+  </div>
+</div></section>
+<section class="section"><div class="container pp-narrow">
+  <p class="pp-desc">{E(it["desc"])}</p>
+  <h2>{E(P["incl"])}</h2><ul class="offer-list">{inc}</ul>
+  <h2>{E(P["deliv"])}</h2><p>{E(it["delivery"])}</p>
+</div></section>
+<section class="bridge bridge-note"><div class="container"><p>{E(P["note"] if P.get("note") else c["disclaimer"])}</p></div></section>
+</main>
+{footer(lang)}
+{tail(lang)}'''
+    return build
+for _k in ("eq", "free", "mind_p", "kab"):
+    BUILDERS[_k] = product_page(_k)
+
 _self = sys.modules[__name__]
 for _k, _fn in mapa.BUILDERS.items():
     BUILDERS[_k] = (lambda f: (lambda lang: f(lang, _self)))(_fn)
@@ -751,6 +819,7 @@ def main():
     built = []
     for key, fn in BUILDERS.items():
         for lang in ("es", "en"):
+            if not has_page(lang, key): continue
             write(page_path(lang, key), fn(lang)); built.append((lang, key))
     for lang in ("es", "en"):
         write(f"/assets/js/data-{lang}.js", data_js(lang))

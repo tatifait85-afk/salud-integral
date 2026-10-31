@@ -88,6 +88,7 @@ for url, f in sorted(pages.items()):
     if not APP and p.canon != SITE + url: err(url, f"canonical {p.canon} != {SITE+url}")
     langs = dict(p.alts)
     if APP: pass
+    elif url == "/programa-gratuito/": pass   # programa solo en español: sin versión en inglés
     elif "es" not in langs or "en" not in langs or "x-default" not in langs: err(url, "hreflang incompleto")
     else:
         for lg, href in langs.items():

@@ -107,6 +107,7 @@ def build_garden(lang, B):
 <main id="main">
 <section class="mp-hero"><div class="container mp-hero-in">
   <div class="mp-copy">
+    <a class="pp-thumb" aria-label="{E(t["h1"])}" href="{LINKS["paypal_jardin"]}" target="_blank" rel="noopener"><img src="/assets/img/{B.prod_item(lang,"garden")["img"]}.webp" alt="{E(B.prod_item(lang,"garden")["alt"])}" width="1200" height="800" fetchpriority="high"></a>
     <p class="eyebrow">{E(t["eyebrow"])}</p>
     <h1>{E(t["h1"])}</h1><p class="lead">{E(t["lead"])}</p>
     <p class="mp-price"><span class="price price-lg">{E(t["price"])}</span> <span class="mp-pn">{E(t["price_note"])}</span></p>

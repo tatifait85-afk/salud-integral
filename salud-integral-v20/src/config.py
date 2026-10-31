@@ -49,6 +49,10 @@ PAGES = {
     "map_quiz":   {"es": "tu-mapa-de-habitos/cuestionario",  "en": "your-habit-map/questionnaire"},
     "garden":     {"es": "mi-jardin-digestivo",              "en": "my-digestive-garden"},
     "garden_access": {"es": "mi-jardin-digestivo/jardin",     "en": "my-digestive-garden/garden"},
+    "eq":         {"es": "mi-mapa-de-equilibrio",  "en": "my-balance-map"},
+    "free":       {"es": "programa-gratuito",      "en": None},   # el programa gratuito por correo existe solo en español
+    "mind_p":     {"es": "cuando-tu-cabeza-no-para", "en": "overcome-depression"},
+    "kab":        {"es": "cabala-hermetica-abundancia", "en": "magickal-kabbalah-bundle"},
 }
 
 def url(lang, key):
