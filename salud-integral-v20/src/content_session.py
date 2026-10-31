@@ -67,7 +67,7 @@ SESSION = {
 PRODUCTS_SESSION = {
 "es": dict(
   h2="Reserve su sesión", p="Una sesión individual en línea, a su ritmo.",
-  incl="Qué incluye", deliv="Plazo", note="",
+  incl="Qué incluye", deliv="Qué recibes", note="",
   items=[_SES_ES],
   pay_h2="Cómo pagar", pay_p="Elija la opción según su ubicación. El proceso es directo y seguro.",
   pay_cr="Pagos de la sesión en Costa Rica", pay_cr_l=["SINPE Móvil: +506 7221-2372","Tarjeta de débito o crédito","PayPal"],
@@ -81,7 +81,7 @@ PRODUCTS_SESSION = {
 ),
 "en": dict(
   h2="Book your session", p="An individual online session, at your own pace.",
-  incl="What's included", deliv="Timing", note="",
+  incl="What's included", deliv="What you get", note="",
   items=[_SES_EN],
   pay_h2="How to pay", pay_p="Choose the option for what you want to get.",
   pay_cr="Session payments", pay_cr_l=["Debit or credit card","PayPal"],

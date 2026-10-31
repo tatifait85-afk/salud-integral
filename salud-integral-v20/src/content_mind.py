@@ -27,7 +27,7 @@ PRODUCTS_MIND = {
 "es": dict(
   h2="Encuentre el apoyo que mejor se adapta a usted",
   p="No necesita dejar de pensar: necesita recuperar espacio. Descubra un curso y una opción de acompañamiento para avanzar a su propio ritmo.",
-  incl="Qué incluye", deliv="Plazo",
+  incl="Qué incluye", deliv="Qué recibes",
   note="Finalidad educativa y de acompañamiento personal. No sustituye la valoración ni el tratamiento de profesionales sanitarios.",
   items=[
     dict(img="producto-cabeza", contain=True, alt="Portada del curso Mi cabeza no para: una mujer atrapada entre pensamientos y la misma mujer en calma frente a un paisaje",
@@ -50,7 +50,7 @@ PRODUCTS_MIND = {
 "en": dict(
   h2="Find the support that best suits you",
   p="You don't need to stop thinking: you need to recover space. Discover a book and a support option to move forward at your own pace.",
-  incl="What's included", deliv="Timing",
+  incl="What's included", deliv="What you get",
   note="Educational and personal-support purpose. It does not replace assessment or treatment by health professionals.",
   items=[
     dict(img="libro-en-overcome-depression", contain="tall", alt="Cover of Overcome Depression: Your Practical Guide to Regaining Joy, by M.S. Tatiana Fait Shaw",

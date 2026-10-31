@@ -557,14 +557,21 @@ def contact(lang):
 # ------------------------------------------------------------------ RECURSOS
 def resources(lang):
     f = RES[lang]; es = lang == "es"
+    def pay_btn(it, page_key):
+        if it["kind"] == "link":
+            href = LINKS["paypal_mapa"] if it["href"] == "PAYPAL_MAPA" else it["href"]
+            return f'<a class="btn btn-primary" href="{href}" target="_blank" rel="noopener">{E(it["cta"])} →</a>'
+        if it["kind"] == "wa":
+            return f'<a class="btn btn-primary" href="{wa_link(lang, it["msg"], it["msg"])}" target="_blank" rel="noopener">{E(it["cta"])} →</a>'
+        return f'<a class="btn btn-primary" href="{url(lang, page_key)}#productos">{E(it["cta"])} →</a>'
     def card(it, page_key):
         tall = it.get("contain") == "tall"
         cont = " contain" if it.get("contain") else ""
         return f'''<article class="card prod res-card">
       <div class="card-img{cont}{" tall" if tall else ""}"><img src="/assets/img/{it["img"]}.webp" alt="{E(it["alt"])}" width="1200" height="800" loading="lazy" decoding="async"></div>
-      <div class="card-body"><h3>{E(it["name"])}</h3><p class="prod-desc">{E(it["desc"])}</p>
+      <div class="card-body"><h3>{E(it["name"])}</h3><p class="prod-desc">{E(it.get("short", it["desc"]))}</p>
         <div class="offer-row"><span class="price price-lg">{E(it["price"])}</span></div>
-        <a class="btn btn-outline" href="{url(lang, page_key)}">{E(f["more"])} →</a></div></article>'''
+        {pay_btn(it, page_key)}</div></article>'''
     if es:
         sel = [(PRODUCTS_HABITS["es"]["items"][0], "map"), (PRODUCTS["es"]["items"][1], "garden"), (PRODUCTS_WEIGHT["es"]["items"][0], "weight"),
                (PRODUCTS_MIND["es"]["items"][0], "mind"), (PRODUCTS_SPIRIT["es"]["items"][1], "spiritual"), (PRODUCTS["es"]["items"][0], "food")]
@@ -594,7 +601,7 @@ def resources(lang):
 
 <section class="section ses-band" id="acompanamiento"><div class="container ses-in">
   <div class="ses-img"><img src="/assets/img/{ses["img"]}.webp" alt="{E(ses["alt"])}" width="1200" height="800" loading="lazy" decoding="async"></div>
-  <div class="ses-copy"><p class="eyebrow">{E(f["ses_h2"]).upper()}</p><h2>{E(ses["name"])}</h2><p>{E(ses["desc"])}</p>
+  <div class="ses-copy"><p class="eyebrow">{E(f["ses_h2"]).upper()}</p><h2>{E(ses["name"])}</h2><p>{E(ses.get("short", ses["desc"]))}</p>
     <ul class="offer-list">{ses_inc}</ul>
     <div class="offer-row"><span class="price price-lg">{E(ses["price"])}</span></div>
     <div class="ses-btns"><a class="btn btn-primary" href="{url(lang,"session")}">{E(f["ses_more"])} →</a>

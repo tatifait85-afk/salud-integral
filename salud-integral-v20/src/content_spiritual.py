@@ -39,21 +39,23 @@ SPIRIT = {
 # ---------------------------------------------------------------------------------------------
 _SES_ES = dict(img="producto-sesion", alt="Dos mujeres conversando en línea, conectadas por una luz dorada",
     name="Sesión en línea · 45 minutos",
-    desc="Una conversación individual en vivo, ideal si prefiere hablar antes de decidir.",
-    inc=["Preguntas puntuales resueltas en vivo","Ideal si prefiere hablar antes de decidir","Coordinamos el horario que le acomode"],
-    price="USD 50 · ₡25.000", delivery="Se agenda por WhatsApp; el pago se confirma antes de la sesión",
+    short="Hablemos sobre lo que necesitas y encontremos juntos el mejor punto de partida.",
+         desc="¿Tienes dudas sobre nuestros servicios o productos? ¿Te gustaría conocer mejor cómo podemos ayudarte antes de tomar una decisión? En esta sesión individual tendrás un espacio para conversar directamente conmigo, explicar qué estás buscando, plantear tus preguntas y conocer las opciones disponibles para ti.",
+    inc=["Una conversación individual en directo.", "Atención personalizada para escuchar tus inquietudes y necesidades.", "Respuestas a tus preguntas sobre nuestros servicios y herramientas.", "Orientación para identificar qué opción se ajusta mejor a tus objetivos.", "Un horario acordado según tu disponibilidad."],
+    price="USD 50 · ₡25.000", delivery="Después de solicitar tu sesión, coordinaremos el día y la hora. Nos encontraremos en línea para conversar tranquilamente, resolver tus dudas y ayudarte a decidir cómo continuar. No tienes que tener todas las respuestas ni saber exactamente qué necesitas. Podemos empezar por conversar.",
     kind="wa", msg="Hola Tatiana, quiero agendar una sesión en línea de 45 minutos", cta="Agendar por WhatsApp")
 _SES_EN = dict(img="producto-sesion", alt="Two women talking online, connected by a golden light",
     name="Online session · 45 minutes",
-    desc="A live one-on-one conversation, ideal if you prefer to talk before deciding.",
-    inc=["Specific questions answered live","Ideal if you prefer to talk before deciding","We coordinate a time that suits you"],
-    price="USD 50", delivery="Booked via WhatsApp; payment is confirmed before the session",
+    short="Let's talk about what you need and find the best starting point together.",
+         desc="Do you have questions about our services or products? Would you like to understand better how we can help you before making a decision? In this one-on-one session you will have a space to talk directly with me, explain what you are looking for, ask your questions and learn about the options available to you.",
+    inc=["A live one-on-one conversation.", "Personalized attention to listen to your concerns and needs.", "Answers to your questions about our services and tools.", "Guidance to identify which option best fits your goals.", "A time agreed according to your availability."],
+    price="USD 50", delivery="After you request your session, we will arrange the day and time. We will meet online to talk calmly, answer your questions and help you decide how to continue. You don't have to have all the answers or know exactly what you need. We can start by talking.",
     kind="wa", msg="Hello Tatiana, I would like to book a 45-minute online session", cta="Book via WhatsApp")
 PRODUCTS_SPIRIT = {
 "es": dict(
   h2="Encuentre el apoyo que mejor se adapta a usted",
   p="Cada persona tiene necesidades diferentes. Descubra recursos y opciones de acompañamiento para cuidar su bienestar, comprender mejor sus hábitos y avanzar a su propio ritmo.",
-  incl="Qué incluye", deliv="Plazo",
+  incl="Qué incluye", deliv="Qué recibes",
   note="Estos recursos tienen finalidad educativa y de desarrollo personal. No sustituyen la atención de profesionales de la salud.",
   items=[_SES_ES,
     dict(img="curso-kabbalah-es", contain=True, alt="Portada del curso Despierta tu potencial de abundancia con la Cábala Hermética Práctica",
@@ -77,7 +79,7 @@ PRODUCTS_SPIRIT = {
 "en": dict(
   h2="Find the support that best suits you",
   p="Every person has different needs. Discover resources and support options to care for your wellbeing, better understand your habits and move forward at your own pace.",
-  incl="What's included", deliv="Timing",
+  incl="What's included", deliv="What you get",
   note="These resources are for educational and personal-development purposes. They do not replace care from health professionals.",
   items=[_SES_EN,
     dict(img="curso-kabbalah-en", contain=True, alt="Cover of the Magickal Kabbalah for Self Transformation Bundle",
