@@ -138,7 +138,7 @@ def tail(lang):
 def home(lang):
     h = HOME[lang]; L = lambda a, b: a if lang == "es" else b
     cat = {r["id"]: r for r in catalog.build(lang)}
-    img = {"food": "salud-digestiva", "habits": "habitos", "mind": "mente-tranquila", "spiritual": "espiritual-card"}
+    img = {"food": "salud-digestiva", "habits": "habitos", "mind": "mente-tranquila", "spiritual": "espiritual-card", "weight": "bajar-peso", "contact": "contacto"}
     sup = "".join(f'<li>{icon(i)}<span>{E(t)}</span></li>' for i, t in h["supports"])
     areas = "".join(f'''<article class="card area">
         <div class="card-img"><img src="/assets/img/{img[k]}-m.webp" alt="{E(alt)}" width="720" height="405" loading="lazy" decoding="async"></div>

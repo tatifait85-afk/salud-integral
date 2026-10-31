@@ -51,7 +51,9 @@ HOME = {
   areas=[
     ("food","salud-digestiva","Alimentación / Salud digestiva","Ideas, recursos y herramientas relacionados con alimentación y bienestar digestivo.","Explorar alimentación →","Mujer sonriente ante una mesa con verduras y un bol de ensalada"),
     ("habits","habitos","Hábitos y bienestar","Recursos prácticos para construir rutinas y realizar cambios sostenibles en la vida cotidiana.","Explorar hábitos →","Mujer atándose los cordones de las zapatillas en un sendero al aire libre"),
-    ("mind","mente-tranquila","Mente tranquila / Rumiación","Recursos para trabajar el pensamiento repetitivo y desarrollar prácticas de mayor presencia y pausa.","Explorar mente tranquila →","Mujer mirando el atardecer sobre el mar desde una terraza"),    ("spiritual","espiritual-card","Transpersonal / Espiritual","Meditación, Cábala práctica, Ho'oponopono y psicología transpersonal para explorar la dimensión espiritual del bienestar.","Explorar transpersonal →","Mujer sonriente meditando al amanecer frente al mar"),
+    ("mind","mente-tranquila","Mente tranquila / Rumiación","Recursos para trabajar el pensamiento repetitivo y desarrollar prácticas de mayor presencia y pausa.","Explorar mente tranquila →","Mujer mirando el atardecer sobre el mar desde una terraza"),("weight","bajar-peso","Bajar de peso","Un programa para trabajar sus hábitos de alimentación y su relación con el peso: Mi mapa de equilibrio y una sesión individual en línea.","Explorar bajar de peso →","Mesa con un cuaderno de hábitos, una ensalada de colores, limón y agua con hierbas"),
+    ("spiritual","espiritual-card","Transpersonal / Espiritual","Meditación, Cábala práctica, Ho'oponopono y psicología transpersonal para explorar la dimensión espiritual del bienestar.","Explorar transpersonal →","Mujer sonriente meditando al amanecer frente al mar"),
+    ("contact","contacto","Contacto","Escríbanos por el formulario, por WhatsApp o en nuestras redes.","Ir a contacto →","Computadora portátil con un sobre en pantalla, íconos de teléfono, correo y chat, y montañas al atardecer"),
   ],
   guide_h2="¿No sabe por dónde empezar?",
   guide_p="Responda unas preguntas breves y descubra qué recurso de Salud Integral puede ser un buen punto de partida para usted.",
@@ -101,7 +103,9 @@ HOME = {
   areas=[
     ("food","salud-digestiva","Food / Digestive health","Ideas, resources and tools related to eating and digestive wellbeing.","Explore food →","Smiling woman at a table with vegetables and a salad bowl"),
     ("habits","habitos","Habits & wellbeing","Practical resources for building routines and making lasting changes in everyday life.","Explore habits →","Woman tying her sneakers on an outdoor trail"),
-    ("mind","mente-tranquila","Calm mind / Rumination","Resources for working with repetitive thinking and developing practices of presence and pause.","Explore calm mind →","Woman watching the sunset over the sea from a terrace"),    ("spiritual","espiritual-card","Transpersonal / Spiritual","Meditation, practical Kabbalah, Ho'oponopono and transpersonal psychology to explore the spiritual dimension of wellbeing.","Explore transpersonal →","Smiling woman meditating at sunrise by the sea"),
+    ("mind","mente-tranquila","Calm mind / Rumination","Resources for working with repetitive thinking and developing practices of presence and pause.","Explore calm mind →","Woman watching the sunset over the sea from a terrace"),("weight","bajar-peso","Weight management","A program to work on your eating habits and your relationship with weight: My Balance Map and a one-on-one online session.","Explore weight management →","Table with a habits notebook, a colorful salad, lemon and herb-infused water"),
+    ("spiritual","espiritual-card","Transpersonal / Spiritual","Meditation, practical Kabbalah, Ho'oponopono and transpersonal psychology to explore the spiritual dimension of wellbeing.","Explore transpersonal →","Smiling woman meditating at sunrise by the sea"),
+    ("contact","contacto","Contact","Write to us through the form, on WhatsApp or on our social networks.","Go to contact →","Laptop with an envelope on screen, phone, mail and chat icons, and mountains at sunset"),
   ],
   guide_h2="Not sure where to start?",
   guide_p="Answer a few short questions and find out which Salud Integral resource could be a good starting point for you.",
