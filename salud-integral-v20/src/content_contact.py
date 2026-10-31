@@ -8,7 +8,7 @@ CONTACT_PAGE = {
   hero_img="contacto", hero_alt="Laptop con un sobre en la pantalla sobre un escritorio de madera, con íconos de teléfono, correo y mensaje frente a un paisaje al atardecer",
   form_h2="Envíeme un mensaje", form_p="Complete el formulario y le responderé por correo.",
   f_name="Nombre", f_email="Correo electrónico", f_msg="Mensaje", f_send="Enviar mensaje",
-  f_ok="Se abrió su programa de correo con el mensaje listo. El mensaje solo se envía cuando usted pulse «Enviar» allí; si no se abrió, escríbame a terapiaholisticacr@gmail.com.",
+  f_ok="Se abrió su programa de correo con el mensaje listo. El mensaje solo se envía cuando pulse «Enviar» allí; si no se abrió, escríbame a terapiaholisticacr@gmail.com.",
   f_sent="Gracias. Su mensaje fue recibido; le responderé por correo.",
   f_sending="Enviando…",
   f_hp="Por favor complete su nombre, un correo válido y el mensaje.",

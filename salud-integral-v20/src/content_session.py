@@ -6,12 +6,12 @@ from content_spiritual import _SES_ES, _SES_EN
 SESSION = {
 "es": dict(
   title="Acompañamiento de Salud Integral | Salud Integral",
-  desc="Un espacio individual de acompañamiento en línea para cuidar de usted, fortalecer sus hábitos y cultivar su bienestar. Sesión de 45 minutos, US$50.",
+  desc="Un espacio individual de acompañamiento en línea para cuidarse, fortalecer sus hábitos y cultivar su bienestar. Sesión de 45 minutos, US$50.",
   eyebrow="ACOMPAÑAMIENTO INDIVIDUAL", h1="Acompañamiento de Salud Integral",
-  lead="Un espacio para cuidar de usted, fortalecer sus hábitos y cultivar su bienestar.",
+  lead="Un espacio para cuidarse, fortalecer sus hábitos y cultivar su bienestar.",
   cta="Reservar mi sesión", hero_img="acompanamiento-45", hero_alt="Laptop sobre un escritorio de madera con la pantalla de Acompañamiento individual, plantas, una taza y un cuaderno frente a un paisaje al atardecer",
   intro_p1="En Salud Integral le ofrecemos un espacio individual de acompañamiento en línea, adaptado a sus necesidades, objetivos y estilo de vida. El propósito es brindarle herramientas prácticas para el autocuidado, la regulación emocional y la construcción de hábitos saludables, respetando su ritmo y sus circunstancias personales.",
-  areas_h2="Cada sesión se adapta a los temas que usted desea trabajar",
+  areas_h2="Cada sesión se adapta a los temas que desea trabajar",
   areas_p="Podemos integrar diferentes prácticas y recursos de bienestar, según sus intereses y objetivos:",
   areas=[
     ("heart","Bienestar emocional","Herramientas de autorregulación, manejo del estrés y ejercicios basados en principios de la terapia cognitivo-conductual, orientados a identificar patrones de pensamiento y desarrollar estrategias prácticas para afrontar los desafíos cotidianos."),
@@ -29,7 +29,7 @@ SESSION = {
          ("Forma de pago","El pago se realiza por adelantado para confirmar y reservar su sesión.")],
   how_p="Cada encuentro es un espacio individual en el que definimos los temas prioritarios y las herramientas que mejor se ajustan a sus objetivos. La intención es que pueda llevarse ideas y ejercicios prácticos para integrar progresivamente en su vida cotidiana.",
   appr_h2="Un enfoque integral, a su ritmo",
-  appr_p="El bienestar se construye mediante pequeños pasos, decisiones conscientes y prácticas que tengan sentido para usted. Este acompañamiento busca brindarle recursos educativos y herramientas de autocuidado que pueda incorporar de manera realista y sostenible.",
+  appr_p="El bienestar se construye mediante pequeños pasos, decisiones conscientes y prácticas que tengan sentido para cada persona. Este acompañamiento busca brindarle recursos educativos y herramientas de autocuidado que pueda incorporar de manera realista y sostenible.",
   scope_h2="Alcance del servicio",
   scope_p="El acompañamiento de Salud Integral tiene un enfoque educativo y de bienestar complementario.",
 ),
@@ -67,7 +67,7 @@ SESSION = {
 PRODUCTS_SESSION = {
 "es": dict(
   h2="Reserve su sesión", p="Una sesión individual en línea, a su ritmo.",
-  incl="Qué incluye", deliv="Qué recibes", note="",
+  incl="Qué incluye", deliv="Qué recibe", note="",
   items=[_SES_ES],
   pay_h2="Cómo pagar", pay_p="Elija la opción según su ubicación. El proceso es directo y seguro.",
   pay_cr="Pagos de la sesión en Costa Rica", pay_cr_l=["SINPE Móvil: +506 7221-2372","Tarjeta de débito o crédito","PayPal"],

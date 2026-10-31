@@ -39,8 +39,8 @@ SPIRIT = {
 # ---------------------------------------------------------------------------------------------
 _SES_ES = dict(img="producto-sesion", alt="Dos mujeres conversando en línea, conectadas por una luz dorada",
     name="Sesión en línea · 45 minutos",
-    short="Hablemos sobre lo que usted necesita y encontremos juntos el mejor punto de partida.",
-         desc="¿Tiene dudas sobre nuestros servicios o productos? ¿Le gustaría conocer mejor cómo podemos ayudarle antes de tomar una decisión? En esta sesión individual tendrá un espacio para conversar directamente conmigo, explicar qué está buscando, plantear sus preguntas y conocer las opciones disponibles para usted.",
+    short="Hablemos sobre lo que necesita y encontremos juntos el mejor punto de partida.",
+         desc="¿Tiene dudas sobre nuestros servicios o productos? ¿Le gustaría conocer mejor cómo podemos ayudarle antes de tomar una decisión? En esta sesión individual tendrá un espacio para conversar directamente conmigo, explicar qué está buscando, plantear sus preguntas y conocer las opciones disponibles.",
     inc=["Una conversación individual en directo.", "Atención personalizada para escuchar sus inquietudes y necesidades.", "Respuestas a sus preguntas sobre nuestros servicios y herramientas.", "Orientación para identificar qué opción se ajusta mejor a sus objetivos.", "Un horario acordado según su disponibilidad."],
     price="USD 50 · ₡25.000", delivery="Después de solicitar su sesión, coordinaremos el día y la hora. Nos encontraremos en línea para conversar con tranquilidad, resolver sus dudas y ayudarle a decidir cómo continuar. No tiene que tener todas las respuestas ni saber exactamente qué necesita. Podemos empezar por conversar.",
     kind="wa", msg="Hola Tatiana, quiero agendar una sesión en línea de 45 minutos", cta="Agendar por WhatsApp")
@@ -53,9 +53,9 @@ _SES_EN = dict(img="producto-sesion", alt="Two women talking online, connected b
     kind="wa", msg="Hello Tatiana, I would like to book a 45-minute online session", cta="Book via WhatsApp")
 PRODUCTS_SPIRIT = {
 "es": dict(
-  h2="Encuentre el apoyo que mejor se adapta a usted",
+  h2="Encuentre el apoyo que mejor se adapta a sus necesidades",
   p="Cada persona tiene necesidades diferentes. Descubra recursos y opciones de acompañamiento para cuidar su bienestar, comprender mejor sus hábitos y avanzar a su propio ritmo.",
-  incl="Qué incluye", deliv="Qué recibes",
+  incl="Qué incluye", deliv="Qué recibe",
   note="Estos recursos tienen finalidad educativa y de desarrollo personal. No sustituyen la atención de profesionales de la salud.",
   items=[_SES_ES,
     dict(img="curso-kabbalah-es", contain=True, alt="Portada del curso Despierta tu potencial de abundancia con la Cábala Hermética Práctica",

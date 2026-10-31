@@ -45,7 +45,7 @@ es: {
     { id: "energy", type: "scale", q: "¿Cómo describiría su nivel de energía en un día típico?" },
     { id: "routine", type: "scale", q: "¿Qué tan regular y estable es su rutina diaria?", low: "1 = muy cambiante", high: "5 = muy estable" },
     { id: "confidence", type: "scale", q: "¿Cuánta confianza tiene en poder sostener un cambio durante las próximas semanas?", low: "1 = muy poca", high: "5 = mucha" },
-    { id: "kindness", type: "scale", q: "Cuando algo no sale como esperaba, ¿qué tan amable es usted consigo?", low: "1 = muy exigente", high: "5 = muy amable" },
+    { id: "kindness", type: "scale", q: "Cuando algo no sale como esperaba, ¿qué tan amable se muestra consigo?", low: "1 = muy exigente", high: "5 = muy amable" },
     { id: "support", type: "single", q: "¿Con qué apoyo cuenta para este cambio?", opts: [
       ["alone", "Prefiero hacerlo por mi cuenta"], ["someone", "Me ayudaría que alguien me acompañara"],
       ["has", "Ya cuento con personas que me apoyan"] ] },
@@ -132,7 +132,7 @@ es: {
       strengths: ["Tiene disposición para cambiar", "Puede avanzar rápido en cuanto el primer paso sea claro"],
       watch: ["Querer abarcar demasiado al inicio", "Esperar a tener el plan perfecto para empezar"],
       rec: { t: "Un primer paso con fecha y hora", w: "Quien está construyendo bases avanza mejor con un solo paso concreto que con un plan largo.", d: "Elija una acción de dos minutos y programe cuándo la hará mañana." } },
-    startstop: { name: "Impulso y constancia", tag: "Usted arranca con fuerza; el reto es sostener.",
+    startstop: { name: "Impulso y constancia", tag: "Arranca con fuerza; el reto es sostener.",
       desc: "Su patrón sugiere que empieza con entusiasmo y que un tropiezo puede llevarle a soltar el hábito. La buena noticia: la constancia se entrena con versiones más pequeñas y reglas claras para volver.",
       strengths: ["Gran capacidad de arrancar", "Energía para los comienzos"],
       watch: ["El pensamiento de todo o nada", "Exigirse demasiado cuando algo falla"],

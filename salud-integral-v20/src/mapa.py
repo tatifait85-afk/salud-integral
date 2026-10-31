@@ -16,7 +16,7 @@ T = {
   incl=["Su perfil orientativo de hábitos", "Sus principales obstáculos, explicados con claridad", "Tres recomendaciones prácticas y personalizadas",
         "Un plan de acción de 7 días", "Una hoja de seguimiento para imprimir", "Un compromiso personal con su nombre"],
   how_h="Cómo funciona",
-  steps=[("Pague con PayPal", "El pago se hace en la página segura de PayPal. Usted no escribe datos de pago en este sitio."),
+  steps=[("Pague con PayPal", "El pago se hace en la página segura de PayPal. En este sitio no se escribe ningún dato de pago."),
          ("Vuelva y responda", "Son unas 13 preguntas breves, pensadas para el teléfono. Dura unos 4 minutos."),
          ("Descargue su PDF", "Se crea en su dispositivo y se descarga de inmediato.")],
   priv_h="Su privacidad",

@@ -597,7 +597,7 @@ def resources(lang):
         cont = " contain" if it.get("contain") else ""
         return f'''<article class="card prod res-card">
       <div class="card-img{cont}{" tall" if tall else ""}">{img_link(lang, it, url(lang, page_key))}</div>
-      <div class="card-body"><h3>{E(it["name"])}</h3><p class="prod-desc">{E(it.get("short", it["desc"]))}</p>
+      <div class="card-body"><h3>{E(it["name"])}</h3><p class="prod-desc">{E(it["desc"])}</p>
         <div class="offer-row"><span class="price price-lg">{E(it["price"])}</span></div>
         {pay_btn(it, page_key)}</div></article>'''
     sel = [(prod_item(lang, k), k) for k in ["map", "garden", "eq", "mind_p", "kab", "free"] if has_page(lang, k)]

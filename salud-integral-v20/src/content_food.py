@@ -23,7 +23,7 @@ FOOD = {
   start_p="Esto es lo que ofrecemos y lo que cuesta cada opción. Elija la que mejor se ajuste a este momento.",
   free_h="Programa gratuito por correo", free_sub="Por correo · 4 semanas", free_price="₡0",
   free_p="Déjenos su correo electrónico y reciba el programa durante 4 semanas, sin costo.",
-  free_label="Su correo electrónico", free_ph="usted@correo.com", free_cta="Quiero el programa gratis",
+  free_label="Su correo electrónico", free_ph="nombre@correo.com", free_cta="Quiero el programa gratis",
   free_ok="Gracias, recibimos su correo. Revise su bandeja de entrada (y la carpeta de spam).",
   free_err="No pudimos enviar su correo. Inténtelo de nuevo en unos minutos.",
   rep_h="Informe personalizado de alimentación", rep_sub="Conozca sus hábitos. Reciba un análisis práctico.",
@@ -79,9 +79,9 @@ FOOD = {
 # ---------------------------------------------------------------------------------------------
 PRODUCTS = {
 "es": dict(
-  h2="Encuentre el apoyo que mejor se adapta a usted",
+  h2="Encuentre el apoyo que mejor se adapta a sus necesidades",
   p="Cada persona tiene necesidades diferentes. Descubra recursos y opciones de acompañamiento para cuidar su bienestar, comprender mejor sus hábitos y avanzar a su propio ritmo.",
-  incl="Qué incluye", deliv="Qué recibes",
+  incl="Qué incluye", deliv="Qué recibe",
   note="Finalidad educativa y de acompañamiento personal. No sustituye la valoración ni el tratamiento de profesionales sanitarios.",
   items=[
     dict(img="producto-correo", alt="Dos mujeres sonriendo frente a sus computadoras, rodeadas de plantas y luz cálida",

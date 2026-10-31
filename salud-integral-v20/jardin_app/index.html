@@ -542,17 +542,17 @@ const ROWS=[
       en:['Sunlight and vitamin D','Sunlight lets the body make vitamin D, which helps absorb calcium and keep bones healthy. Enjoy the outdoors while taking protection from UV radiation into account.']},
    o:[['Sí, un buen rato','Yes, for a good while','Sí','Yes'],['Solo un momento','Only for a moment','Poco','Brief'],['No','No','No','No']]},
   {id:'plato',img:'img/tarjeta-plato-vacio.webp',es:'Comidas',en:'Meals',
-   q:{es:'¿Cuántas comidas hiciste?',en:'How many meals did you have?'},
-   x:{es:['Comidas con ritmo','Comer sin prisa y a horas parecidas ayuda a que tu cuerpo siga un ritmo y a que notes cómo te sientan los alimentos. No existe un número perfecto de comidas: depende de cada persona.'],
+   q:{es:'¿Cuántas comidas hizo?',en:'How many meals did you have?'},
+   x:{es:['Comidas con ritmo','Comer sin prisa y a horas parecidas ayuda a que el cuerpo siga un ritmo y a notar cómo sientan los alimentos. No existe un número perfecto de comidas: depende de cada persona.'],
       en:['Meals with a rhythm','Eating without rushing and at similar times helps your body keep a rhythm and helps you notice how foods sit with you. There is no perfect number of meals: it depends on each person.']},
    o:[['1 comida','1 meal','1','1'],['2 comidas','2 meals','2','2'],['3 comidas','3 meals','3','3'],['4 o más','4 or more','4+','4+']]},
   {id:'agua',img:'img/tarjeta-vaso-de-agua.webp',es:'Agua',en:'Water',
    q:{es:'¿Cuántos vasos de agua tomaste?',en:'How many glasses of water did you drink?'},
-   x:{es:['Agua y digestión','El cuerpo necesita agua para digerir y absorber los nutrientes, y ayuda a que las heces se mantengan blandas y fáciles de evacuar. Cuánta necesitas depende de tu clima, tu actividad y tu cuerpo.'],
+   x:{es:['Agua y digestión','El cuerpo necesita agua para digerir y absorber los nutrientes, y ayuda a que las heces se mantengan blandas y fáciles de evacuar. La cantidad necesaria depende del clima, la actividad y el cuerpo de cada persona.'],
       en:['Water and digestion','Your body needs water to digest food and absorb nutrients, and it helps keep stools soft and easy to pass. How much you need depends on your climate, your activity and your body.']},
    o:[['1 a 2 vasos','1 to 2 glasses','1–2','1–2'],['3 a 5 vasos','3 to 5 glasses','3–5','3–5'],['6 o más','6 or more','6+','6+']]},
   {id:'mov',img:'img/tarjeta-caminante.webp',es:'Movimiento',en:'Movement',
-   q:{es:'¿Cuánto te moviste?',en:'How much did you move?'},
+   q:{es:'¿Cuánto se movió?',en:'How much did you move?'},
    x:{es:['Moverse y digerir','La actividad física, como caminar, ayuda a que el intestino se mueva con regularidad y puede aliviar el estreñimiento. También favorece el ánimo y el descanso.'],
       en:['Movement and digestion','Physical activity, such as walking, helps your gut move regularly and can ease constipation. It also supports mood and rest.']},
    o:[['Casi nada','Hardly at all','0','0'],['Menos de 30 minutos','Less than 30 minutes','<30','<30'],['30 minutos o más','30 minutes or more','30+','30+']]},
@@ -563,7 +563,7 @@ const ROWS=[
    o:[['Menos de 6 horas','Less than 6 hours','<6h','<6h'],['6 a 8 horas','6 to 8 hours','6–8h','6–8h'],['Más de 8 horas','More than 8 hours','>8h','>8h']]},
   {id:'mol',img:'img/tarjeta-molestias.webp',es:'Molestias',en:'Discomfort',
    q:{es:'¿Tuviste molestias digestivas?',en:'Did you have digestive discomfort?'},
-   x:{es:['Escuchar a tu intestino','Notar hinchazón, gases, dolor o cambios en tus deposiciones te ayuda a conocer cómo responde tu cuerpo a lo que comes y haces. Es observar, no diagnosticar. Si algo es fuerte o dura varias semanas, consúltalo con un profesional de la salud.'],
+   x:{es:['Escuchar al intestino','Notar hinchazón, gases, dolor o cambios en las deposiciones ayuda a conocer cómo responde el cuerpo a lo que se come y se hace. Es observar, no diagnosticar. Si algo es fuerte o dura varias semanas, conviene consultarlo con un profesional de la salud.'],
       en:['Listening to your gut','Noticing bloating, gas, pain or changes in your bowel movements helps you learn how your body responds to what you eat and do. It is observing, not diagnosing. If something is strong or lasts several weeks, talk to a health professional.']},
    o:[['No','No','No','No'],['Leves','Mild','Leve','Mild'],['Fuertes','Strong','Fuerte','Strong']]}
 ];
@@ -587,40 +587,40 @@ const ALARMS=[
  ['a4','Fiebre de 39 °C (102 °F) o más junto con síntomas digestivos','A fever of 39 °C (102 °F) or higher along with digestive symptoms'],
  ['a5','Signos de deshidratación: sed intensa, boca seca, poca orina u orina oscura, mareo al pararte','Signs of dehydration: strong thirst, dry mouth, little or dark urine, dizziness when standing'],
  ['a6','Pérdida de peso sin una razón clara','Weight loss without a clear reason'],
- ['a7','Un cambio en tus deposiciones que dura unas 3 semanas','A change in your bowel movements that lasts about 3 weeks'],
+ ['a7','Un cambio en las deposiciones que dura unas 3 semanas','A change in your bowel movements that lasts about 3 weeks'],
  ['a8','Diarrea que dura más de 2 días, o vómitos que siguen después de unos días','Diarrhea that lasts more than 2 days, or vomiting that continues after a few days'],
  ['a9','Un bulto en la barriga','A lump in your belly'],
  ['a10','Diarrea que vuelve con frecuencia','Diarrhea that keeps coming back']
 ];
 const L={
  es:{title:'Mi Jardín Digestivo',eyebrow:'Salud Integral',sub:'Tu guía práctica para una mejor digestión y bienestar',start:'Empezar',
-  charH:'Crea tu personaje',charB:'¡Hola! Soy Brote, tu guía en el jardín. Elige cómo quieres verte. Tu nombre es opcional.',
-  woman:'Mujer',man:'Hombre',skin:'Piel',hair:'Cabello',name:'Tu nombre (opcional)',namePh:'Escribe tu nombre',enter:'Entrar al jardín',
-  seeds:'Semillas',garden:'Jardín',again:'Empezar de nuevo',sure:'¿Seguro? Toca otra vez',
-  mapHi:(n)=>`¡Hola${n?', '+n:''}! Este es tu jardín. Toca el letrero de la estación 1 para empezar.`,
-  mapNext:(i)=>`¡Muy bien! Ahora toca la estación ${i}.`,
-  goSt:(i)=>`Ir a la estación ${i}`,locked:(i)=>`Primero termina la estación ${i}. Así el jardín despierta poco a poco.`,
+  charH:'Cree su personaje',charB:'¡Hola! Soy Brote, su guía en el jardín. Elija cómo desea verse. El nombre es opcional.',
+  woman:'Mujer',man:'Hombre',skin:'Piel',hair:'Cabello',name:'Tu nombre (opcional)',namePh:'Escriba su nombre',enter:'Entrar al jardín',
+  seeds:'Semillas',garden:'Jardín',again:'Empezar de nuevo',sure:'¿Seguro? Toque otra vez',
+  mapHi:(n)=>`¡Hola${n?', '+n:''}! Este es su jardín. Toque el letrero de la estación 1 para empezar.`,
+  mapNext:(i)=>`¡Muy bien! Ahora toque la estación ${i}.`,
+  goSt:(i)=>`Ir a la estación ${i}`,locked:(i)=>`Primero termine la estación ${i}. Así el jardín despierta poco a poco.`,
   skipped:'En el modo cuidadoso esta estación se omite.',
   s1k:'Estación 1',s1h:'Mi día digestivo',
-  dayB:'Toca una tarjeta, responde y descubre por qué ese hábito importa.',
-  introSteps:['Piensa en un día reciente.','Toca cada tarjeta y responde una pregunta corta. Al lado verás por qué importa ese hábito.','Al final ves cómo fue tu día.'],introBtn:'Empezar',introBro:'Vamos a mirar un día, tarjeta por tarjeta.',
+  dayB:'Toque una tarjeta, responda y descubra por qué ese hábito importa.',
+  introSteps:['Piense en un día reciente.','Toque cada tarjeta y responda una pregunta corta. Al lado aparecerá por qué importa ese hábito.','Al final se verá cómo fue el día.'],introBtn:'Empezar',introBro:'Vamos a mirar un día, tarjeta por tarjeta.',
   seePat:'Ver mi día',
-  tapCards:()=>'Toca una tarjeta para responder',askSkip:'Dejar sin responder',tapAns:'Toca para responder',
-  noteEmpty:'Toca una tarjeta y aquí verás por qué importa ese hábito.',
-  patH:'Así fue tu día',patB:'Este es el resumen de tu día.',
+  tapCards:()=>'Toque una tarjeta para responder',askSkip:'Dejar sin responder',tapAns:'Toque para responder',
+  noteEmpty:'Toque una tarjeta y aquí aparecerá por qué importa ese hábito.',
+  patH:'Así fue su día',patB:'Este es el resumen de su día.',
   noMol:'No anotaste molestias en este día.',
   mol:'Anotaste molestias digestivas en este día.',
-  empty:'La pizarra quedó vacía. Puedes volver y completarla cuando quieras.',
-  patNote:'Es una mirada a tu día. No es un diagnóstico ni una evaluación.',
+  empty:'La pizarra quedó vacía. Puede volver y completarla cuando lo desee.',
+  patNote:'Es una mirada a su día. No es un diagnóstico ni una evaluación.',
   cont:'Continuar',
-  alH:'Señales que conviene consultar',alB:'Marca las que te han pasado, si alguna. Si no, sigue.',
+  alH:'Señales que conviene consultar',alB:'Marque las que le hayan ocurrido, si alguna. Si no, continúe.',
   alSrc:'Basado en información de Mayo Clinic y del NHS (Reino Unido).',
   careH:'Gracias por contarlo',
-  careB:'Te recomendamos hablarlo con un profesional de la salud. Si algo es fuerte o apareció de repente, busca atención médica urgente.',
-  careN:'En el taller de fermentos verás una advertencia antes de empezar.',warnH:'Antes de fermentar',warnB:'Marcaste señales que conviene consultar. Habla primero con un profesional de la salud antes de probar o consumir alimentos fermentados.',
-  rewH:'¡Estación 1 completa!',rewB:(s)=>`Ganaste ${s} semillas. Vuelve al jardín: se despertó la siguiente estación.`,back:'Volver al jardín',
+  careB:'Se recomienda hablarlo con un profesional de la salud. Si algo es fuerte o apareció de repente, busque atención médica urgente.',
+  careN:'En el taller de fermentos aparecerá una advertencia antes de empezar.',warnH:'Antes de fermentar',warnB:'Marcaste señales que conviene consultar. Habla primero con un profesional de la salud antes de probar o consumir alimentos fermentados.',
+  rewH:'¡Estación 1 completa!',rewB:(s)=>`Ganó ${s} semillas. Vuelva al jardín: se despertó la siguiente estación.`,back:'Volver al jardín',
   underH:'Esta estación se construye después',underB:'Para esta vista previa solo está lista la estación 1. Cuando apruebes cómo se ve y se juega, construyo las demás.',
-  underBro:'Esta estación aún no está lista en la vista previa.',rewBro:'¡Lo lograste! Vuelve al jardín cuando quieras.'},
+  underBro:'Esta estación aún no está lista en la vista previa.',rewBro:'¡Lo logró! Vuelva al jardín cuando lo desee.'},
  en:{title:'My Digestive Garden',eyebrow:'Salud Integral',sub:'Your practical guide to better digestion and wellbeing',start:'Start',
   charH:'Create your character',charB:"Hi! I'm Brote, your guide in the garden. Choose how you want to look. Your name is optional.",
   woman:'Woman',man:'Man',skin:'Skin',hair:'Hair',name:'Your name (optional)',namePh:'Type your name',enter:'Enter the garden',
@@ -701,7 +701,7 @@ function vMap(){
   const dots=[1,2,3,4,5].map(n=>`<i class="${n===sel?'on':''}"></i>`).join('');
   const contL=T('Continuar donde quedé','Continue where I left off');
   const doneAll=!nextStation(),pdfL=S.pdf?T('Descargar mi PDF','Download my PDF'):T('Crear mi PDF','Create my PDF');
-  const msg=T('¡Hola! Este es tu jardín. Elige cualquiera de las cinco estaciones y recórrelas en el orden que prefieras.','Hi! This is your garden. Pick any of the five stations and explore them in the order you prefer.');
+  const msg=T('¡Hola! Este es su jardín. Elija cualquiera de las cinco estaciones y recórralas en el orden que prefiera.','Hi! This is your garden. Pick any of the five stations and explore them in the order you prefer.');
   const seeds=`<span class="pill seeds" aria-label="${tt.seeds}">${ICON.seed.replace('<svg','<svg width="14" height="18"')}${S.seeds}</span>`;
   const menu=S.menu?`<div class="sheetbg" data-act="menuX"><div class="sheet" role="dialog" aria-label="${T('Menú','Menu')}"><div class="opts"><a class="opt m-site" href="${SITE_HOME[l]}">← Salud Integral</a><button class="opt" data-act="${doneAll?'final':'cont'}">${doneAll?pdfL:contL}</button><button class="opt m-lang" data-act="lang">${l==='es'?'English':'Español'}</button><button class="opt ${S.askReset?'sel':''}" data-act="reset">${S.askReset?tt.sure:tt.again}</button></div></div></div>`:'';
   return {bare:true,bro:'',actions:'',stage:`<div class="mv" id="mv" data-mode="bar" data-hdr="d">
@@ -800,8 +800,8 @@ function vReward(n){
   const tt=t();let f='';
   for(let i=0;i<9;i++)f+=`<span class="fall" style="left:${6+i*11}%;animation-duration:${2.4+(i%4)*.5}s;animation-delay:${(i%5)*.18}s">${ICON.seed}</span>`;
   const last=n===5;
-  return {stage:`<div class="reward">${f}<div class="inner"><h2>${last?T('¡Tu jardín está completo!','Your garden is complete!'):T('¡Estación '+n+' completa!','Station '+n+' complete!')}</h2><div class="big">+5 ${ICON.seed}</div><p style="margin:0;font-size:1.15rem">${last?T('Ganaste 5 semillas. Ya puedes descargar tu PDF personalizado con todo lo que hiciste.','You earned 5 seeds. You can now download your personalized PDF with everything you did.'):T('Ganaste 5 semillas. Vuelve al jardín y elige la siguiente estación que quieras explorar.','You earned 5 seeds. Go back to the garden and choose the next station you want to explore.')}</p></div></div>`,
-    bro:last?T('¡Lo lograste! Descarga tu PDF cuando quieras.','You did it! Download your PDF whenever you like.'):tt.rewBro,actions:(last?`<button class="btn terra" data-act="pdf">${T('Descargar mi PDF','Download my PDF')}</button>`:'')+`<button class="btn ${last?'ghost':'primary'}" data-act="toMap">${tt.back}</button>`};
+  return {stage:`<div class="reward">${f}<div class="inner"><h2>${last?T('¡Tu jardín está completo!','Your garden is complete!'):T('¡Estación '+n+' completa!','Station '+n+' complete!')}</h2><div class="big">+5 ${ICON.seed}</div><p style="margin:0;font-size:1.15rem">${last?T('Ganó 5 semillas. Ya puede descargar su PDF personalizado con todo lo realizado.','You earned 5 seeds. You can now download your personalized PDF with everything you did.'):T('Ganó 5 semillas. Vuelva al jardín y elija la siguiente estación que desee explorar.','You earned 5 seeds. Go back to the garden and choose the next station you want to explore.')}</p></div></div>`,
+    bro:last?T('¡Lo logró! Descargue su PDF cuando lo desee.','You did it! Download your PDF whenever you like.'):tt.rewBro,actions:(last?`<button class="btn terra" data-act="pdf">${T('Descargar mi PDF','Download my PDF')}</button>`:'')+`<button class="btn ${last?'ghost':'primary'}" data-act="toMap">${tt.back}</button>`};
 }
 function vUnder(){
   const tt=t(),n=S.under,z=ZONES[n-1],c=z.crop,l=S.lang;

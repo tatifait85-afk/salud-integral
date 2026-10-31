@@ -46,7 +46,7 @@ async function buildPDF(){
   const ct=(t,f,s,yy,col)=>{const w=f.widthOfTextAtSize(t,s);page.drawText(t,{x:(W-w)/2,y:yy,size:s,font:f,color:col||C.forest})};
   ct('SALUD INTEGRAL',BLD,10,H-84,C.terra);
   ct(T('Mi plan del','My Digestive'),SER,38,H-135);ct(T('Jardín Digestivo','Garden Plan'),SER,38,H-182);
-  const sub=wrap(SAN,13,T('Tu guía práctica para una mejor digestión y bienestar','Your practical guide to better digestion and wellbeing'),380);sub.forEach((ln,i)=>ct(ln,SAN,13,H-212-i*17,C.soft));
+  const sub=wrap(SAN,13,T('Su guía práctica para una mejor digestión y bienestar','Your practical guide to better digestion and wellbeing'),380);sub.forEach((ln,i)=>ct(ln,SAN,13,H-212-i*17,C.soft));
   const who=name?T('Para '+name,'For '+name):T('Mi jardín','My garden');
   page.drawRectangle({x:50,y:50,width:W-100,height:62,color:C.cream,opacity:.9});
   ct(who,SER,20,82);ct(new Date().toLocaleDateString(l==='es'?'es-CR':'en-US',{year:'numeric',month:'long',day:'numeric'}),SAN,11,60,C.soft);
@@ -54,7 +54,7 @@ async function buildPDF(){
   /* ---- Mi día ---- */
   newPage(T('Mi día digestivo','My digestive day'));
   const rows=ROWS,answered=rows.filter((_,r)=>ans(r)!==null).length;
-  if(!answered)text(T('Dejaste la pizarra vacía. Puedes volver al juego y completarla cuando quieras.','You left the board empty. You can go back to the game and fill it in whenever you like.'));
+  if(!answered)text(T('La pizarra quedó vacía. Puede volver al juego y completarla cuando lo desee.','You left the board empty. You can go back to the game and fill it in whenever you like.'));
   else{
     const rh=30;need(rh*7+10);
     rows.forEach((r,ri)=>{const v=ans(ri);page.drawRectangle({x:M,y:y-rh,width:CW,height:rh,color:ri%2?C.cream:C.white,borderColor:C.line,borderWidth:.5});
@@ -64,29 +64,29 @@ async function buildPDF(){
         page.drawText(t,{x:M+178,y:y-rh+11,size:11,font:SAN,color:warn?C.terra:C.ink})}
       y-=rh});
     y-=14;
-    text(ans(5)===null?'':(ans(5)>0?T('Anotaste molestias digestivas en este día.','You noted digestive discomfort on this day.'):T('No anotaste molestias en este día.','You did not note any discomfort on this day.')));
-    text(T('Esta es una mirada a tu día. Sirve para notar patrones, no para diagnosticar.','This is a look at your day. It helps you notice patterns, not diagnose anything.'),{color:C.soft,size:10});
+    text(ans(5)===null?'':(ans(5)>0?T('Se anotaron molestias digestivas en este día.','You noted digestive discomfort on this day.'):T('No se anotaron molestias en este día.','You did not note any discomfort on this day.')));
+    text(T('Esta es una mirada a su día. Sirve para notar patrones, no para diagnosticar.','This is a look at your day. It helps you notice patterns, not diagnose anything.'),{color:C.soft,size:10});
   }
   h2(T('Señales que conviene consultar','Signs worth talking about'));
   const al=ALARMS.filter(a=>S.st1.alarms[a[0]]);
-  if(al.length){text(T('Marcaste estas señales. Te recomendamos hablarlo con un profesional de la salud. Si algo es fuerte o apareció de repente, busca atención médica urgente.','You marked these signs. We recommend talking to a health professional. If something is strong or appeared suddenly, seek urgent medical care.'));al.forEach(a=>bullet(a[1+idx]))}
-  else text(T('No marcaste ninguna. Si algún día aparece sangre en las heces, dolor de barriga fuerte, fiebre alta junto con síntomas digestivos, deshidratación o pérdida de peso sin razón clara, consulta a un profesional de la salud.','You did not mark any. If you ever notice blood in your stool, severe belly pain, a high fever with digestive symptoms, dehydration or weight loss without a clear reason, talk to a health professional.'));
+  if(al.length){text(T('Se marcaron estas señales. Se recomienda hablarlo con un profesional de la salud. Si algo es fuerte o apareció de repente, busque atención médica urgente.','You marked these signs. We recommend talking to a health professional. If something is strong or appeared suddenly, seek urgent medical care.'));al.forEach(a=>bullet(a[1+idx]))}
+  else text(T('No se marcó ninguna. Si algún día aparece sangre en las heces, dolor de barriga fuerte, fiebre alta junto con síntomas digestivos, deshidratación o pérdida de peso sin razón clara, consulte a un profesional de la salud.','You did not mark any. If you ever notice blood in your stool, severe belly pain, a high fever with digestive symptoms, dehydration or weight loss without a clear reason, talk to a health professional.'));
   text(T('Basado en información de Mayo Clinic y del NHS (Reino Unido).','Based on information from Mayo Clinic and the NHS (UK).'),{size:9,color:C.soft});
 
   /* ---- Mi plato ---- */
   newPage(T('Mi plato digestivo','My digestive plate'));
-  if(!S.st2.list.length)text(T('Esta vez no armaste un plato. Puedes volver a la cocina del juego cuando quieras.','You did not build a plate this time. You can go back to the kitchen in the game whenever you like.'));
+  if(!S.st2.list.length)text(T('Esta vez no se armó un plato. Puede volver a la cocina del juego cuando lo desee.','You did not build a plate this time. You can go back to the kitchen in the game whenever you like.'));
   else{
     S.st2.list.forEach(id=>{const i=ING_BY[id];text(i[l],{font:BLD,color:C.forest,size:12,gap:1});text(i.info[l],{gap:8})});
     const tg=[...new Set(S.st2.list.flatMap(id=>ING_BY[id].n))].map(k=>NUT[k][idx]);
-    y-=4;box(T('Cada alimento aporta algo distinto y ninguno lo aporta todo: lo que da uno complementa lo que no da otro. En tu plato aparecen: '+tg.join(', ')+'. No existe un plato perfecto ni un número de alimentos que debas poner en cada comida.','Each food gives something different and none gives everything: what one provides complements what another lacks. Your plate includes: '+tg.join(', ')+'. There is no perfect plate and no number of foods you must put in every meal.'),C.mint);
+    y-=4;box(T('Cada alimento aporta algo distinto y ninguno lo aporta todo: lo que da uno complementa lo que no da otro. En su plato aparecen: '+tg.join(', ')+'. No existe un plato perfecto ni un número de alimentos que debas poner en cada comida.','Each food gives something different and none gives everything: what one provides complements what another lacks. Your plate includes: '+tg.join(', ')+'. There is no perfect plate and no number of foods you must put in every meal.'),C.mint);
   }
 
   /* ---- Fermentos ---- */
   newPage(T('Mis fermentos','My ferments'));
-  if(S.cautious)box(T('Marcaste señales que conviene consultar. Habla primero con un profesional de la salud antes de probar o consumir alimentos fermentados.','You marked signs worth talking about. Talk to a health professional first before trying or eating fermented foods.'),rgb(.984,.929,.894));
+  if(S.cautious)box(T('Se marcaron señales que conviene consultar. Hable primero con un profesional de la salud antes de probar o consumir alimentos fermentados.','You marked signs worth talking about. Talk to a health professional first before trying or eating fermented foods.'),rgb(.984,.929,.894));
   const made=Object.keys(S.st3.made).filter(k=>S.st3.made[k]);
-  if(!made.length)text(T('Esta vez no hiciste fermentos. Cuando quieras, vuelve al taller del juego.','You did not make any ferments this time. Whenever you like, go back to the workshop in the game.'));
+  if(!made.length)text(T('Esta vez no se hicieron fermentos. Cuando lo desee, vuelva al taller del juego.','You did not make any ferments this time. Whenever you like, go back to the workshop in the game.'));
   made.concat(['chucrut','kefir'].filter(k=>!made.includes(k)&&false)).forEach(k=>{const F=FERM[k];h2(F[l]);F.steps.forEach((st,i)=>bullet((i+1)+'. '+st.es[idx]+': '+st.tx[idx]));
     if(k==='chucrut'){const tp=TEMPS.find(x=>x.id===S.st3.made.chucrut);if(tp)text(T('Tu lugar: ','Your spot: ')+tp[l]+'. '+tp.r[idx],{font:BLD})}
     text(T('Qué observar','What to look for'),{font:BLD,color:C.forest,gap:2});OBS[k].forEach(o=>bullet(o[1+idx]+': '+o[3+idx]))});
@@ -101,7 +101,7 @@ async function buildPDF(){
   h2(T('Mi plan','My plan'));
   const picks=S.st5.picks;
   if(picks.length)picks.forEach(id=>{const h=HAB_BY[id];text(h[l],{font:BLD,color:C.forest,size:12,gap:1});text(T('Mi acción: ','My action: ')+habAction(h),{gap:1});text(T('Cuándo empiezo: ','When I start: ')+(whenLabel(id)?whenLabel(id).toLowerCase()+'. ':'')+h.c[l],{color:C.soft,gap:8})});
-  else bullet(T('Todavía no elegiste hábitos. Puedes volver a la estación 5 cuando quieras.','You have not chosen habits yet. You can go back to station 5 whenever you like.'),{size:12});
+  else bullet(T('Todavía no se eligieron hábitos. Puede volver a la estación 5 cuando lo desee.','You have not chosen habits yet. You can go back to station 5 whenever you like.'),{size:12});
   y-=8;box(T('Este documento es educativo y personal. No es un diagnóstico ni reemplaza la consulta con un profesional de la salud.','This document is educational and personal. It is not a diagnosis and does not replace a visit with a health professional.'),C.mint);
   pdf.setTitle(T('Mi plan del Jardín Digestivo','My Digestive Garden Plan')+(name?' – '+name:''));pdf.setAuthor('Salud Integral');
   return pdf.save();
@@ -118,18 +118,18 @@ RESET.push(()=>{S.ferr=''});
 const pdfReady=()=>!!S.pdf;
 function vFinal(){
   const l=S.lang,ready=pdfReady(),busy=!!S.pdfBusy;
-  const done=ready?`<div class="gcard fdone" id="fdone" role="status"><p style="margin:0"><b>${T('¡Tu PDF está listo!','Your PDF is ready!')}</b> ${T('Pulsa el botón para guardarlo en tu dispositivo.','Tap the button to save it on your device.')}</p><button class="btn terra" data-act="dlpdf">${T('Descargar mi PDF','Download my PDF')}</button></div>`:'';
-  return {stage:`<div class="scene fin" style="max-width:640px"><div><div class="kick">${T('¡Tu jardín está completo!','Your garden is complete!')}</div><h2>${T('Personaliza tu plan','Personalize your plan')}</h2></div>
-    <div class="fform"><label class="fq" for="fname">${T('¿Cómo te llamas?','What’s your first name?')}</label>
-    <p class="lead" id="fhelp" style="margin:0">${T('Escribe tu primer nombre para personalizar tu PDF del Jardín Digestivo','Enter your first name to personalize your Digestive Garden PDF')}</p>
-    <input id="fname" type="text" maxlength="40" autocomplete="given-name" enterkeyhint="done" placeholder="${T('Tu primer nombre','Your first name')}" value="${esc(ready?S.pdf.name:(S.p.name||''))}"${ready?' readonly':''} aria-describedby="fhelp ferr"${S.ferr?' aria-invalid="true"':''}>
+  const done=ready?`<div class="gcard fdone" id="fdone" role="status"><p style="margin:0"><b>${T('¡Su PDF está listo!','Your PDF is ready!')}</b> ${T('Pulse el botón para guardarlo en su dispositivo.','Tap the button to save it on your device.')}</p><button class="btn terra" data-act="dlpdf">${T('Descargar mi PDF','Download my PDF')}</button></div>`:'';
+  return {stage:`<div class="scene fin" style="max-width:640px"><div><div class="kick">${T('¡Su jardín está completo!','Your garden is complete!')}</div><h2>${T('Personalice su plan','Personalize your plan')}</h2></div>
+    <div class="fform"><label class="fq" for="fname">${T('¿Cómo se llama?','What’s your first name?')}</label>
+    <p class="lead" id="fhelp" style="margin:0">${T('Escriba su primer nombre para personalizar su PDF del Jardín Digestivo','Enter your first name to personalize your Digestive Garden PDF')}</p>
+    <input id="fname" type="text" maxlength="40" autocomplete="given-name" enterkeyhint="done" placeholder="${T('Su primer nombre','Your first name')}" value="${esc(ready?S.pdf.name:(S.p.name||''))}"${ready?' readonly':''} aria-describedby="fhelp ferr"${S.ferr?' aria-invalid="true"':''}>
     <div class="ferr" id="ferr" role="alert">${esc(S.ferr||'')}</div></div>
-    <div class="gcard fsub"><p style="margin:0"><b>${T('Recibir artículos por email · gratis','Get new posts by email · free')}</b><br>${T('¿Quieres recibir novedades sobre salud digestiva y hábitos saludables?','Would you like to receive updates about digestive health and healthy habits?')}</p>
-    ${subS().st==='ok'?`<div class="fsmsg ok" id="fsmsg" role="status">${esc(subS().msg)}</div>`:`<div class="fsrow"><label class="sr" for="fmail">${T('Tu correo electrónico','Your email address')}</label><input id="fmail" type="email" inputmode="email" autocomplete="email" enterkeyhint="send" maxlength="120" spellcheck="false" placeholder="${T('Tu email','Enter your email')}" value="${esc(subS().email)}" aria-describedby="fsmsg"><button class="btn ghost" id="fsub" type="button" data-act="subscribe"${subS().st==='busy'?' disabled':''}>${subS().st==='busy'?T('Enviando…','Sending…'):T('Suscribirme','Subscribe')}</button></div>
+    <div class="gcard fsub"><p style="margin:0"><b>${T('Recibir artículos por email · gratis','Get new posts by email · free')}</b><br>${T('¿Desea recibir novedades sobre salud digestiva y hábitos saludables?','Would you like to receive updates about digestive health and healthy habits?')}</p>
+    ${subS().st==='ok'?`<div class="fsmsg ok" id="fsmsg" role="status">${esc(subS().msg)}</div>`:`<div class="fsrow"><label class="sr" for="fmail">${T('Su correo electrónico','Your email address')}</label><input id="fmail" type="email" inputmode="email" autocomplete="email" enterkeyhint="send" maxlength="120" spellcheck="false" placeholder="${T('Tu email','Enter your email')}" value="${esc(subS().email)}" aria-describedby="fsmsg"><button class="btn ghost" id="fsub" type="button" data-act="subscribe"${subS().st==='busy'?' disabled':''}>${subS().st==='busy'?T('Enviando…','Sending…'):T('Suscribirme','Subscribe')}</button></div>
     <div class="fsmsg${subS().st==='err'?' err':''}" id="fsmsg" role="status">${esc(subS().msg)}</div>`}
-    <p class="fsnote">${T('Tu correo se usa solo para suscribirte al blog (lo gestiona follow.it). Tus respuestas del jardín no se envían a ningún lado.','Your email is used only to subscribe you to the blog (managed by follow.it). Your garden answers are not sent anywhere.')}</p></div>
-    <button class="btn primary fbtn" id="fmk" data-act="mkpdf" ${busy?'disabled':''}${ready?' hidden':''}>${busy?T('Preparando tu PDF…','Preparing your PDF…'):T('Crear mi PDF','Create my PDF')}</button>${done}</div>`,
-    bro:S.note||T('Solo necesito tu primer nombre. Suscribirte al blog es opcional.','I only need your first name. Subscribing to the blog is optional.'),shake:S.shake};
+    <p class="fsnote">${T('El correo se usa solo para suscribirse al blog (lo gestiona follow.it). Las respuestas del jardín no se envían a ningún lado.','Your email is used only to subscribe you to the blog (managed by follow.it). Your garden answers are not sent anywhere.')}</p></div>
+    <button class="btn primary fbtn" id="fmk" data-act="mkpdf" ${busy?'disabled':''}${ready?' hidden':''}>${busy?T('Preparando su PDF…','Preparing your PDF…'):T('Crear mi PDF','Create my PDF')}</button>${done}</div>`,
+    bro:S.note||T('Solo se necesita su primer nombre. Suscribirse al blog es opcional.','I only need your first name. Subscribing to the blog is optional.'),shake:S.shake};
 }
 VIEW.final=vFinal;
 ACT.final=()=>{S.at=5;S.note=null;S.ferr='';go('final')};
@@ -140,32 +140,32 @@ ACT.subscribe=async()=>{
   const s=subS();if(s.st==='busy'||s.st==='ok')return;
   const inp=document.getElementById('fmail');if(inp)s.email=inp.value;
   const email=(s.email||'').trim();
-  if(!MAILRX.test(email)){s.st='err';s.msg=T('Escribe un correo válido, por ejemplo nombre@correo.com.','Enter a valid email, for example name@mail.com.');render(true);const i=document.getElementById('fmail');if(i)i.focus();return}
+  if(!MAILRX.test(email)){s.st='err';s.msg=T('Escriba un correo válido, por ejemplo nombre@correo.com.','Enter a valid email, for example name@mail.com.');render(true);const i=document.getElementById('fmail');if(i)i.focus();return}
   s.email=email;s.st='busy';s.msg='';render(true);
   try{
     await fetch(FOLLOW[S.lang==='en'?'en':'es'],{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'email='+encodeURIComponent(email)});
     /* mode:'no-cors' devuelve una respuesta opaca: no podemos confirmar que follow.it aceptó la solicitud. Mensaje honesto, sin prometer envío. */
-    s.st='ok';s.msg=T('Solicitud enviada. Revisa tu correo en unos minutos (y la carpeta de spam): follow.it enviará un mensaje para confirmar tu suscripción. Si no llega, inténtalo de nuevo con otro correo.','Request sent. Check your inbox in a few minutes (and your spam folder): follow.it will send a message to confirm your subscription. If it does not arrive, try again with another address.');
+    s.st='ok';s.msg=T('Solicitud enviada. Revise su correo en unos minutos (y la carpeta de spam): follow.it enviará un mensaje para confirmar la suscripción. Si no llega, inténtelo de nuevo con otro correo.','Request sent. Check your inbox in a few minutes (and your spam folder): follow.it will send a message to confirm your subscription. If it does not arrive, try again with another address.');
   }catch(err){
-    s.st='err';s.msg=T('No pude enviar tu suscripción. Revisa tu conexión e inténtalo de nuevo.','I could not send your subscription. Check your connection and try again.');
+    s.st='err';s.msg=T('No se pudo enviar la suscripción. Revise la conexión e inténtelo de nuevo.','I could not send your subscription. Check your connection and try again.');
   }
   render(true);
 };
 function pdfName(){return (S.p.name||'').replace(/\s+/g,' ').trim()}
 ACT.mkpdf=async()=>{
   if(S.pdf||S.pdfBusy)return;   /* ya generado, o generándose: no se crea otro */
-  if(nextStation()!==0||S.st5.picks.length!==NHAB){S.ferr=T('Termina las cinco estaciones y elige tus tres hábitos antes de crear tu PDF.','Finish the five stations and choose your three habits before creating your PDF.');S.shake=true;render(true);return}
+  if(nextStation()!==0||S.st5.picks.length!==NHAB){S.ferr=T('Termine las cinco estaciones y elija tres hábitos antes de crear su PDF.','Finish the five stations and choose your three habits before creating your PDF.');S.shake=true;render(true);return}
   const inp=document.getElementById('fname'),name=pdfName();
   if(inp)S.p.name=inp.value;
   if(name&&/\p{L}/u.test(name)&&!pdfSafeName(name).text){
-    S.ferr=T('Por ahora el PDF solo puede mostrar letras del alfabeto latino. Escribe tu primer nombre con esas letras.','For now the PDF can only show Latin-alphabet letters. Please write your first name using those letters.');S.shake=true;S.pdf=null;render(true);
+    S.ferr=T('Por ahora el PDF solo puede mostrar letras del alfabeto latino. Escriba su primer nombre con esas letras.','For now the PDF can only show Latin-alphabet letters. Please write your first name using those letters.');S.shake=true;S.pdf=null;render(true);
     const i3=document.getElementById('fname');if(i3)i3.focus();return}
   if(!name||!/\p{L}/u.test(name)){
-    S.ferr=T('Escribe tu primer nombre para crear tu PDF.','Enter your first name to create your PDF.');S.shake=true;S.pdf=null;render(true);
+    S.ferr=T('Escriba su primer nombre para crear su PDF.','Enter your first name to create your PDF.');S.shake=true;S.pdf=null;render(true);
     const i2=document.getElementById('fname');if(i2)i2.focus();return}
   S.p.name=name;S.ferr='';S.pdfBusy=true;S.pdf=null;render(true);
-  try{const bytes=await buildPDF();S.pdf={bytes,name,lang:S.lang};S.note=T('¡Listo! Tu PDF fue creado. Pulsa «Descargar mi PDF».','Done! Your PDF was created. Tap “Download my PDF”.')}
-  catch(e){console.error(e);S.pdf=null;S.note=T('No pude crear el PDF. Revisa tu conexión e intenta de nuevo.','I could not create the PDF. Check your connection and try again.')}
+  try{const bytes=await buildPDF();S.pdf={bytes,name,lang:S.lang};S.note=T('¡Listo! Su PDF fue creado. Pulse «Descargar mi PDF».','Done! Your PDF was created. Tap “Download my PDF”.')}
+  catch(e){console.error(e);S.pdf=null;S.note=T('No se pudo crear el PDF. Revise la conexión e intente de nuevo.','I could not create the PDF. Check your connection and try again.')}
   S.pdfBusy=false;render(true);
   const d=document.getElementById('fdone');if(d&&d.scrollIntoView)d.scrollIntoView({block:'nearest'});
 };
@@ -177,7 +177,7 @@ ACT.dlpdf=async()=>{
     let dl=null;try{dl=window.claude&&claude.use?await claude.use('downloads'):null}catch(e){}
     if(dl){await dl.save({filename:fn,data:S.pdf.bytes})}
     else{const u=URL.createObjectURL(new Blob([S.pdf.bytes],{type:'application/pdf'})),a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
-    S.note=T('¡Listo! Tu PDF está guardado.','Done! Your PDF is saved.');
-  }catch(e){S.note=(e&&e.code==='declined')?T('Cancelaste la descarga. Puedes volver a intentarlo.','You cancelled the download. You can try again.'):T('No pude descargar el PDF. Intenta de nuevo.','I could not download the PDF. Please try again.');console.error(e)}
+    S.note=T('¡Listo! Su PDF está guardado.','Done! Your PDF is saved.');
+  }catch(e){S.note=(e&&e.code==='declined')?T('Se canceló la descarga. Puede volver a intentarlo.','You cancelled the download. You can try again.'):T('No se pudo descargar el PDF. Intente de nuevo.','I could not download the PDF. Please try again.');console.error(e)}
   render(true);
 };

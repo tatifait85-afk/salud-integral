@@ -25,9 +25,9 @@ MIND = {
 
 PRODUCTS_MIND = {
 "es": dict(
-  h2="Encuentre el apoyo que mejor se adapta a usted",
+  h2="Encuentre el apoyo que mejor se adapta a sus necesidades",
   p="No necesita dejar de pensar: necesita recuperar espacio. Descubra un curso y una opción de acompañamiento para avanzar a su propio ritmo.",
-  incl="Qué incluye", deliv="Qué recibes",
+  incl="Qué incluye", deliv="Qué recibe",
   note="Finalidad educativa y de acompañamiento personal. No sustituye la valoración ni el tratamiento de profesionales sanitarios.",
   items=[
     dict(img="producto-cabeza", contain=True, alt="Portada del curso Mi cabeza no para: una mujer atrapada entre pensamientos y la misma mujer en calma frente a un paisaje",

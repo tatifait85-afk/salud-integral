@@ -42,11 +42,11 @@ function vSt2(){
   if(s.phase==='result')return vPlate();
   const tray=ING.map(i=>{const on=list.includes(i.id);return `<button class="tcard ${!on&&full?'dim':''}" data-act="ing" data-id="${i.id}" aria-pressed="${on}"><span class="ck">${ICON.check}</span><span class="ph"><img src="img/ing-${i.id}.webp" alt=""></span><span>${i[l]}</span></button>`}).join('');
   const dots=`<span class="dots2">${[0,1,2].map(k=>`<i class="${k<n?'on':''}"></i>`).join('')}</span>`;
-  const msg=n===0?T('Toca un alimento para ponerlo en tu plato.','Tap a food to put it on your plate.'):full?T('Tu plato tiene 3 alimentos, el máximo. Toca uno para quitarlo y cambiarlo.','Your plate has 3 foods, the maximum. Tap one to remove it and swap it.'):T('Puedes añadir hasta '+(MAXF-n)+' más, o terminar cuando quieras.','You can add up to '+(MAXF-n)+' more, or finish whenever you like.');
-  return {stage:`<div class="scene two s2"><div class="full"><div class="kick">${T('Estación 2','Station 2')}</div><h2>${T('Mi plato digestivo','My digestive plate')}</h2><p class="lead">${T('Elige de uno a tres alimentos para armar tu plato. Toca un alimento para ponerlo y tócalo otra vez para quitarlo.','Choose one to three foods to build your plate. Tap a food to put it on the plate and tap it again to take it off.')}</p></div>
+  const msg=n===0?T('Toque un alimento para ponerlo en su plato.','Tap a food to put it on your plate.'):full?T('Su plato tiene 3 alimentos, el máximo. Toque uno para quitarlo y cambiarlo.','Your plate has 3 foods, the maximum. Tap one to remove it and swap it.'):T('Puede añadir hasta '+(MAXF-n)+' más, o terminar cuando lo desee.','You can add up to '+(MAXF-n)+' more, or finish whenever you like.');
+  return {stage:`<div class="scene two s2"><div class="full"><div class="kick">${T('Estación 2','Station 2')}</div><h2>${T('Mi plato digestivo','My digestive plate')}</h2><p class="lead">${T('Elija de uno a tres alimentos para armar su plato. Toque un alimento para ponerlo y tóquelo otra vez para quitarlo.','Choose one to three foods to build your plate. Tap a food to put it on the plate and tap it again to take it off.')}</p></div>
     <div class="boardwrap">${plateScene(list,true)}<div class="cnt3">${dots}<span><b>${n}</b> ${T('de','of')} ${MAXF} ${T('alimentos elegidos','foods chosen')}</span></div></div>
     <div class="trayblock"><div class="tray">${tray}</div></div></div>`,
-    bro:S.note||msg,shake:S.shake,actions:`<button class="btn primary" data-act="st2see" ${n?'':'disabled'}>${n?T('Descubrir mi plato','Discover my plate'):T('Elige al menos un alimento','Choose at least one food')}</button>`};
+    bro:S.note||msg,shake:S.shake,actions:`<button class="btn primary" data-act="st2see" ${n?'':'disabled'}>${n?T('Descubrir mi plato','Discover my plate'):T('Elija al menos un alimento','Choose at least one food')}</button>`};
 }
 const GRP={veg:['verduras','frutas','frutosrojos'],pro:['pollo','salmon','bistec','legumbres'],carb:['arroz','tortillas','legumbres'],fat:['aceite','aguacate','nueces','salmon']};
 const has=(list,g)=>list.some(id=>GRP[g].includes(id));
@@ -55,7 +55,7 @@ function plateExplain(list){
   /* qué aporta el conjunto */
   const tags=[...new Set(list.flatMap(id=>ING_BY[id].n))].map(k=>NUT[k][es?0:1]);
   const nl=tags.length>1?tags.slice(0,-1).join(', ')+T(' y ',' and ')+tags[tags.length-1]:tags[0];
-  const comp=n===1?T('Con un solo alimento ya tienes un punto de partida. Cada alimento aporta algo distinto y ninguno lo aporta todo: al sumar otros, lo que da uno complementa lo que no da el otro.','With a single food you already have a starting point. Each food brings something different and none brings everything: when you add others, what one gives complements what the other lacks.')
+  const comp=n===1?T('Con un solo alimento ya hay un punto de partida. Cada alimento aporta algo distinto y ninguno lo aporta todo: al sumar otros, lo que da uno complementa lo que no da el otro.','With a single food you already have a starting point. Each food brings something different and none brings everything: when you add others, what one gives complements what the other lacks.')
    :T(`Tu plato reúne ${n} alimentos distintos. Juntos aportan ${nl}. Cada uno ofrece algo diferente y lo que da uno complementa lo que no da otro.`,`Your plate brings together ${n} different foods. Together they provide ${nl}. Each offers something different, and what one gives complements what another lacks.`);
   pts.push(comp);
   /* combinaciones concretas */
@@ -66,11 +66,11 @@ function plateExplain(list){
   if(has(list,'carb')&&has(list,'pro')&&!list.includes('legumbres'))pts.push(T('La proteína y los carbohidratos se reparten el trabajo: uno ayuda a construir y reparar tejidos, el otro da energía.','Protein and carbohydrates share the work: one helps build and repair tissues, the other gives energy.'));
   /* sugerencia amable para dar variedad, solo si falta un grupo */
   let tip;
-  if(!has(list,'veg'))tip=T('Para dar más variedad, puedes sumar verduras o frutas: aportan fibra, vitaminas y minerales.','To add variety, you could include vegetables or fruit: they provide fiber, vitamins and minerals.');
-  else if(!has(list,'pro'))tip=T('Para dar más variedad, puedes sumar una fuente de proteína, como legumbres, pollo, pescado o carne.','To add variety, you could include a source of protein, such as legumes, chicken, fish or meat.');
-  else if(!has(list,'fat'))tip=T('Para dar más variedad, puedes sumar una grasa de origen vegetal, como aguacate, nueces o aceite de oliva extra virgen.','To add variety, you could include a plant-based fat, such as avocado, nuts or extra virgin olive oil.');
-  else if(!has(list,'carb')&&n<3)tip=T('Si quieres más energía de liberación lenta, puedes sumar arroz o legumbres.','If you want more slow-release energy, you could include rice or legumes.');
-  else tip=T('Tu plato ya reúne distintos tipos de alimentos. Otro día puedes cambiar los colores o los ingredientes para seguir explorando.','Your plate already brings together different kinds of food. Another day you can change the colors or ingredients to keep exploring.');
+  if(!has(list,'veg'))tip=T('Para dar más variedad, se pueden sumar verduras o frutas: aportan fibra, vitaminas y minerales.','To add variety, you could include vegetables or fruit: they provide fiber, vitamins and minerals.');
+  else if(!has(list,'pro'))tip=T('Para dar más variedad, se pueden sumar una fuente de proteína, como legumbres, pollo, pescado o carne.','To add variety, you could include a source of protein, such as legumes, chicken, fish or meat.');
+  else if(!has(list,'fat'))tip=T('Para dar más variedad, se pueden sumar una grasa de origen vegetal, como aguacate, nueces o aceite de oliva extra virgen.','To add variety, you could include a plant-based fat, such as avocado, nuts or extra virgin olive oil.');
+  else if(!has(list,'carb')&&n<3)tip=T('Para obtener más energía de liberación lenta, se pueden sumar arroz o legumbres.','If you want more slow-release energy, you could include rice or legumes.');
+  else tip=T('Su plato ya reúne distintos tipos de alimentos. Otro día puede cambiar los colores o los ingredientes para seguir explorando.','Your plate already brings together different kinds of food. Another day you can change the colors or ingredients to keep exploring.');
   return {pts,tip};
 }
 function vPlate(){
@@ -82,14 +82,14 @@ function vPlate(){
     <section aria-labelledby="s2h" style="display:grid;gap:12px"><h3 id="s2h" style="font-size:1.5rem">${T('¿Qué aporta mi plato?','What does my plate offer?')}</h3>
     <div class="flist">${items}</div>
     <div class="gcard"><p style="margin:0">${ex.pts.join('</p><p style="margin:0">')}</p><p style="margin:0"><b>${T('Una idea: ','One idea: ')}</b>${ex.tip}</p></div>
-    <div class="howto"><span class="dot">✓</span><span>${T('No existe un plato perfecto: esta actividad solo te invita a observar cómo se complementan los alimentos.','There is no perfect plate: this activity just invites you to notice how foods complement each other.')}</span></div></section></div>`,
-    bro:T('Así quedó tu plato.','Here is your plate.'),
+    <div class="howto"><span class="dot">✓</span><span>${T('No existe un plato perfecto: esta actividad solo invita a observar cómo se complementan los alimentos.','There is no perfect plate: this activity just invites you to notice how foods complement each other.')}</span></div></section></div>`,
+    bro:T('Así quedó su plato.','Here is your plate.'),
     actions:`<button class="btn ghost" style="flex:1" data-act="st2back">${T('Cambiar mis alimentos','Change my foods')}</button><button class="btn primary" data-act="st2end">${T('Volver al jardín','Back to the garden')}</button>`};
 }
 VIEW.st2=vSt2;
 ACT.ing=b=>{const s=S.st2,list=s.list,id=b.dataset.id,i=list.indexOf(id);S.note=null;
   if(i>=0)list.splice(i,1);
-  else if(list.length>=MAXF){S.note=T('Tu plato ya tiene 3 alimentos. Quita uno para elegir otro.','Your plate already has 3 foods. Remove one to choose another.');S.shake=true}
+  else if(list.length>=MAXF){S.note=T('Su plato ya tiene 3 alimentos. Quite uno para elegir otro.','Your plate already has 3 foods. Remove one to choose another.');S.shake=true}
   else list.push(id);
   render(true)};
 ACT.st2see=()=>{if(S.st2.list.length){S.st2.phase='result';S.note=null;render()}};

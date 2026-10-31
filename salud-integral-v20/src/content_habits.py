@@ -25,9 +25,9 @@ HABITS = {
 
 PRODUCTS_HABITS = {
 "es": dict(
-  h2="Encuentre el apoyo que mejor se adapta a usted",
+  h2="Encuentre el apoyo que mejor se adapta a sus necesidades",
   p="Cada persona tiene necesidades diferentes. Descubra recursos y opciones de acompañamiento para cuidar su bienestar, comprender mejor sus hábitos y avanzar a su propio ritmo.",
-  incl="Qué incluye", deliv="Qué recibes",
+  incl="Qué incluye", deliv="Qué recibe",
   note="Herramienta educativa y orientativa. No es un test psicológico, no hace diagnósticos y no sustituye la atención médica ni psicológica profesional. Sus respuestas al cuestionario se procesan únicamente en su dispositivo: no se envían ni se guardan en ningún servidor.",
   items=[
     dict(img="producto-mapa-es", contain="tall", alt="Portada de Tu mapa de hábitos, de Salud Integral",
@@ -44,7 +44,7 @@ PRODUCTS_HABITS = {
   pay_cr="Pagos de la sesión en Costa Rica", pay_cr_l=["SINPE Móvil: +506 7221-2372","Tarjeta de débito o crédito","PayPal"],
   pay_int="Pagos internacionales de la sesión", pay_int_l=["Tarjeta de débito o crédito","PayPal"],
   pay_steps=[
-    "Tu mapa de hábitos: pague con el botón de PayPal. El pago se hace en la página segura de PayPal; usted no escribe datos de pago en este sitio. Al terminar, vuelva y responda el cuestionario.",
+    "Tu mapa de hábitos: pague con el botón de PayPal. El pago se hace en la página segura de PayPal; en este sitio no se escribe ningún dato de pago. Al terminar, vuelva y responda el cuestionario.",
     "Sesión en línea: escriba por WhatsApp al +506 7221-2372 para coordinar su pago (SINPE Móvil, tarjeta o PayPal) y agendar su cita.",
     "Una vez confirmado el pago de la sesión, coordinamos el día y la hora.",
   ],
