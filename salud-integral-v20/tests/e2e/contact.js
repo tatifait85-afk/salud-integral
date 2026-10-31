@@ -13,10 +13,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     await pg.fill(F + ' [name=name]', 'Ana'); await pg.fill(F + ' [name=email]', 'mal'); await pg.fill(F + ' [name=message]', 'Hola');
     await pg.click(F + ' button[type=submit]');
     ok(await pg.getAttribute(F + ' [name=email]', 'aria-invalid') === 'true', lang + ': correo inválido rechazado');
-    // 2. sin endpoint: mailto, sin afirmar envío
-    ok(await pg.getAttribute(F, 'data-endpoint') === null, lang + ': sin endpoint por defecto (respaldo mailto)');
+    // 2. envío directo desde la página (endpoint /api/contacto activo por defecto)
+    ok(/api\/contacto$/.test(await pg.getAttribute(F, 'data-endpoint') || ''), lang + ': envío directo activo (/api/contacto)');
     // 3. con endpoint simulado en red (solo prueba la lógica del cliente)
-    await pg.evaluate(() => document.querySelector('.cform').setAttribute('data-endpoint', '/api/contacto'));
     await pg.fill(F + ' [name=email]', 'ana@correo.com');
     let calls = 0, mode = 'ok';
     await pg.route('**/api/contacto', async r => { calls++; await new Promise(x => setTimeout(x, 300));
@@ -45,7 +44,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   // mailto sin endpoint: no se afirma envío
   const pg = await b.newPage(); await pg.goto(BASE + '/contacto/');
   await pg.fill('.cform [name=name]', 'Ana'); await pg.fill('.cform [name=email]', 'a@b.co'); await pg.fill('.cform [name=message]', 'Hola');
-  await pg.evaluate(() => { window.__nav = null; }); 
+  await pg.evaluate(() => { document.querySelector('.cform').removeAttribute('data-endpoint'); });   // simula build sin endpoint: respaldo mailto
   await Promise.all([pg.waitForEvent('framenavigated').catch(() => {}), pg.click('.cform button[type=submit]')]).catch(() => {});
   const t = await pg.textContent('.cform-msg').catch(() => '');
   ok(/solo se env/.test(t) || t === '', 'es: mailto → mensaje honesto (no dice "enviado"): ' + t.slice(0, 60));

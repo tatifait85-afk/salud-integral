@@ -8,6 +8,7 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*", "/privado/*"]
   },
+  "send_email": [{ "name": "EMAIL", "destination_address": "terapiaholisticacr@gmail.com" }],
   "kv_namespaces": [{ "binding": "PAGOS", "id": "4a6d28ce6fb14b6aacc661fb2bec7d86" }],
   "vars": {
     "PAYPAL_RECEIVER": "lolaita42@gmail.com",

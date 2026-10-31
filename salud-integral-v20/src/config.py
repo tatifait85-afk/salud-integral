@@ -16,7 +16,7 @@ CONTACT = dict(
 # Vacío = el formulario usa el respaldo mailto: (abre el programa de correo; no confirma el envío).
 # Para activarlo: CONTACT_ENDPOINT=/api/contacto python3 src/build.py   (contrato en DEPLOY.md)
 import os
-CONTACT_ENDPOINT = os.environ.get("CONTACT_ENDPOINT", "").strip()
+CONTACT_ENDPOINT = os.environ.get("CONTACT_ENDPOINT", "/api/contacto").strip()
 
 LINKS = dict(
     amazon_author="https://www.amazon.com/stores/Tatiana-Fait-Shaw/author/B0H18V8TXG",
