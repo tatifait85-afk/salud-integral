@@ -39,10 +39,10 @@ SPIRIT = {
 # ---------------------------------------------------------------------------------------------
 _SES_ES = dict(img="producto-sesion", alt="Dos mujeres conversando en línea, conectadas por una luz dorada",
     name="Sesión en línea · 45 minutos",
-    short="Hablemos sobre lo que necesitas y encontremos juntos el mejor punto de partida.",
-         desc="¿Tienes dudas sobre nuestros servicios o productos? ¿Te gustaría conocer mejor cómo podemos ayudarte antes de tomar una decisión? En esta sesión individual tendrás un espacio para conversar directamente conmigo, explicar qué estás buscando, plantear tus preguntas y conocer las opciones disponibles para ti.",
-    inc=["Una conversación individual en directo.", "Atención personalizada para escuchar tus inquietudes y necesidades.", "Respuestas a tus preguntas sobre nuestros servicios y herramientas.", "Orientación para identificar qué opción se ajusta mejor a tus objetivos.", "Un horario acordado según tu disponibilidad."],
-    price="USD 50 · ₡25.000", delivery="Después de solicitar tu sesión, coordinaremos el día y la hora. Nos encontraremos en línea para conversar tranquilamente, resolver tus dudas y ayudarte a decidir cómo continuar. No tienes que tener todas las respuestas ni saber exactamente qué necesitas. Podemos empezar por conversar.",
+    short="Hablemos sobre lo que usted necesita y encontremos juntos el mejor punto de partida.",
+         desc="¿Tiene dudas sobre nuestros servicios o productos? ¿Le gustaría conocer mejor cómo podemos ayudarle antes de tomar una decisión? En esta sesión individual tendrá un espacio para conversar directamente conmigo, explicar qué está buscando, plantear sus preguntas y conocer las opciones disponibles para usted.",
+    inc=["Una conversación individual en directo.", "Atención personalizada para escuchar sus inquietudes y necesidades.", "Respuestas a sus preguntas sobre nuestros servicios y herramientas.", "Orientación para identificar qué opción se ajusta mejor a sus objetivos.", "Un horario acordado según su disponibilidad."],
+    price="USD 50 · ₡25.000", delivery="Después de solicitar su sesión, coordinaremos el día y la hora. Nos encontraremos en línea para conversar con tranquilidad, resolver sus dudas y ayudarle a decidir cómo continuar. No tiene que tener todas las respuestas ni saber exactamente qué necesita. Podemos empezar por conversar.",
     kind="wa", msg="Hola Tatiana, quiero agendar una sesión en línea de 45 minutos", cta="Agendar por WhatsApp")
 _SES_EN = dict(img="producto-sesion", alt="Two women talking online, connected by a golden light",
     name="Online session · 45 minutes",
