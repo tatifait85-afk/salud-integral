@@ -164,12 +164,54 @@ async function acceso(request, env, prod) {
   return json({ ok: true }, 200, { "set-cookie": cookieSet(request, prod, t.valor, t.maxAge) });
 }
 
+
+/* ---------- /api/contacto: formulario de contacto -> correo a la dueña del sitio ---------- */
+const CONTACTO_DESTINO = "terapiaholisticacr@gmail.com";
+const CONTACTO_ORIGEN = "contacto@saludintegral.site";
+const limpiar = (v, max) => String(v == null ? "" : v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, max);
+const b64 = (txt) => { const bytes = new TextEncoder().encode(txt); let bin = ""; for (const b of bytes) bin += String.fromCharCode(b); return btoa(bin).replace(/.{1,76}/g, "$&\r\n").trimEnd(); };
+async function contacto(request, env) {
+  if (request.method !== "POST") return json({ ok: false, error: "method" }, 405);
+  let d; try { d = await request.json(); } catch { return json({ ok: false, error: "json" }, 400); }
+  const nombre = limpiar(d.name, 120).replace(/[\r\n]+/g, " "), correo = limpiar(d.email, 200), mensaje = limpiar(d.message, 5000);
+  const idioma = d.lang === "en" ? "en" : "es", pagina = limpiar(d.page, 200);
+  if (d.website) return json({ ok: true }); // trampa anti-bots
+  if (!nombre || !mensaje || !/^[^@\s<>"]+@[^@\s<>"]+\.[^@\s<>"]+$/.test(correo)) return json({ ok: false, error: "datos" }, 400);
+  // límite sencillo por IP: 5 mensajes por hora
+  const ip = request.headers.get("cf-connecting-ip") || "anon";
+  const kl = "c:" + ip + ":" + Math.floor(Date.now() / 3600000);
+  const n = parseInt((await env.PAGOS.get(kl)) || "0", 10);
+  if (n >= 5) return json({ ok: false, error: "limite" }, 429);
+  await env.PAGOS.put(kl, String(n + 1), { expirationTtl: 7200 });
+  const asunto = "Mensaje desde saludintegral.site de " + nombre;
+  const cuerpo = mensaje + "\n\n— " + nombre + " <" + correo + ">\nIdioma: " + idioma + (pagina ? "\nPágina: " + pagina : "");
+  const raw = [
+    "From: Salud Integral <" + CONTACTO_ORIGEN + ">",
+    "To: " + CONTACTO_DESTINO,
+    "Reply-To: " + nombre.replace(/[^\w .'-]/g, "") + " <" + correo + ">",
+    "Subject: =?UTF-8?B?" + btoa(String.fromCharCode(...new TextEncoder().encode(asunto))) + "?=",
+    "Message-ID: <" + crypto.randomUUID() + "@saludintegral.site>",
+    "Date: " + new Date().toUTCString(),
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: base64",
+    "",
+    b64(cuerpo),
+  ].join("\r\n");
+  try {
+    const { EmailMessage } = await import("cloudflare:email");
+    await env.EMAIL.send(new EmailMessage(CONTACTO_ORIGEN, CONTACTO_DESTINO, raw));
+  } catch (e) { return json({ ok: false, error: "envio" }, 502); }
+  return json({ ok: true });
+}
+
 /* ---------- enrutador ---------- */
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const esLocal = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
 
+    if (url.pathname === "/api/contacto") return contacto(request, env);
     if (url.pathname === "/api/ipn") {
       if (request.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
       const cuerpo = await request.text();
