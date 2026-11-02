@@ -2,7 +2,7 @@
 /* Estación 4: Los secretos bajo la tierra. Suelo, intestino y microbios. */
 S.st4={phase:'soil',seen:{}};
 RESET.push(()=>{S.st4={phase:'soil',seen:{}}});
-ENTER[4]=()=>{S.st4.phase='soil';S.sel=null};
+ENTER[4]=()=>{if(S.done[4])S.st4.phase='soil';S.sel=null};
 const CLOSE4=[
  [['El suelo guarda agua y nutrientes que las plantas necesitan.','Soil holds the water and nutrients that plants need.'],['Lo que comes se descompone en nutrientes que tu cuerpo puede aprovechar.','The food you eat is broken down into nutrients your body can use.']],
  [['Las raíces absorben agua y nutrientes del suelo.','Roots absorb water and nutrients from the soil.'],['La pared del intestino absorbe los nutrientes y los pasa a la sangre.','The gut wall absorbs nutrients and passes them into the blood.']],

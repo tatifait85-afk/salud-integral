@@ -154,7 +154,7 @@ ACT.subscribe=async()=>{
 function pdfName(){return (S.p.name||'').replace(/\s+/g,' ').trim()}
 ACT.mkpdf=async()=>{
   if(S.pdf||S.pdfBusy)return;   /* ya generado, o generándose: no se crea otro */
-  if(nextStation()!==0||S.st5.picks.length!==NHAB){S.ferr=T('Termina las cinco estaciones y elige tus tres hábitos antes de crear tu PDF.','Finish the five stations and choose your three habits before creating your PDF.');S.shake=true;render(true);return}
+  if(nextStation()!==0||S.st5.picks.length!==NHAB){const miss=[1,2,3,4,5].filter(n=>!S.done[n]).map(n=>'«'+STN[S.lang][n-1]+'»');const hab=S.st5.picks.length!==NHAB;S.ferr=T('Te falta: '+(miss.length?'terminar '+miss.join(', ')+(hab?' y elegir tus tres hábitos':''):'elegir tus tres hábitos')+'.','Still missing: '+(miss.length?'finish '+miss.join(', ')+(hab?' and choose your three habits':''):'choose your three habits')+'.');S.shake=true;render(true);return}
   const inp=document.getElementById('fname'),name=pdfName();
   if(inp)S.p.name=inp.value;
   if(name&&/\p{L}/u.test(name)&&!pdfSafeName(name).text){
