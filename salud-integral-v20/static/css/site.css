@@ -427,3 +427,7 @@ section[id]{scroll-margin-top:5rem}
 .fcredit a:hover{opacity:1;text-decoration:underline}
 .fcredit img{width:40px;height:40px;border-radius:10px;background:#fff;flex:none}
 .fcredit strong{font-weight:600;color:#fff}
+
+.wa-float{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));z-index:60;width:58px;height:58px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(23,58,30,.35);transition:transform .2s}
+.wa-float:hover{transform:scale(1.07)}.wa-float:focus-visible{outline:3px solid var(--forest);outline-offset:3px}
+@media (max-width:520px){.wa-float{width:54px;height:54px}}

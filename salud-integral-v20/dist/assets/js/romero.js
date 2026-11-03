@@ -108,85 +108,9 @@
   }
   document.querySelectorAll('[data-open-guide]').forEach(function (b) { b.addEventListener('click', openGuide); });
 
-  /* ================= ROMERO ================= */
-  var launch = el('button', 'rm-launch'); launch.type = 'button'; launch.setAttribute('aria-label', R.open_label);
-  var im = el('img'); im.src = '/assets/img/romero-s.webp'; im.alt = ''; im.width = 64; im.height = 83; launch.appendChild(im);
-  var pill = el('span', 'rm-pill', R.launcher); launch.appendChild(pill);
-  var panel = el('section', 'rm-panel'); panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', R.name + ' — ' + R.role);
-  var head = el('div', 'rm-head'), hi = el('img'); hi.src = '/assets/img/romero-s.webp'; hi.alt = ''; hi.width = 40; hi.height = 52;
-  var ht = el('div'); ht.appendChild(el('b', null, R.name)); ht.appendChild(el('span', null, R.role));
-  var x = el('button', 'rm-x'); x.type = 'button'; x.setAttribute('aria-label', R.close_label); x.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>';
-  head.appendChild(hi); head.appendChild(ht); head.appendChild(x);
-  var log = el('div', 'rm-log'); log.setAttribute('role', 'log'); log.setAttribute('aria-live', 'polite');
-  var form = el('form', 'rm-form'), inp = el('input'); inp.type = 'text'; inp.placeholder = R.placeholder; inp.setAttribute('aria-label', R.placeholder); inp.maxLength = 400; inp.autocomplete = 'off';
-  var send = el('button', null, R.send); send.type = 'submit'; form.appendChild(inp); form.appendChild(send);
-  panel.appendChild(head); panel.appendChild(log); panel.appendChild(form); panel.appendChild(el('p', 'rm-note', R.note));
-  document.body.appendChild(launch); document.body.appendChild(panel);
-
-  var started = false, ctx = { topic: null, asked: {} };
-  function scroll() { log.scrollTop = log.scrollHeight; }
-  function bot(text) { var m = el('div', 'msg bot', text); log.appendChild(m); scroll(); return m; }
-  function me(text) { log.appendChild(el('div', 'msg me', text)); scroll(); }
-  function buttons(list) {
-    if (!list || !list.length) return;
-    var w = el('div', 'opts');
-    list.forEach(function (p) {
-      if (p[1] === '__QUIZ__') { var q = el('button', 'opt link', p[0]); q.type = 'button'; q.addEventListener('click', openGuide); w.appendChild(q); }
-      else w.appendChild(link(p[0], p[1], 'opt link'));
-    });
-    log.appendChild(w); scroll();
-  }
-  function menu() {
-    var w = el('div', 'opts');
-    R.menu.forEach(function (m) { var b = el('button', 'opt', m[1]); b.type = 'button'; b.addEventListener('click', function () { me(m[1].replace(/^\S+\s/, '')); choose(m[0]); }); w.appendChild(b); });
-    log.appendChild(w); scroll();
-  }
-  function choose(key) {
-    if (key === 'quiz') { bot(UI.guide_intro); var q = el('div', 'opts'), b = el('button', 'opt link', UI.start); b.type = 'button'; b.addEventListener('click', openGuide); q.appendChild(b); log.appendChild(q); scroll(); return; }
-    if (key === 'tell') { bot(R.tell_prompt); if (!(window.matchMedia && matchMedia('(pointer: coarse)').matches)) inp.focus(); return; }
-    answer(key);
-  }
-  function answer(key) {
-    var g = R.go[key]; if (!g) g = R.go.fallback;
-    bot(g.text);
-    if (key === 'best') { bot(g.after); }
-    buttons(g.btns);
-    if (key === 'food' || key === 'mind' || key === 'habits') {
-      ctx.topic = key;
-      if (!ctx.asked[key] && R.followups[key]) { ctx.asked[key] = true; setTimeout(function () { bot(R.followups[key]); }, 350); }
-    }
-  }
-  function suggestFor(topic) {
-    var t = topic === 'mind' ? { mente: 3, f_libro: 2 } : topic === 'food' ? { alimentacion: 3, f_jardin: 2 } : { habitos: 3, f_libro: 2 };
-    var top = scoreAll(t).filter(function (x) { return x.s > 0 && x.r.type !== 'area'; }).slice(0, 3);
-    bot(R.more);
-    buttons(top.map(function (x) { return [x.r.title, x.r.url]; }));
-  }
-  /* Compila cada patrón de intención una sola vez. Salvo los ya anclados con "^"
-     (saludo), cada patrón se envuelve en \b(?:...) para exigir un límite de
-     palabra al inicio de cada alternativa: evita que un fragmento coincida
-     dentro de otra palabra (p. ej. "mente" en "aumente", "fee" en "feel"). */
-  var INTENTS = R.intents.map(function (pair) {
-    var body = pair[1], src = body.charAt(0) === '^' ? body : '\\b(?:' + body + ')';
-    try { return [pair[0], new RegExp(src)]; } catch (e) { return [pair[0], null]; }
-  });
-  function handle(text) {
-    var n = norm(text); if (!n) return;
-    me(text);
-    var yes = R.yes.some(function (y) { return n === y || n.indexOf(y + ' ') === 0; });
-    if (yes && ctx.topic && n.split(' ').length <= 4) { suggestFor(ctx.topic); ctx.topic = null; return; }
-    for (var i = 0; i < INTENTS.length; i++) {
-      if (INTENTS[i][1] && INTENTS[i][1].test(n)) { answer(INTENTS[i][0]); return; }
-    }
-    answer('fallback');
-  }
-  function open() {
-    panel.classList.add('open'); launch.style.display = 'none';
-    if (!started) { started = true; bot(R.greet); menu(); }
-    if (!(window.matchMedia && matchMedia('(pointer: coarse)').matches)) setTimeout(function () { inp.focus(); }, 50);
-  }
-  function close() { panel.classList.remove('open'); launch.style.display = ''; launch.focus(); }
-  launch.addEventListener('click', open); x.addEventListener('click', close);
-  panel.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-  form.addEventListener('submit', function (e) { e.preventDefault(); var v = inp.value; inp.value = ''; handle(v); });
+  /* ================= WHATSAPP (globo flotante) ================= */
+  var wa = el('a', 'wa-float'); wa.href = D.wa; wa.target = '_blank'; wa.rel = 'noopener';
+  wa.setAttribute('aria-label', D.lang === 'es' ? 'Escribir por WhatsApp' : 'Write on WhatsApp');
+  wa.innerHTML = '<svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false"><path fill="#fff" d="M16.04 3C9.4 3 4 8.4 4 15.04c0 2.12.55 4.19 1.6 6.01L4 29l8.12-1.57a12 12 0 0 0 3.92.66C22.68 28.09 28 22.69 28 16.05 28 9.4 22.68 3 16.04 3Zm0 22.07c-1.24 0-2.45-.33-3.5-.96l-.5-.3-4.82.93.97-4.7-.33-.52a9.93 9.93 0 0 1-1.53-5.28c0-5.5 4.48-9.98 9.99-9.98 5.5 0 9.98 4.48 9.98 9.98 0 5.5-4.48 9.83-9.98 9.83Zm5.47-7.5c-.3-.15-1.77-.87-2.04-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.95 1.17-.18.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.78-1.67-2.08-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.68-1.64-.93-2.25-.25-.58-.5-.5-.68-.5h-.58c-.2 0-.53.08-.8.38-.28.3-1.05 1.03-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.12 3.23 5.13 4.53.72.3 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.08-.12-.28-.2-.58-.35Z"/></svg>';
+  document.body.appendChild(wa);
 })();
