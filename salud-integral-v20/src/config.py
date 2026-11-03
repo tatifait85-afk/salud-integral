@@ -61,7 +61,10 @@ def url(lang, key):
         return "/" if not slug else f"/{slug}/"
     return "/en/" if not slug else f"/en/{slug}/"
 
-def wa_link(lang, msg_es, msg_en):
+WA_MSG = {"es": "Hola! Estoy interesado en Salud Integral", "en": "Hello! I'm interested in Salud Integral"}
+
+def wa_link(lang, msg_es=None, msg_en=None):
+    """Todos los botones de WhatsApp envían el mismo mensaje automático."""
     from urllib.parse import quote
-    m = msg_es if lang == "es" else msg_en
+    m = WA_MSG["es" if lang == "es" else "en"]
     return f"https://wa.me/{CONTACT['wa']}?text={quote(m)}"
