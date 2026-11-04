@@ -629,7 +629,7 @@ const L={
   rewH:'¡Estación 1 completa!',rewB:(s)=>`Ganó ${s} semillas. Vuelva al jardín: se despertó la siguiente estación.`,back:'Volver al jardín',
   underH:'Esta estación se construye después',underB:'Para esta vista previa solo está lista la estación 1. Cuando apruebes cómo se ve y se juega, construyo las demás.',
   underBro:'Esta estación aún no está lista en la vista previa.',rewBro:'¡Lo logró! Vuelva al jardín cuando lo desee.'},
- en:{title:'My Digestive Garden',eyebrow:'Salud Integral',sub:'Your practical guide to better digestion and wellbeing',start:'Start',
+ en:{title:'My Digestive Garden',eyebrow:'Holistic Wellness',sub:'Your practical guide to better digestion and wellbeing',start:'Start',
   charH:'Create your character',charB:"Hi! I'm Brote, your guide in the garden. Choose how you want to look. Your name is optional.",
   woman:'Woman',man:'Man',skin:'Skin',hair:'Hair',name:'Your name (optional)',namePh:'Type your name',enter:'Enter the garden',
   seeds:'Seeds',garden:'Garden',again:'Start over',sure:'Sure? Tap again',
@@ -711,9 +711,9 @@ function vMap(){
   const doneAll=!nextStation(),pdfL=S.pdf?T('Descargar mi PDF','Download my PDF'):T('Crear mi PDF','Create my PDF');
   const msg=T('¡Hola! Este es su jardín. Elija cualquiera de las cinco estaciones y recórralas en el orden que prefiera.','Hi! This is your garden. Pick any of the five stations and explore them in the order you prefer.');
   const seeds=`<span class="pill seeds" aria-label="${tt.seeds}">${ICON.seed.replace('<svg','<svg width="14" height="18"')}${S.seeds}</span>`;
-  const menu=S.menu?`<div class="sheetbg" data-act="menuX"><div class="sheet" role="dialog" aria-label="${T('Menú','Menu')}"><div class="opts"><a class="opt m-site" href="${SITE_HOME[l]}">← Salud Integral</a><button class="opt" data-act="${doneAll?'final':'cont'}">${doneAll?pdfL:contL}</button><button class="opt m-lang" data-act="lang">${l==='es'?'English':'Español'}</button><button class="opt ${S.askReset?'sel':''}" data-act="reset">${S.askReset?tt.sure:tt.again}</button></div></div></div>`:'';
+  const menu=S.menu?`<div class="sheetbg" data-act="menuX"><div class="sheet" role="dialog" aria-label="${T('Menú','Menu')}"><div class="opts"><a class="opt m-site" href="${SITE_HOME[l]}">${T('← Salud Integral','← Holistic Wellness')}</a><button class="opt" data-act="${doneAll?'final':'cont'}">${doneAll?pdfL:contL}</button><button class="opt m-lang" data-act="lang">${l==='es'?'English':'Español'}</button><button class="opt ${S.askReset?'sel':''}" data-act="reset">${S.askReset?tt.sure:tt.again}</button></div></div></div>`:'';
   return {bare:true,bro:'',actions:'',stage:`<div class="mv" id="mv" data-mode="bar" data-hdr="d">
-   <header class="mvhead"><div class="hl"><a class="pill site" href="${SITE_HOME[l]}">← Salud Integral</a></div>
+   <header class="mvhead"><div class="hl"><a class="pill site" href="${SITE_HOME[l]}">${T('← Salud Integral','← Holistic Wellness')}</a></div>
     <div class="mvtitle">${LEAF}<span>${tt.title}</span></div>
     <div class="hr">${seeds}<button class="pill cont" data-act="${doneAll?'final':'cont'}">${doneAll?pdfL:'↻ '+contL}</button><button class="pill langbtn" data-act="lang" aria-label="Idioma / Language">${l==='es'?'EN':'ES'}</button><button class="pill burger" data-act="menu" aria-label="${T('Menú','Menu')}" aria-expanded="${!!S.menu}">${BURGER}</button></div></header>
    <section class="mvmap" id="mvmap"><div class="mvcanvas" id="mvc"><img class="mvimg" src="img/mapa-${l}.webp" alt="${STN[l].join(', ')}" draggable="false">${zones}${arrows}</div><div class="mvdots" aria-hidden="true">${dots}</div></section>

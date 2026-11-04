@@ -20,7 +20,7 @@
       doc.addFileToVFS(f[2] + ".ttf", F[f[2]]);
       doc.addFont(f[2] + ".ttf", f[0], f[1]);
     });
-    doc.setProperties({ title: D.title + " — " + res.name, author: "Salud Integral", creator: "Salud Integral" });
+    doc.setProperties({ title: D.title + " — " + res.name, author: (res.lang==="en"?"Holistic Wellness":"Salud Integral"), creator: (res.lang==="en"?"Holistic Wellness":"Salud Integral") });
 
     var y = 0, pageNo = 1;
     var col = function (c) { doc.setTextColor(c[0], c[1], c[2]); };
@@ -36,7 +36,7 @@
     function band() { // cabecera de páginas interiores
       fillc(C.forest); doc.rect(0, 0, W, 38, "F");
       doc.addImage(root.MAPA_LOGO, "PNG", M, 7, 24, 24);
-      font("Fraunces", "bold", 12, C.ivory); doc.text("Salud Integral", M + 32, 24);
+      font("Fraunces", "bold", 12, C.ivory); doc.text((res.lang==="en"?"Holistic Wellness":"Salud Integral"), M + 32, 24);
       font("Jost", "normal", 9, C.sage); doc.text(D.title, W - M, 24, { align: "right" });
     }
     function newPage() { doc.addPage(); pageNo++; band(); y = 70; }

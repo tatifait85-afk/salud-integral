@@ -55,7 +55,7 @@ T = {
   a_none="¿Aún no ha pagado?", a_buy="Ver Mi Jardín Digestivo",
 ),
 "en": dict(
-  title="My Digestive Garden — interactive guide + personalized PDF | Salud Integral",
+  title="My Digestive Garden — interactive guide + PDF | Salud Integral",
   desc="Walk through an illustrated garden with five stations about habits, food, ferments and the microbiome, and get a personalized PDF at the end.",
   eyebrow="Interactive experience · Personalized PDF", h1="My Digestive Garden",
   lead="Your practical guide to better digestion and wellbeing. Walk through an illustrated garden with five stations, at your own pace, and download a PDF of what you chose at the end.",

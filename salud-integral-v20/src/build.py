@@ -813,6 +813,10 @@ for _k, _fn in jardin.BUILDERS.items():
     BUILDERS[_k] = (lambda f: (lambda lang: f(lang, _self)))(_fn)
 NOINDEX = {"map_access", "map_quiz", "garden_access"}
 
+def rebrand(lang, text):
+    """Versión en inglés: el nombre visible de la marca es «Holistic Wellness» (la URL y el dominio no cambian)."""
+    return text.replace("Salud Integral", "Holistic Wellness").replace("SALUD INTEGRAL", "HOLISTIC WELLNESS") if lang == "en" else text
+
 def main():
     if os.path.exists(DIST): shutil.rmtree(DIST)
     os.makedirs(DIST)
@@ -821,10 +825,10 @@ def main():
     for key, fn in BUILDERS.items():
         for lang in ("es", "en"):
             if not has_page(lang, key): continue
-            write(page_path(lang, key), fn(lang)); built.append((lang, key))
+            write(page_path(lang, key), rebrand(lang, fn(lang))); built.append((lang, key))
     for lang in ("es", "en"):
-        write(f"/assets/js/data-{lang}.js", data_js(lang))
-        write(f"/assets/js/search-{lang}.js", search_js(lang))
+        write(f"/assets/js/data-{lang}.js", rebrand(lang, data_js(lang)))
+        write(f"/assets/js/search-{lang}.js", rebrand(lang, search_js(lang)))
     urls = "".join(f"<url><loc>{SITE_URL}{url(l,k)}</loc></url>" for l, k in built if k not in NOINDEX)
     # Archivos del producto: se publican bajo /privado/ (el Worker los entrega solo con acceso válido)
     pv = os.path.join(DIST, "privado"); os.makedirs(pv)

@@ -378,7 +378,7 @@ en: {
     commit: "I, {name}, commit to {habit} {moment}, starting on {date}. After {anchor}, I will do my habit. When “{obstacle}” shows up, I will do the following: {ifthen} I will start with the minimum version and treat myself kindly if a day doesn't go as I hoped.",
     sign: "Signature", date_: "Date",
     disclaimer: "This document is an educational and orientation tool based on your answers. It is not a psychological test, does not provide diagnoses and does not replace professional medical or psychological care. If you feel intense or persistent distress, please seek professional support.",
-    footer: "Salud Integral · Tatiana Fait Shaw", page: "Page {n} of {t}",
+    footer: "Holistic Wellness · Tatiana Fait Shaw", page: "Page {n} of {t}",
     file: "Your-Habit-Map-{name}.pdf", locale: "en-US"
   }
 }

@@ -27,7 +27,7 @@ async function buildPDF(){
   const newPage=(title)=>{page=pdf.addPage([W,H]);pageNo++;page.drawRectangle({x:0,y:0,width:W,height:H,color:C.cream});
     page.drawRectangle({x:0,y:H-70,width:W,height:70,color:C.mint});
     page.drawText(title,{x:M,y:H-46,size:24,font:SER,color:C.forest});
-    page.drawText('Salud Integral · '+T('Mi Jardín Digestivo','My Digestive Garden'),{x:M,y:22,size:9,font:SAN,color:C.soft});
+    page.drawText(T('Salud Integral','Holistic Wellness')+' · '+T('Mi Jardín Digestivo','My Digestive Garden'),{x:M,y:22,size:9,font:SAN,color:C.soft});
     page.drawText(String(pageNo),{x:W-M-8,y:22,size:9,font:SAN,color:C.soft});
     y=H-100};
   const need=h=>{if(y-h<50)newPage(T('Mi jardín (continuación)','My garden (continued)'))};
@@ -103,7 +103,7 @@ async function buildPDF(){
   if(picks.length)picks.forEach(id=>{const h=HAB_BY[id];text(h[l],{font:BLD,color:C.forest,size:12,gap:1});text(T('Mi acción: ','My action: ')+habAction(h),{gap:1});text(T('Cuándo empiezo: ','When I start: ')+(whenLabel(id)?whenLabel(id).toLowerCase()+'. ':'')+h.c[l],{color:C.soft,gap:8})});
   else bullet(T('Todavía no se eligieron hábitos. Puede volver a la estación 5 cuando lo desee.','You have not chosen habits yet. You can go back to station 5 whenever you like.'),{size:12});
   y-=8;box(T('Este documento es educativo y personal. No es un diagnóstico ni reemplaza la consulta con un profesional de la salud.','This document is educational and personal. It is not a diagnosis and does not replace a visit with a health professional.'),C.mint);
-  pdf.setTitle(T('Mi plan del Jardín Digestivo','My Digestive Garden Plan')+(name?' – '+name:''));pdf.setAuthor('Salud Integral');
+  pdf.setTitle(T('Mi plan del Jardín Digestivo','My Digestive Garden Plan')+(name?' – '+name:''));pdf.setAuthor(T('Salud Integral','Holistic Wellness'));
   return pdf.save();
 }
 window.__buildPDF=buildPDF;
