@@ -27,7 +27,7 @@ async function buildPDF(){
   const newPage=(title)=>{page=pdf.addPage([W,H]);pageNo++;page.drawRectangle({x:0,y:0,width:W,height:H,color:C.cream});
     page.drawRectangle({x:0,y:H-70,width:W,height:70,color:C.mint});
     page.drawText(title,{x:M,y:H-46,size:24,font:SER,color:C.forest});
-    page.drawText(T('Salud Integral','Holistic Wellness')+' · '+T('Mi Jardín Digestivo','My Digestive Garden'),{x:M,y:22,size:9,font:SAN,color:C.soft});
+    page.drawText(T('Salud Integral','Holistic Wellness')+' · Tatiana Fait Shaw · '+T('Mi Jardín Digestivo','My Digestive Garden'),{x:M,y:22,size:9,font:SAN,color:C.soft});
     page.drawText(String(pageNo),{x:W-M-8,y:22,size:9,font:SAN,color:C.soft});
     y=H-100};
   const need=h=>{if(y-h<50)newPage(T('Mi jardín (continuación)','My garden (continued)'))};
@@ -44,7 +44,7 @@ async function buildPDF(){
   page=pdf.addPage([W,H]);pageNo++;page.drawImage(img,{x:0,y:(H-ih)/2,width:W,height:ih});
   page.drawRectangle({x:50,y:H-290,width:W-100,height:235,color:C.cream,opacity:.86,borderColor:C.line,borderWidth:.6});
   const ct=(t,f,s,yy,col)=>{const w=f.widthOfTextAtSize(t,s);page.drawText(t,{x:(W-w)/2,y:yy,size:s,font:f,color:col||C.forest})};
-  ct('SALUD INTEGRAL',BLD,10,H-84,C.terra);
+  ct(T('SALUD INTEGRAL','HOLISTIC WELLNESS'),BLD,10,H-84,C.terra);
   ct(T('Mi plan del','My Digestive'),SER,38,H-135);ct(T('Jardín Digestivo','Garden Plan'),SER,38,H-182);
   const sub=wrap(SAN,13,T('Su guía práctica para una mejor digestión y bienestar','Your practical guide to better digestion and wellbeing'),380);sub.forEach((ln,i)=>ct(ln,SAN,13,H-212-i*17,C.soft));
   const who=name?T('Para '+name,'For '+name):T('Mi jardín','My garden');
@@ -103,6 +103,22 @@ async function buildPDF(){
   if(picks.length)picks.forEach(id=>{const h=HAB_BY[id];text(h[l],{font:BLD,color:C.forest,size:12,gap:1});text(T('Mi acción: ','My action: ')+habAction(h),{gap:1});text(T('Cuándo empiezo: ','When I start: ')+(whenLabel(id)?whenLabel(id).toLowerCase()+'. ':'')+h.c[l],{color:C.soft,gap:8})});
   else bullet(T('Todavía no se eligieron hábitos. Puede volver a la estación 5 cuando lo desee.','You have not chosen habits yet. You can go back to station 5 whenever you like.'),{size:12});
   y-=8;box(T('Este documento es educativo y personal. No es un diagnóstico ni reemplaza la consulta con un profesional de la salud.','This document is educational and personal. It is not a diagnosis and does not replace a visit with a health professional.'),C.mint);
+  /* ---- Cierre: marca, nombre y contacto ---- */
+  {const Kt=T('Gracias por dedicar este tiempo a su bienestar.','Thank you for taking this time for your well-being.'),
+    Ks=T('Si desea acompañamiento personalizado, será un gusto atenderle.','If you would like personal support, I will be glad to hear from you.'),
+    rows=[['WhatsApp','+506 7221 2372','https://wa.me/50672212372'],[T('Correo','Email'),'terapiaholisticacr@gmail.com','mailto:terapiaholisticacr@gmail.com'],[T('Sitio web','Website'),T('saludintegral.site','saludintegral.site/en'),T('https://saludintegral.site/','https://saludintegral.site/en/')]],
+    sl=wrap(SAN,10.5,Ks,CW-56),h=112+sl.length*15+rows.length*20;
+    y-=14;need(h+8);
+    page.drawRectangle({x:M,y:y-h,width:CW,height:h,color:C.forest});
+    let ky=y-34;page.drawText(Kt,{x:M+28,y:ky,size:15,font:SER,color:C.cream});ky-=12;
+    sl.forEach(ln=>{ky-=15;page.drawText(ln,{x:M+28,y:ky,size:10.5,font:SAN,color:C.mint})});
+    ky-=30;page.drawText('Tatiana Fait Shaw',{x:M+28,y:ky,size:14,font:SER,color:C.cream});
+    ky-=15;page.drawText(T('Salud Integral','Holistic Wellness'),{x:M+28,y:ky,size:10,font:SAN,color:C.mint});ky-=8;
+    rows.forEach(r=>{ky-=20;page.drawText(r[0],{x:M+28,y:ky,size:10,font:SAN,color:C.mint});
+      page.drawText(r[1],{x:M+100,y:ky,size:10.5,font:BLD,color:C.cream});
+      const aw=BLD.widthOfTextAtSize(r[1],10.5),an=pdf.context.obj({Type:'Annot',Subtype:'Link',Rect:[M+100,ky-3,M+100+aw,ky+11],Border:[0,0,0],A:{Type:'Action',S:'URI',URI:PDFLib.PDFString.of(r[2])}});
+      page.node.addAnnot(pdf.context.register(an))});
+    y-=h}
   pdf.setTitle(T('Mi plan del Jardín Digestivo','My Digestive Garden Plan')+(name?' – '+name:''));pdf.setAuthor(T('Salud Integral','Holistic Wellness'));
   return pdf.save();
 }

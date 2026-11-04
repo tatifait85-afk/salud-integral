@@ -214,6 +214,26 @@
     var dh = dl2.length * 13 + 24; need(dh + 4);
     box(dh, C.cream, C.sage);
     var dy = y + 18; dl2.forEach(function (l) { font("Jost", "normal", 9, C.wood); doc.text(l, M + 14, dy); dy += 13; });
+    y += dh + 24;
+
+    /* ---------- Cierre: marca, nombre y contacto ---------- */
+    var EN_ = res.lang === "en";
+    var K = EN_
+      ? { t: "Thank you for taking this time for your well-being.", s: "If you would like personal support, I will be glad to hear from you.", brand: "Holistic Wellness", rows: [["WhatsApp", "+506 7221 2372", "https://wa.me/50672212372"], ["Email", "terapiaholisticacr@gmail.com", "mailto:terapiaholisticacr@gmail.com"], ["Website", "saludintegral.site/en", "https://saludintegral.site/en/"]] }
+      : { t: "Gracias por dedicar este tiempo a su bienestar.", s: "Si desea acompañamiento personalizado, será un gusto atenderle.", brand: "Salud Integral", rows: [["WhatsApp", "+506 7221 2372", "https://wa.me/50672212372"], ["Correo", "terapiaholisticacr@gmail.com", "mailto:terapiaholisticacr@gmail.com"], ["Sitio web", "saludintegral.site", "https://saludintegral.site/"]] };
+    var sl = lines(K.s, CW - 56, 10.5, "Jost", "normal");
+    var kh = 112 + sl.length * 15 + K.rows.length * 20; need(kh + 4);
+    box(kh, C.forest);
+    var ky = y + 34; font("Fraunces", "bold", 15, C.ivory); doc.text(K.t, M + 28, ky); ky += 12;
+    sl.forEach(function (l) { ky += 15; font("Jost", "normal", 10.5, C.sage); doc.text(l, M + 28, ky); });
+    ky += 30; font("Fraunces", "bold", 14, C.ivory); doc.text("Tatiana Fait Shaw", M + 28, ky);
+    ky += 15; font("Jost", "normal", 10, C.sage); doc.text(K.brand, M + 28, ky); ky += 8;
+    K.rows.forEach(function (r) {
+      ky += 20; font("Jost", "normal", 10, C.sage); doc.text(r[0], M + 28, ky);
+      font("Jost", "medium", 10.5, C.ivory); doc.text(r[1], M + 100, ky);
+      doc.link(M + 100, ky - 11, doc.getTextWidth(r[1]), 15, { url: r[2] });
+    });
+    y += kh;
 
     /* ---------- Pie de página ---------- */
     var total = doc.getNumberOfPages();

@@ -778,11 +778,31 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     setf("Fraunces", "bold", 10, C.forest); text(T.note_h, M + 18, Y_MAX - dh + 18);
     para(T.note, M + 18, Y_MAX - dh + 24, CW - 36, 9.3, 13.5, C.muted);
 
+    /* ========== 14. CIERRE: MARCA, NOMBRE Y CONTACTO ========== */
+    newPage(lang === "en" ? "Contact" : "Contacto");
+    (function () {
+      var EN_ = lang === "en";
+      var K = EN_
+        ? { t: "Thank you for taking this time for your well-being.", s: "If you would like personal support, I will be glad to hear from you.", rows: [["WhatsApp", "+506 7221 2372", "https://wa.me/50672212372"], ["Email", "terapiaholisticacr@gmail.com", "mailto:terapiaholisticacr@gmail.com"], ["Website", "saludintegral.site/en", "https://saludintegral.site/en/"]] }
+        : { t: "Gracias por dedicar este tiempo a su bienestar.", s: "Si desea acompañamiento personalizado, será un gusto atenderle.", rows: [["WhatsApp", "+506 7221 2372", "https://wa.me/50672212372"], ["Correo", "terapiaholisticacr@gmail.com", "mailto:terapiaholisticacr@gmail.com"], ["Sitio web", "saludintegral.site", "https://saludintegral.site/"]] };
+      var sl = wrap(K.s, CW - 56, 11, "Jost", "normal"), kh = 118 + sl.length * 16 + K.rows.length * 22;
+      box(M, y, CW, kh, C.forest, null, 8);
+      var ky = y + 36; setf("Fraunces", "bold", 16, C.cream); text(K.t, M + 28, ky); ky += 12;
+      sl.forEach(function (l) { ky += 16; setf("Jost", "normal", 11, C.pale); text(l, M + 28, ky); });
+      ky += 32; setf("Fraunces", "bold", 15, C.cream); text("Tatiana Fait Shaw", M + 28, ky);
+      ky += 16; setf("Jost", "normal", 10.5, C.pale); text(T.brand, M + 28, ky); ky += 8;
+      K.rows.forEach(function (r) {
+        ky += 22; setf("Jost", "normal", 10.5, C.pale); text(r[0], M + 28, ky);
+        setf("Jost", "medium", 11, C.cream); text(r[1], M + 104, ky);
+        doc.link(M + 104, ky - 11, doc.getTextWidth(r[1]), 15, { url: r[2] });
+      });
+    })();
+
     /* ---------- pie de página ---------- */
     var total = doc.getNumberOfPages();
     for (var p = 2; p <= total; p++) {
       doc.setPage(p); stroke(C.gold, 0.4); doc.line(M, H - 42, W - M, H - 42);
-      setf("Jost", "normal", 8, C.muted); text(T.brand, M, H - 28);
+      setf("Jost", "normal", 8, C.muted); text(T.brand + " · Tatiana Fait Shaw", M, H - 28);
       text(T.product, W / 2, H - 28, { align: "center" });
       text(fmt(T.page, { n: p, t: total }), W - M, H - 28, { align: "right" });
     }
