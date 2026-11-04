@@ -443,4 +443,4 @@ section[id]{scroll-margin-top:5rem}
 @media (max-width:420px){.bar{gap:.5rem}.brand{flex:0 1 auto;min-width:0}}
 @media (max-width:340px){.brand-name{font-size:.98rem}.brand .logo-mark{width:34px;height:34px}.search-btn,.lang{padding-inline:.3rem}}
 
-.trust-badge{display:block;width:min(18rem,100%);margin-top:1.4rem}.trust-badge img{display:block;width:100%;height:auto}
+.trust-badge{display:block;width:min(10.5rem,100%);margin-top:1.3rem}.trust-badge img{display:block;width:100%;height:auto}
