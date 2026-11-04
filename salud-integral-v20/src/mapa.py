@@ -93,8 +93,8 @@ def build_map(lang, B):
 {B.header(lang, "map")}
 <main id="main">
 <section class="mp-hero"><div class="container mp-hero-in">
+  <a class="pp-thumb" aria-label="{E(t["h1"])}" href="{LINKS["paypal_mapa"]}" target="_blank" rel="noopener"><img src="/assets/img/{B.prod_item(lang,"map")["img"]}.webp" alt="{E(B.prod_item(lang,"map")["alt"])}" width="1200" height="800" fetchpriority="high"></a>
   <div class="mp-copy">
-    <a class="pp-thumb" aria-label="{E(t["h1"])}" href="{LINKS["paypal_mapa"]}" target="_blank" rel="noopener"><img src="/assets/img/{B.prod_item(lang,"map")["img"]}.webp" alt="{E(B.prod_item(lang,"map")["alt"])}" width="1200" height="800" fetchpriority="high"></a>
     <p class="eyebrow">{E(t["eyebrow"])}</p>
     <h1>{E(t["h1"])}</h1><p class="lead">{E(t["lead"])}</p>
     <p class="mp-price"><span class="price price-lg">{E(t["price"])}</span> <span class="mp-pn">{E(t["price_note"])}</span></p>
@@ -103,7 +103,7 @@ def build_map(lang, B):
   </div>
   <aside class="mp-card" aria-labelledby="incl-h"><h2 id="incl-h">{E(t["incl_h"])}</h2><ul class="offer-list">{incl}</ul></aside>
 </div></section>
-<section class="section"><div class="container mp-narrow">
+<section class="section"><div class="container mp-wide">
   <h2>{E(t["how_h"])}</h2><ol class="mp-steps">{steps}</ol>
   <h2>{E(t["priv_h"])}</h2><p>{E(t["priv"])}</p>
 </div></section>

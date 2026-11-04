@@ -768,6 +768,7 @@ def product_page(key):
         it = prod_item(lang, key); c = COMMON[lang]; es = lang == "es"
         P = {"eq": PRODUCTS_WEIGHT, "free": PRODUCTS, "mind_p": PRODUCTS_MIND, "kab": PRODUCTS_SPIRIT}[key][lang]
         inc = "".join(f"<li>{E(x)}</li>" for x in it["inc"])
+        show_desc = it["desc"].strip() != it.get("short", it["desc"]).strip()
         if it["kind"] == "form":
             f = FOOD["es"]
             action = f'''<form class="rm-form" data-ml="{LINKS["mailerlite_programa"]}" data-ok="{E(f["free_ok"])}" data-err="{E(f["free_err"])}" novalidate>
@@ -793,10 +794,9 @@ def product_page(key):
     {action}
   </div>
 </div></section>
-<section class="section"><div class="container pp-narrow">
-  <p class="pp-desc">{E(it["desc"])}</p>
-  <h2>{E(P["incl"])}</h2><ul class="offer-list">{inc}</ul>
-  <h2>{E(P["deliv"])}</h2><p>{E(it["delivery"])}</p>
+<section class="section"><div class="container pp-body{"" if show_desc else " pp-solo"}">
+  {f'<div class="pp-main"><p class="pp-desc">{E(it["desc"])}</p>' + (f'<h2>{E(P["deliv"])}</h2><p>{E(it["delivery"])}</p>' if it["delivery"] else "") + '</div>' if show_desc else ""}
+  {f'<aside class="pp-card"><h2>{E(P["incl"])}</h2><ul class="offer-list">{inc}</ul>' + ('' if show_desc or not it["delivery"] else f'<h2 class="pp-h2b">{E(P["deliv"])}</h2><p>{E(it["delivery"])}</p>') + '</aside>' if it["inc"] else ""}
 </div></section>
 <section class="bridge bridge-note"><div class="container"><p>{E(P["note"] if P.get("note") else c["disclaimer"])}</p></div></section>
 </main>

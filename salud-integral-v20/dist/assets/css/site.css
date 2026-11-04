@@ -195,7 +195,7 @@ p{margin:0 0 1em} ul{margin:0;padding:0;list-style:none}
 @media (max-width:820px){.feature-in{grid-template-columns:1fr}.feature-img{max-width:26rem}}
 .books-3{grid-template-columns:repeat(3,minmax(0,12rem));justify-content:center;gap:1.8rem}
 @media (max-width:700px){.books-3{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:42%;justify-content:start}}
-.bridge-note{background:var(--mint)} .bridge-note p{margin:0;padding-block:1.6rem;text-align:center;color:var(--ink-soft);font-size:.95rem}
+.bridge-note{background:var(--mint)} .bridge-note p{margin:0 auto;padding-block:1.6rem;text-align:center;color:var(--ink-soft);font-size:.95rem}
 
 /* ---------- Footer ---------- */
 .site-footer{background:var(--forest);color:#E8E2D0;padding-top:3.2rem}
@@ -415,13 +415,19 @@ section[id]{scroll-margin-top:5rem}
 /* ---------- Páginas de producto / imágenes-enlace ---------- */
 .card-img a,.feature-img a,.ses-img a{display:block}
 .pp-hero{padding-block:2.6rem 1rem}
-.pp-in{display:grid;grid-template-columns:minmax(0,27rem) 1fr;gap:2.6rem;align-items:center}
+.pp-copy h1{font-size:clamp(2rem,3.8vw,3.1rem)}
+.pp-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.6rem,4vw,3.5rem);align-items:center}
 .pp-img,.pp-thumb{display:block;border-radius:18px;overflow:hidden;background:var(--cream);box-shadow:var(--shadow)}
 .pp-img img,.pp-thumb img{display:block;width:100%;height:auto}
 .pp-thumb{max-width:21rem;margin-bottom:1.2rem}
+.pp-body{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(1.6rem,4vw,3.5rem);align-items:start}
+.pp-main h2{margin-top:1.6rem;font-size:1.5rem}.pp-main .pp-desc{margin-top:0}
+.pp-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(1.4rem,3vw,2.2rem);box-shadow:var(--shadow)}.pp-card h2{font-size:1.5rem;margin-top:0}
+.pp-solo{grid-template-columns:1fr}.pp-solo .pp-card .offer-list{grid-template-columns:1fr 1fr;column-gap:2.4rem}.pp-h2b{margin-top:1.4rem}
+@media (max-width:820px){.pp-solo .pp-card .offer-list{grid-template-columns:1fr}}
 .pp-narrow{max-width:46rem} .pp-narrow h2{margin-top:2rem}
 .pp-desc{font-size:1.08rem}
-@media (max-width:820px){.pp-in{grid-template-columns:1fr;gap:1.6rem}.pp-img{max-width:26rem}}
+@media (max-width:820px){.pp-in,.pp-body{grid-template-columns:1fr;gap:1.6rem}}
 
 /* Crédito de Web Artesanal (pie de página) */
 .fcredit{padding-bottom:1.6rem;display:flex;justify-content:center}
