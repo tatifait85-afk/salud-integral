@@ -1354,7 +1354,7 @@ main{display:block;min-width:0;padding-block:28px 40px;outline:none}
       var again = $((up ? "[data-up=" : "[data-down=") + '"' + g + '"]'); if (again && !again.disabled) again.focus(); else { var alt = $((up ? "[data-down=" : "[data-up=") + '"' + g + '"]'); if (alt) alt.focus(); } return;
     }
     if (t.hasAttribute("data-clear")) { state.sel = []; lastBlob = null; save(); render(false); return; }
-    if (t.id === "payBtn") { save(); if (EQ.PAGO.paypal) root.location.href = EQ.PAGO.paypal; return; }
+    if (t.id === "payBtn") { save(); if (EQ.PAGO.paypal) { var w = root.open(EQ.PAGO.paypal, "_blank"); if (w) { try { w.opener = null; } catch (e) {} } else { root.location.href = EQ.PAGO.paypal; } } return; }
     if (t.id === "verBtn") { var tv = $("#fTx"); return verificar(tv ? tv.value : "", 1); }
     if (t.id === "genBtn") return generar();
     if (t.id === "againBtn") return otraVez();

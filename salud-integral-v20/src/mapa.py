@@ -98,7 +98,7 @@ def build_map(lang, B):
     <p class="eyebrow">{E(t["eyebrow"])}</p>
     <h1>{E(t["h1"])}</h1><p class="lead">{E(t["lead"])}</p>
     <p class="mp-price"><span class="price price-lg">{E(t["price"])}</span> <span class="mp-pn">{E(t["price_note"])}</span></p>
-    <p><a class="btn btn-primary" href="{LINKS["paypal_mapa"]}" rel="noopener">{E(t["buy"])} →</a></p>
+    <p><a class="btn btn-primary" href="{LINKS["paypal_mapa"]}" target="_blank" rel="noopener">{E(t["buy"])} →</a></p>
     <p class="mp-have"><a href="{acc}">{E(t["have"])}</a></p>
   </div>
   <aside class="mp-card" aria-labelledby="incl-h"><h2 id="incl-h">{E(t["incl_h"])}</h2><ul class="offer-list">{incl}</ul></aside>
