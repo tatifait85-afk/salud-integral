@@ -860,7 +860,22 @@ def main():
           + "".join(f"/assets/{d}/*\n{short}" for d in ("css", "js", "img", "jardin"))
           + "/privado/*\n  Cache-Control: private, no-store\n  X-Robots-Tag: noindex, nofollow\n"
           + "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n")
+    version_assets()
     print("páginas:", built)
+
+def version_assets():
+    """Añade ?v=<hash> a los CSS/JS del sitio para que el navegador cargue siempre la versión nueva tras cada cambio."""
+    import re, hashlib
+    def h(rel):
+        f = os.path.join(DIST, rel.lstrip("/"))
+        return hashlib.sha1(open(f, "rb").read()).hexdigest()[:8] if os.path.isfile(f) else None
+    pat = re.compile(r'(/assets/(?:css|js)/[A-Za-z0-9_.-]+\.(?:css|js))(")')
+    for root, _d, files in os.walk(DIST):
+        for n in files:
+            if not n.endswith(".html"): continue
+            f = os.path.join(root, n); t = open(f, encoding="utf-8").read()
+            t2 = pat.sub(lambda m: m.group(1) + ("?v=" + h(m.group(1)) if h(m.group(1)) else "") + m.group(2), t)
+            if t2 != t: open(f, "w", encoding="utf-8").write(t2)
 
 if __name__ == "__main__":
     main()
