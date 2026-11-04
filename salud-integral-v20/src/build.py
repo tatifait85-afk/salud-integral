@@ -501,6 +501,7 @@ def mind(lang):
 # ------------------------------------------------------------------ ACOMPAÑAMIENTO
 def session(lang):
     f = SESSION[lang]
+    badge = (f'<a class="trust-badge" href="{url(lang,"about")}" aria-label="HIPAA-trained medical interpreter"><img src="/assets/img/hipaa-trained-interpreter.webp" alt="HIPAA-trained medical interpreter" width="640" height="218" loading="lazy" decoding="async"></a>' if lang == "en" else "")
     cards = "".join(f'''<article class="acomp-card"><span class="ico">{icon(i,"ic ic-lg")}</span><h3>{E(t)}</h3><p>{E(d)}</p></article>''' for i, t, d in f["areas"])
     facts = "".join(f'<li><strong>{E(a)}</strong><span>{E(b)}</span></li>' for a, b in f["facts"])
     return f'''{head(lang,"session",f["title"],f["desc"],"/assets/img/"+f["hero_img"]+".webp")}
@@ -510,7 +511,8 @@ def session(lang):
   <div class="hero-copy">
     <p class="eyebrow">{E(f["eyebrow"])}</p>
     <h1>{E(f["h1"])}</h1><p class="lead">{E(f["lead"])}</p>
-    <a class="btn btn-primary" href="#productos">{E(f["cta"])} →</a></div>
+    <a class="btn btn-primary" href="#productos">{E(f["cta"])} →</a>
+    {badge}</div>
   <div class="fig"><img src="/assets/img/{f["hero_img"]}.webp" alt="{E(f["hero_alt"])}" width="1400" height="933" fetchpriority="high"></div>
 </div></section>
 
