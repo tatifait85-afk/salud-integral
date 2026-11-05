@@ -41,15 +41,15 @@ _SES_ES = dict(img="producto-sesion", alt="Dos mujeres conversando en línea, co
     name="Sesión en línea · 45 minutos",
     short="Hablemos sobre lo que necesita y encontremos juntos el mejor punto de partida.",
          desc="En Salud Integral le ofrecemos un espacio individual de acompañamiento en línea, adaptado a sus necesidades, objetivos y estilo de vida. El propósito es brindarle herramientas prácticas para el autocuidado, la regulación emocional y la construcción de hábitos saludables, respetando su ritmo y sus circunstancias personales.",
-    inc=["Una conversación individual en directo.", "Atención personalizada para escuchar sus inquietudes y necesidades.", "Respuestas a sus preguntas sobre nuestros servicios y herramientas.", "Orientación para identificar qué opción se ajusta mejor a sus objetivos.", "Un horario acordado según su disponibilidad."],
-    price="USD 50 · ₡25.000", delivery="Después de solicitar su sesión, coordinaremos el día y la hora. Nos encontraremos en línea para conversar con tranquilidad, resolver sus dudas y ayudarle a decidir cómo continuar. No tiene que tener todas las respuestas ni saber exactamente qué necesita. Podemos empezar por conversar.",
+    inc=["Acompañamiento individual personalizado según sus necesidades y objetivos.", "Herramientas prácticas para el autocuidado y la regulación emocional.", "Orientación para construir hábitos saludables, adaptados a su estilo de vida.", "Espacio de escucha y orientación respetando su ritmo y circunstancias personales."],
+    price="USD 50 · ₡25.000", delivery="Una sesión individual en línea de 45 minutos. Se coordina el horario por WhatsApp y el pago se confirma antes de la sesión.",
     kind="wa", msg="Hola Tatiana, quiero agendar una sesión en línea de 45 minutos", cta="Agendar por WhatsApp")
 _SES_EN = dict(img="producto-sesion", alt="Two women talking online, connected by a golden light",
     name="Online session · 45 minutes",
     short="Let's talk about what you need and find the best starting point together.",
          desc="At Salud Integral we offer an individual online support space, adapted to your needs, goals and lifestyle. The purpose is to give you practical tools for self-care, emotional regulation and building healthy habits, respecting your pace and your personal circumstances.",
-    inc=["A live one-on-one conversation.", "Personalized attention to listen to your concerns and needs.", "Answers to your questions about our services and tools.", "Guidance to identify which option best fits your goals.", "A time agreed according to your availability."],
-    price="USD 50", delivery="After you request your session, we will arrange the day and time. We will meet online to talk calmly, answer your questions and help you decide how to continue. You don't have to have all the answers or know exactly what you need. We can start by talking.",
+    inc=["Personalized one-on-one support according to your needs and goals.", "Practical tools for self-care and emotional regulation.", "Guidance to build healthy habits, adapted to your lifestyle.", "A space for listening and guidance that respects your pace and personal circumstances."],
+    price="USD 50", delivery="A 45-minute individual online session. The schedule is arranged via WhatsApp and payment is confirmed before the session.",
     kind="wa", msg="Hello Tatiana, I would like to book a 45-minute online session", cta="Book via WhatsApp")
 PRODUCTS_SPIRIT = {
 "es": dict(
