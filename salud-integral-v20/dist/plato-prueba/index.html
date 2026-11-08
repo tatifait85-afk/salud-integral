@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Mi Plato Inteligente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Tokens tomados del sitio en vivo (saludintegral.site): el diseño existente manda. */
+:root {
+  --ivory: #F7F3E8; --cream: #FBF8F1; --forest: #173A1E; --olive: #5F7318; --olive-d: #4B5C12;
+  --mint: #DCE8D2; --terra-d: #A9552F; --terra-bg: #F6E6DA; --ink: #3A2C22; --ink-soft: #5A4A3E;
+  --leaf: #2F6B2A; --amber-t: #7A4A00; --line: rgba(23, 58, 30, .16);
+  --r-lg: 24px; --r-md: 16px; --r-sm: 10px; --shadow: 0 10px 30px -14px rgba(23, 58, 30, .28);
+  --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Jost', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { overflow-x: clip; }
+body {
+  margin: 0; color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.5;
+  background-color: var(--ivory);
+  background-image:
+    radial-gradient(900px 520px at 88% -4%, rgba(168, 192, 138, .5), transparent 62%),
+    radial-gradient(800px 520px at -4% 42%, rgba(244, 214, 170, .4), transparent 62%),
+    linear-gradient(180deg, #F8F4E8 0%, #EAF1D9 50%, #F4EFD8 100%);
+  background-repeat: no-repeat; position: relative; overflow-x: clip;
+  padding-block: 20px 190px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; color: var(--forest); margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button, input, textarea { font: inherit; color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--forest); outline-offset: 3px; border-radius: 8px; }
+[tabindex="-1"]:focus { outline: none; }
+
+.decor { position: absolute; z-index: 0; pointer-events: none; background: no-repeat center / contain; }
+.decor-tr { top: 4px; right: -36px; width: 300px; height: 200px; background-image: url(img/decor-hojas.webp); }
+.decor-br { bottom: 4px; right: -44px; width: 320px; height: 214px; background-image: url(img/decor-olivo.webp); }
+.decor-bl { bottom: 8px; left: -10px; width: 130px; height: 138px; background-image: url(img/decor-rama.webp); opacity: .85; }
+
+.app { position: relative; z-index: 1; width: min(100%, 560px); margin: 0 auto; display: grid; gap: 14px; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.logo { display: inline-block; border-radius: 8px; padding-block: 5px; }
+.logo img { height: 46px; width: auto; }
+.langswitch { display: inline-flex; border: 1.5px solid var(--forest); border-radius: 999px; padding: 3px; background: var(--cream); }
+.langswitch button { border: 0; background: transparent; cursor: pointer; border-radius: 999px; min-height: 40px; min-width: 52px; padding: 0 12px; font-weight: 500; color: var(--forest); }
+.langswitch button[aria-pressed="true"] { background: var(--forest); color: var(--cream); }
+
+.card {
+  background: linear-gradient(180deg, #FCF9F2 0%, #F0F6E2 100%); border: 1.5px solid var(--line);
+  border-radius: 32px; box-shadow: var(--shadow); padding: 20px 18px 14px; display: grid;
+  grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0;
+}
+#view { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+h2.title { font-size: 28px; line-height: 1.15; }
+.hero h2 { font-size: 34px; line-height: 1.1; }
+.lead { margin-top: 8px; color: var(--ink-soft); font-size: 16px; }
+
+/* Inicio */
+.cta-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.cta { position: relative; display: grid; gap: 8px; justify-items: center; text-align: center; text-decoration: none; background: var(--cream); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 16px 12px 14px; min-width: 0; }
+.cta img { width: 64px; height: 64px; border-radius: 14px; mix-blend-mode: multiply; }
+.cta h3 { font-size: 19px; line-height: 1.15; font-weight: 500; }
+.cta p { font-size: 14px; color: var(--ink-soft); line-height: 1.35; }
+.go { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; background: var(--olive); color: #fff; margin-top: 4px; }
+.cta:hover .go, .cta:focus-visible .go { background: var(--olive-d); }
+.cta.small { padding: 12px 8px; } .cta.small img { width: 52px; height: 52px; } .cta.small h3 { font-size: 16px; }
+.cta-wide { grid-column: 1 / -1; }
+.tag-soon { font-size: 12px; font-weight: 600; color: var(--ink); border-radius: 999px; padding: 0 9px; background: rgba(255,255,255,.88); border: 1px solid var(--line); }
+.cta.c-peach { background: linear-gradient(160deg, #FFF1DF 0%, #F9D2A4 100%); } .cta.c-peach .go { background: var(--terra-d); }
+.cta.c-lav { background: linear-gradient(160deg, #F3EEFB 0%, #D8CAEF 100%); }
+.cta.c-mint { background: linear-gradient(160deg, #F2F8E7 0%, #CFE4B8 100%); }
+.cta.c-gold { background: linear-gradient(160deg, #FFF7DA 0%, #F3DE9A 100%); }
+.cta.c-rose { background: linear-gradient(160deg, #FDEEED 0%, #F5C9C6 100%); }
+.cta.c-sky { background: linear-gradient(160deg, #ECF5FB 0%, #C5DDEE 100%); }
+.cta[aria-disabled="true"] { cursor: default; }
+.homelang { display: grid; gap: 6px; color: var(--ink-soft); font-size: 15px; }
+
+/* Progreso */
+.steps { display: flex; justify-content: space-between; position: relative; margin: 0; padding: 0; list-style: none; }
+.steps::before { content: ""; position: absolute; left: 10%; right: 10%; top: 13px; height: 2px; background: linear-gradient(90deg, var(--leaf), rgba(47,107,42,.25) 40%, var(--line)); }
+.steps li { position: relative; display: grid; justify-items: center; gap: 4px; width: 20%; font-size: 11px; overflow-wrap: normal; hyphens: none; min-width: 0; color: var(--ink-soft); text-align: center; line-height: 1.15; }
+.steps .n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--ivory); border: 1.5px solid var(--forest); color: var(--forest); font-weight: 600; font-size: 13px; }
+.steps li.done .n { background: var(--leaf); border-color: var(--leaf); color: var(--cream); }
+.steps li.now .n { background: var(--olive); border-color: var(--olive); color: #fff; box-shadow: 0 0 0 4px var(--mint); }
+.steps li.now { color: var(--forest); font-weight: 600; }
+.qbar { height: 6px; border-radius: 999px; background: rgba(23,58,30,.12); overflow: hidden; }
+.qbar > span { display: block; height: 100%; background: var(--leaf); border-radius: 999px; }
+.stepcount { font-size: 14px; color: var(--ink-soft); }
+
+/* Opciones */
+.opts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.opt { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr) 22px; align-items: center; gap: 8px; text-align: left; cursor: pointer; min-height: 64px; padding: 8px 14px 8px 10px; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); box-shadow: 0 6px 16px -12px rgba(23,58,30,.45); }
+.opt.noimg { grid-template-columns: minmax(0, 1fr) 22px; padding-left: 14px; }
+.opt .ic { display: block; width: 48px; height: 48px; border-radius: 12px; overflow: hidden; background: var(--tile); }
+.opt .ic img { width: 48px; height: 48px; mix-blend-mode: multiply; }
+.opt .lbl { font-weight: 500; font-size: 17px; line-height: 1.15; display: grid; gap: 2px; }
+.opt .sub { font-size: 12.5px; font-weight: 500; color: var(--amber-t); }
+.tick { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--forest); display: grid; place-items: center; background: var(--cream); color: transparent; font-size: 13px; font-weight: 700; }
+.opt.radio .tick { border-radius: 999px; }
+.opt[aria-pressed="true"] { border: 2.5px solid var(--forest); background: var(--mint); padding: 6.5px 12.5px 6.5px 8.5px; }
+.opt.noimg[aria-pressed="true"] { padding-left: 12.5px; }
+.opt[aria-pressed="true"] .tick { background: var(--forest); color: var(--cream); }
+.t-peach { --tile: #F9D3A6; } .t-rose { --tile: #F5C3C0; } .t-gold { --tile: #F1DB8F; } .t-sage { --tile: #BFDDA6; } .t-sky { --tile: #BFD9EC; } .t-lav { --tile: #D3C3EE; }
+.cuis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.cu { position: relative; display: grid; grid-template-rows: auto auto; text-align: left; cursor: pointer; padding: 0; overflow: hidden; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); box-shadow: 0 6px 16px -12px rgba(23,58,30,.45); min-width: 0; }
+.cu img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.cu .lbl { font-size: 15px; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 8px 10px; font-weight: 500; line-height: 1.15; }
+.cu[aria-pressed="true"] { border: 3px solid var(--forest); background: var(--mint); }
+.cu[aria-pressed="true"] .tick { background: var(--forest); color: var(--cream); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--cream); border: 1.5px solid var(--line); cursor: pointer; font-weight: 500; }
+.chip[aria-pressed="true"] { background: var(--mint); border: 2.5px solid var(--forest); padding: 0 14.5px; }
+.chip[aria-pressed="true"]::before { content: "✓ "; font-weight: 700; }
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 500; font-size: 15px; color: var(--forest); }
+.field input, .field textarea { width: 100%; min-height: 48px; padding: 10px 14px; background: #fff; border: 1.5px solid var(--forest); border-radius: var(--r-sm); }
+.field textarea { min-height: 84px; resize: vertical; }
+.addrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.hint { font-size: 14.5px; color: var(--ink-soft); }
+.warn { font-size: 14.5px; color: var(--amber-t); background: #FFF4DC; border: 1.5px solid #C98A1B; border-radius: var(--r-sm); padding: 8px 12px; }
+.need { font-size: 14.5px; color: var(--terra-d); font-weight: 500; }
+
+.privacy { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; font-size: 13.5px; color: var(--ink-soft); line-height: 1.35; background: #E3EED6; border-radius: var(--r-md); padding: 10px 12px; }
+.privacy img { width: 40px; height: 40px; border-radius: 10px; mix-blend-mode: multiply; }
+.privacy a { color: var(--forest); font-weight: 500; }
+.pimg { display: block; border-radius: 10px; }
+
+.nav { position: sticky; bottom: 0; z-index: 3; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 10px; padding-block: 12px 6px; margin-inline: -4px; padding-inline: 4px; background: linear-gradient(180deg, rgba(240,246,226,0) 0%, #F0F6E2 38%); }
+.nav.stack { grid-template-columns: minmax(0, 1fr); } .nav.stack .btn-primary { order: -1; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 6px 16px; text-align: center; line-height: 1.2; border-radius: 999px; border: 1.7px solid transparent; font-weight: 500; font-size: 16.5px; cursor: pointer; text-decoration: none; }
+.btn-primary { background: var(--olive); color: #fff; } .btn-primary:hover { background: var(--olive-d); }
+.btn-primary[aria-disabled="true"] { background: #B9BFA6; color: #4a4f3a; cursor: not-allowed; }
+.btn-ghost { background: #FCF9F2; border-color: var(--forest); color: var(--forest); }
+.linkrow { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; font-size: 14.5px; }
+.textbtn { background: none; border: 0; padding: 8px 4px; min-height: 44px; color: var(--forest); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.confirm { display: grid; gap: 10px; background: var(--terra-bg); border: 1.5px solid var(--terra-d); border-radius: var(--r-md); padding: 14px; }
+.confirm .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.btn-danger { background: var(--terra-d); color: #fff; }
+
+/* Resumen */
+.sum { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.sum li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 10px 14px; }
+.sum .k { font-size: 13.5px; color: var(--ink-soft); font-weight: 500; }
+.sum .v { font-weight: 500; overflow-wrap: anywhere; }
+.sum .v.miss { color: var(--terra-d); }
+.sum .txt { display: grid; gap: 1px; min-width: 0; }
+.sum a { color: var(--forest); font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; }
+.toast { font-size: 14px; color: var(--amber-t); background: #FFF4DC; border-radius: var(--r-sm); padding: 6px 12px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .cta, .btn, .opt, .chip, .cu, .go { transition: background-color .15s ease, border-color .15s ease; }
+}
+@media (max-width: 420px) { .steps li { font-size: 10px; letter-spacing: -.1px; } .hero h2 { font-size: 30px; } h2.title { font-size: 25px; } .card { padding: 18px 14px 12px; } }
+@media (max-width: 600px) {
+  .decor-tr { display: none; } .decor-br { width: 200px; height: 134px; right: -40px; } .decor-bl { width: 90px; height: 96px; }
+  body { padding-block-end: 150px; }
+}
+
+/* Resultados */
+.notice { font-size: 14.5px; color: var(--amber-t); background: #FFF4DC; border: 1.5px solid #C98A1B; border-radius: var(--r-sm); padding: 10px 12px; }
+.badge-example { justify-self: start; font-size: 13px; font-weight: 600; color: var(--terra-d); background: var(--terra-bg); border-radius: 999px; padding: 2px 12px; }
+.recipes { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.recipe { display: grid; grid-template-columns: 112px minmax(0, 1fr); background: var(--cream); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; min-width: 0; }
+.recipe .photo { border: 0; padding: 0; cursor: pointer; background: var(--mint); display: block; min-height: 100%; }
+.recipe .photo img { width: 112px; height: 100%; min-height: 148px; object-fit: cover; }
+.recipe .body { padding: 12px 14px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.recipe:nth-child(3n+1) .body { background: #FFF0DD; } .recipe:nth-child(3n+2) .body { background: #E7F1DA; } .recipe:nth-child(3n) .body { background: #FBE3E0; }
+.recipe h3 { font-size: 18px; line-height: 1.18; }
+.meta { font-size: 14px; color: var(--ink-soft); }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; border-radius: 999px; padding: 2px 11px 2px 8px; justify-self: start; background: #fff; color: var(--leaf); border: 1.5px solid var(--leaf); line-height: 1.25; }
+.see { font-weight: 600; color: var(--forest); font-size: 15px; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; padding: 6px 0; text-align: left; cursor: pointer; min-height: 40px; justify-self: start; }
+.det { grid-column: 1 / -1; padding: 4px 16px 16px; background: var(--cream); display: grid; gap: 8px; }
+.det h4 { margin: 6px 0 0; font-family: var(--serif); color: var(--forest); font-size: 16px; }
+.det ul, .det ol { margin: 0; padding-left: 22px; display: grid; gap: 4px; font-size: 15.5px; }
+.spin { width: 38px; height: 38px; border-radius: 50%; border: 4px solid var(--mint); border-top-color: var(--leaf); }
+@media (prefers-reduced-motion: no-preference) { .spin { animation: spin 1s linear infinite; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading { display: grid; justify-items: center; gap: 12px; text-align: center; padding: 18px 0; }
+.errbox { display: grid; gap: 8px; background: var(--terra-bg); border: 1.5px solid var(--terra-d); border-radius: var(--r-md); padding: 14px; }
+.errbox h3 { font-size: 19px; color: var(--terra-d); }
+@media (max-width: 420px) { .recipe { grid-template-columns: 96px minmax(0, 1fr); } .recipe .photo img { width: 96px; } }
+</style>
+</head>
+<body>
+<div class="decor decor-tr" aria-hidden="true"></div>
+<div class="decor decor-br" aria-hidden="true"></div>
+<div class="decor decor-bl" aria-hidden="true"></div>
+
+<div class="app">
+  <header class="topbar">
+    <a class="logo" href="#inicio" id="logolink"><img id="logo" src="img/logo-es.webp" width="149" height="34" alt="Mi Plato Inteligente"></a>
+    <div class="langswitch" role="group" id="langgrp">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+  <main class="card">
+    <div id="view"></div>
+    <div class="privacy" id="privacy">
+      <a class="pimg" id="privimg" href="https://saludintegral.site/privacidad/" target="_blank" rel="noopener"><img src="img/icono-privacidad.webp" width="40" height="40" alt=""></a>
+      <p><span id="privtxt"></span> <a id="privlink" href="https://saludintegral.site/privacidad/" target="_blank" rel="noopener"></a></p>
+    </div>
+  </main>
+</div>
+
+<script src="reglas.js"></script>
+<script src="platos.js"></script>
+<script>
+(function () {
+  "use strict";
+  var KEY = "mpi-v1";
+  var T = function (es, en) { return { es: es, en: en }; };
+
+  /* ---------- Textos de la interfaz ---------- */
+  var UI = {
+    es: {
+      logoAlt: "Mi Plato Inteligente", langLabel: "Idioma", privacyUrl: "https://saludintegral.site/privacidad/",
+      priv: "Sus respuestas se guardan solo en este dispositivo. Para preparar la propuesta, se envían a un servicio de inteligencia artificial.", privl: "Política de privacidad",
+      h1: "Coma más saludable, con facilidad.", h1p: "Recetas personalizadas según su salud, sus gustos y lo que tiene en casa.",
+      c1: "Resolver mi comida de hoy", c1p: "Reciba tres recetas personalizadas en minutos.",
+      c2: "Organizar mis siete días", c2p: "Obtenga un menú completo, recetas y lista de compras.",
+      s1: "Por condición de salud", s2: "Por tipo de alimentación", s3: "Buscar por ingredientes", s4: "Consejos y recursos", soon: "Pronto",
+      resume: "Continuar donde quedó", start: "Empezar",
+      homelang: "Idioma de la aplicación: puede cambiarlo en cualquier momento con los botones ES y EN; sus respuestas se conservan.",
+      step: "Paso", of: "de", question: "Pregunta", progress: "Progreso",
+      ph: ["Ubicación", "Salud", "Preferencias", "Ingredientes", "Resultados"],
+      back: "Atrás", next: "Siguiente", skip: "Omitir", clear: "Borrar mis respuestas",
+      needAnswer: "Esta pregunta es necesaria para continuar.", needText: "Escriba el dato para continuar.",
+      required: "Necesaria", optional: "Puede omitirla.",
+      clearQ: "¿Borrar todas sus respuestas de este dispositivo? No se puede deshacer.", clearYes: "Sí, borrar", clearNo: "Cancelar",
+      noStore: "No fue posible guardar sus respuestas en este dispositivo. Se conservarán solo mientras esta página esté abierta.",
+      none: "Ninguna", noneM: "Ninguno", other: "Otra", otherM: "Otro",
+      notSup: "Aún sin reglas validadas",
+      change: "Cambiar", unanswered: "Sin indicar", missing: "Falta responder",
+      sumT: "Revise sus respuestas", sumP: "Puede cambiar cualquiera antes de continuar.",
+      getBtn: "Obtener mis recetas", getNeed: "Para continuar falta responder:",
+      resT: "Sus respuestas están completas", resP: "Las propuestas de recetas todavía no están activas. Se mostrarán únicamente cuando las reglas de salud estén documentadas con fuentes oficiales y el validador esté en funcionamiento. Hasta entonces no se muestra ninguna receta.",
+      resBack: "Revisar mis respuestas",
+      lbl: { pais: "Ubicación", cond: "Condiciones de salud", meds: "Medicamentos", alerg: "Alergias", dieta: "Tipo de alimentación", evita: "Prefiere evitar", cocina: "Cocina", tiempo: "Tiempo", porc: "Porciones", ingr: "Ingredientes en casa" },
+      min: "min", porcs: function (n) { return n + (n === 1 ? " porción" : " porciones"); }, mins: function (n) { return n + " min"; },
+      sep: ", "
+    },
+    en: {
+      logoAlt: "My Smart Plate", langLabel: "Language", privacyUrl: "https://saludintegral.site/en/privacy/",
+      priv: "Your answers are saved only on this device. To prepare your proposal, they are sent to an artificial intelligence service.", privl: "Privacy policy",
+      h1: "Eat healthier, with ease.", h1p: "Personalized recipes based on your health, your tastes and what you have at home.",
+      c1: "Find my meal for today", c1p: "Get three personalized recipes in minutes.",
+      c2: "Plan my seven days", c2p: "Get a complete menu, recipes and a shopping list.",
+      s1: "By health condition", s2: "By eating style", s3: "Search by ingredients", s4: "Tips and resources", soon: "Soon",
+      resume: "Continue where you left off", start: "Start",
+      homelang: "App language: you can switch at any time with the ES and EN buttons; your answers are kept.",
+      step: "Step", of: "of", question: "Question", progress: "Progress",
+      ph: ["Location", "Health", "Preferences", "Ingredients", "Results"],
+      back: "Back", next: "Next", skip: "Skip", clear: "Clear my answers",
+      needAnswer: "This question is required to continue.", needText: "Type the detail to continue.",
+      required: "Required", optional: "You can skip it.",
+      clearQ: "Clear all your answers from this device? This cannot be undone.", clearYes: "Yes, clear", clearNo: "Cancel",
+      noStore: "We could not save your answers on this device. They will be kept only while this page stays open.",
+      none: "None", noneM: "None", other: "Other", otherM: "Other",
+      notSup: "No validated rules yet",
+      change: "Change", unanswered: "Not specified", missing: "Still to answer",
+      sumT: "Review your answers", sumP: "You can change any of them before continuing.",
+      getBtn: "Get my recipes", getNeed: "To continue, please answer:",
+      resT: "Your answers are complete", resP: "Recipe proposals are not active yet. They will appear only once the health rules are documented with official sources and the validator is running. Until then, no recipe is shown.",
+      resBack: "Review my answers",
+      lbl: { pais: "Location", cond: "Health conditions", meds: "Medications", alerg: "Allergies", dieta: "Eating style", evita: "Prefers to avoid", cocina: "Cuisine", tiempo: "Time", porc: "Servings", ingr: "Ingredients at home" },
+      min: "min", porcs: function (n) { return n + (n === 1 ? " serving" : " servings"); }, mins: function (n) { return n + " min"; },
+      sep: ", "
+    }
+  };
+
+  /* ---------- Contenido del cuestionario ---------- */
+  var TILES = ["peach", "rose", "gold", "sage", "sky", "lav"];
+  var COND = [
+    ["cardiovascular", T("Cardiovascular", "Cardiovascular")], ["digestiva", T("Digestiva", "Digestive")],
+    ["embarazo", T("Embarazo", "Pregnancy")], ["endocrina", T("Endocrina", "Endocrine")],
+    ["genetica", T("Genética", "Genetic")], ["hematologica", T("Hematológica", "Blood-related")],
+    ["hepatica", T("Hepática", "Liver")], ["inmunologica", T("Inmunológica", "Immune")],
+    ["metabolica", T("Metabólica", "Metabolic")], ["musculoesqueletica", T("Musculoesquelética", "Musculoskeletal")],
+    ["neurologica", T("Neurológica", "Neurological")], ["renal", T("Renal", "Kidney")]
+  ].map(function (c) { return { id: c[0], img: "condicion-" + c[0], label: c[1] }; });
+  var ALERG = [
+    ["mariscos", "alergia-mariscos", T("Mariscos", "Shellfish")], ["huevo", "alergia-huevo", T("Huevo", "Egg")],
+    ["mani", "alergia-mani", T("Maní", "Peanuts")], ["nueces", "alergia-nueces-arbol", T("Nueces de árbol", "Tree nuts")],
+    ["pescado", "alergia-pescado", T("Pescado", "Fish")], ["sesamo", "alergia-sesamo", T("Sésamo", "Sesame")],
+    ["soya", "alergia-soya", T("Soya", "Soy")], ["leche", "alergia-leche", T("Leche", "Milk")], ["trigo", "alergia-trigo", T("Trigo", "Wheat")], ["sulfitos", "alergia-sulfitos", T("Sulfitos", "Sulfites")]
+  ].map(function (c) { return { id: c[0], img: c[1], label: c[2] }; });
+  var ALERG_OTRA_IMG = "alergia-otra";
+  var DIETA = [
+    ["omnivora", "tipo-alimentacion-omnivoro", T("Omnívora", "Omnivore")], ["vegetariana", "dieta-vegetariana", T("Vegetariana", "Vegetarian")],
+    ["vegana", "dieta-vegana", T("Vegana", "Vegan")], ["pescetariana", "tipo-alimentacion-pescetariano", T("Pescetariana", "Pescatarian")],
+    ["vegetal", "tipo-alimentacion-principalmente-vegetal", T("Principalmente vegetal", "Mostly plant-based")]
+  ].map(function (c) { return { id: c[0], img: c[1], label: c[2] }; });
+  var EVITA = [
+    ["gluten", "dieta-sin-gluten", T("Gluten", "Gluten")], ["lactosa", "dieta-sin-lactosa", T("Lactosa", "Lactose")],
+    ["lacteos", "tipo-alimentacion-sin-lacteos", T("Lácteos", "Dairy")]
+  ].map(function (c) { return { id: c[0], img: c[1], label: c[2] }; });
+  var COCINA = [
+    ["costarricense", T("Costarricense", "Costa Rican")], ["mexicana", T("Mexicana", "Mexican")], ["china", T("China", "Chinese")],
+    ["india", T("India", "Indian")], ["italiana", T("Italiana", "Italian")], ["japonesa", T("Japonesa", "Japanese")],
+    ["mediterranea", T("Mediterránea", "Mediterranean")], ["caribena", T("Caribeña", "Caribbean")],
+    ["estadounidense", T("Estadounidense", "American")]
+  ].map(function (c) { return { id: c[0], img: "cocina-" + c[0], label: c[1] }; });
+  var TIEMPOS = [15, 30, 45, 60];
+  var PORCIONES = [1, 2, 3, 4, 6];
+  var INGR = [
+    ["pollo", T("Pollo", "Chicken")], ["huevos", T("Huevos", "Eggs")], ["arroz", T("Arroz", "Rice")], ["frijoles", T("Frijoles", "Beans")],
+    ["tomate", T("Tomate", "Tomato")], ["cebolla", T("Cebolla", "Onion")], ["papa", T("Papa", "Potato")], ["zanahoria", T("Zanahoria", "Carrot")],
+    ["platano", T("Plátano", "Plantain")], ["atun", T("Atún", "Tuna")], ["pasta", T("Pasta", "Pasta")], ["brocoli", T("Brócoli", "Broccoli")]
+  ].map(function (c) { return { id: c[0], label: c[1] }; });
+
+  var Q = {
+    pais: { phase: 0, required: true,
+      title: T("¿Dónde se encuentra?", "Where are you?"),
+      lead: T("Así se sugieren ingredientes que se consiguen en su zona.", "This helps suggest ingredients that are easy to find where you are.") },
+    cond: { phase: 1, required: true,
+      title: T("¿Qué condiciones de salud desea que se tengan en cuenta?", "Which health conditions should we take into account?"),
+      lead: T("Elija todas las que correspondan. Si no tiene ninguna, elija «Ninguna».", "Select all that apply. If you have none, choose “None”.") },
+    meds: { phase: 1, required: true,
+      title: T("¿Toma medicamentos de forma regular?", "Do you take medications regularly?"),
+      lead: T("Algunos medicamentos pueden afectar qué alimentos convienen. Consulte siempre a su profesional de salud.", "Some medications can affect which foods are suitable. Always check with your health professional.") },
+    alerg: { phase: 1, required: true,
+      title: T("¿Tiene alguna alergia alimentaria?", "Do you have any food allergies?"),
+      lead: T("Elija todas las que correspondan. Si no tiene ninguna, elija «Ninguna».", "Select all that apply. If you have none, choose “None”.") },
+    dieta: { phase: 2, required: false,
+      title: T("¿Cómo describe su alimentación?", "How would you describe your eating style?"),
+      lead: T("Elija una opción.", "Choose one option.") },
+    evita: { phase: 2, required: false,
+      title: T("¿Hay algo que prefiera evitar?", "Is there anything you prefer to avoid?"),
+      lead: T("Elija todo lo que corresponda.", "Select everything that applies.") },
+    cocina: { phase: 2, required: false,
+      title: T("¿Qué tipo de cocina le apetece?", "What kind of cuisine do you feel like?"),
+      lead: T("Puede elegir varias.", "You can choose several.") },
+    tiempo: { phase: 2, required: false,
+      title: T("¿Cuánto tiempo tiene para cocinar y para cuántas personas?", "How much time do you have to cook, and for how many people?"),
+      lead: T("Elija el tiempo máximo y el número de porciones.", "Choose the maximum time and the number of servings.") },
+    ingr: { phase: 3, required: false,
+      title: T("¿Qué ingredientes tiene en casa?", "What ingredients do you have at home?"),
+      lead: T("Toque los que tenga o escriba otros.", "Tap the ones you have or type others.") }
+  };
+  var ORDER = ["pais", "cond", "meds", "alerg", "dieta", "evita", "cocina", "tiempo", "ingr"];
+  var ROUTES = ["inicio"].concat(ORDER, ["resumen", "resultados"]);
+
+  /* ---------- Estado y guardado ---------- */
+  function fresh() {
+    return { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es",
+      a: { pais: null, paisOtro: "", cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [] } };
+  }
+  var S = fresh(), storeOk = true, confirming = false;
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var o = JSON.parse(raw), f = fresh();
+        if (o && typeof o === "object") {
+          if (o.lang === "es" || o.lang === "en") f.lang = o.lang;
+          if (o.a && typeof o.a === "object") {
+            for (var k in f.a) {
+              var d = f.a[k], v = o.a[k];
+              if (Array.isArray(d)) { if (Array.isArray(v)) f.a[k] = v.filter(function (z) { return typeof z === "string"; }).slice(0, 60); }
+              else if (typeof d === "string") { if (typeof v === "string") f.a[k] = v.slice(0, 300); }
+              else if (typeof v === "string" || typeof v === "number") f.a[k] = v;
+            }
+          }
+          if (f.a.pais !== null && typeof f.a.pais !== "string") f.a.pais = null;
+          f.a.alerg = f.a.alerg.map(function (x) { return x === "crustaceos" ? "mariscos" : x; });
+        }
+        S = f;
+      }
+    } catch (e) { storeOk = false; }
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { if (storeOk) { storeOk = false; renderNotice(); } } }
+  function hasAny() {
+    var a = S.a;
+    return !!(a.pais || a.cond.length || a.meds || a.alerg.length || a.dieta || a.evita.length || a.cocina.length || a.tiempo || a.porc || a.ingr.length);
+  }
+
+  /* ---------- Utilidades ---------- */
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function L(x) { return x[S.lang]; }
+  function u() { return UI[S.lang]; }
+  function has(arr, id) { return arr.indexOf(id) > -1; }
+  function toggleMulti(arr, id) { var i = arr.indexOf(id); if (i > -1) arr.splice(i, 1); else arr.push(id); }
+  function toggleExcl(arr, id) { // "none" excluye al resto y viceversa
+    if (id === "none") { if (has(arr, "none")) arr.length = 0; else { arr.length = 0; arr.push("none"); } return; }
+    var n = arr.indexOf("none"); if (n > -1) arr.splice(n, 1);
+    toggleMulti(arr, id);
+  }
+  var ARROW = '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>';
+
+  /* ---------- Reglas de respuesta ---------- */
+  function answered(id) {
+    var a = S.a;
+    switch (id) {
+      case "pais": return a.pais === "cr" || (a.pais === "otro" && a.paisOtro.trim() !== "");
+      case "cond": return a.cond.length > 0 && (!has(a.cond, "otra") || a.condOtra.trim() !== "");
+      case "meds": return a.meds === "no" || a.meds === "si";
+      case "alerg": return a.alerg.length > 0 && (!has(a.alerg, "otra") || a.alergOtra.trim() !== "");
+      case "dieta": return !!a.dieta;
+      case "evita": return a.evita.length > 0 || a.evitaOtra.trim() !== "";
+      case "cocina": return a.cocina.length > 0;
+      case "tiempo": return !!(a.tiempo || a.porc);
+      case "ingr": return a.ingr.length > 0;
+    }
+    return false;
+  }
+  function missingCritical() { return ORDER.filter(function (id) { return Q[id].required && !answered(id); }); }
+  function needsText(id) { // elegida «Otra» pero sin texto
+    var a = S.a;
+    return (id === "pais" && a.pais === "otro" && !a.paisOtro.trim()) || (id === "cond" && has(a.cond, "otra") && !a.condOtra.trim()) || (id === "alerg" && has(a.alerg, "otra") && !a.alergOtra.trim());
+  }
+
+  /* ---------- Piezas de interfaz ---------- */
+  function optBtn(o) {
+    var cls = "opt" + (o.radio ? " radio" : "") + (o.img ? "" : " noimg");
+    var ic = o.img ? '<span class="ic t-' + TILES[o.i % TILES.length] + '"><img src="img/' + o.img + '.webp" width="48" height="48" alt=""></span>' : "";
+    return '<button type="button" class="' + cls + '" data-act="' + o.act + '" data-id="' + esc(o.id) + '" aria-pressed="' + (o.on ? "true" : "false") + '">' + ic +
+      '<span class="lbl"><span>' + esc(o.label) + '</span>' + (o.sub ? '<span class="sub">' + esc(o.sub) + '</span>' : "") + '</span><span class="tick" aria-hidden="true">✓</span></button>';
+  }
+  function chipBtn(act, id, label, on) {
+    return '<button type="button" class="chip" data-act="' + act + '" data-id="' + esc(id) + '" aria-pressed="' + (on ? "true" : "false") + '">' + esc(label) + '</button>';
+  }
+  function textField(key, label, value, multi) {
+    var idn = "f-" + key;
+    return '<div class="field"><label for="' + idn + '">' + esc(label) + '</label>' +
+      (multi ? '<textarea id="' + idn + '" data-text="' + key + '" maxlength="300">' + esc(value) + '</textarea>' : '<input id="' + idn + '" type="text" data-text="' + key + '" maxlength="120" value="' + esc(value) + '" autocomplete="off">') + '</div>';
+  }
+  function otherLabel(masc) { return masc ? u().otherM : u().other; }
+
+  function qBody(id) {
+    var a = S.a, h = "", x = u();
+    if (id === "pais") {
+      h += '<div class="opts" role="radiogroup" aria-labelledby="qt">' +
+        optBtn({ act: "pais", id: "cr", label: S.lang === "es" ? "Costa Rica" : "Costa Rica", on: a.pais === "cr", radio: 1 }) +
+        optBtn({ act: "pais", id: "otro", label: S.lang === "es" ? "Otro país" : "Another country", on: a.pais === "otro", radio: 1 }) + '</div>';
+      if (a.pais === "otro") h += textField("paisOtro", S.lang === "es" ? "Escriba el país" : "Type the country", a.paisOtro);
+    } else if (id === "cond") {
+      h += '<div class="opts" role="group" aria-labelledby="qt">' + COND.map(function (c, i) {
+        return optBtn({ act: "cond", id: c.id, img: c.img, i: i, label: L(c.label), sub: x.notSup, on: has(a.cond, c.id) });
+      }).join("") + '</div><div class="chips">' + chipBtn("cond", "none", x.none, has(a.cond, "none")) + chipBtn("cond", "otra", x.other + ": " + (S.lang === "es" ? "escribirla" : "type it in"), has(a.cond, "otra")) + '</div>';
+      if (has(a.cond, "otra")) h += textField("condOtra", S.lang === "es" ? "Escriba la condición" : "Type the condition", a.condOtra);
+      h += '<p class="hint">' + (S.lang === "es" ? "Por ahora ninguna condición tiene reglas validadas. Se irán activando una a una, con fuentes oficiales, y cada una indicará si su cobertura es validada, parcial o aún no compatible." : "For now no condition has validated rules. They will be activated one by one, with official sources, and each will show whether its coverage is validated, partial or not yet supported.") + '</p>';
+    } else if (id === "meds") {
+      h += '<div class="opts" role="radiogroup" aria-labelledby="qt">' +
+        optBtn({ act: "meds", id: "no", label: S.lang === "es" ? "No tomo medicamentos" : "I don't take medications", on: a.meds === "no", radio: 1 }) +
+        optBtn({ act: "meds", id: "si", label: S.lang === "es" ? "Sí, tomo medicamentos" : "Yes, I take medications", on: a.meds === "si", radio: 1 }) + '</div>';
+      if (a.meds === "si") h += textField("medsTxt", S.lang === "es" ? "¿Cuáles? (opcional)" : "Which ones? (optional)", a.medsTxt, true);
+    } else if (id === "alerg") {
+      h += '<div class="opts" role="group" aria-labelledby="qt">' + ALERG.map(function (c, i) {
+        return optBtn({ act: "alerg", id: c.id, img: c.img, i: i, label: L(c.label), sub: c.id === "mariscos" ? (S.lang === "es" ? "Crustáceos y moluscos" : "Crustaceans and molluscs") : "", on: has(a.alerg, c.id) });
+      }).join("") + optBtn({ act: "alerg", id: "otra", img: ALERG_OTRA_IMG, i: 10, label: x.other + (S.lang === "es" ? ": escribirla" : ": type it in"), on: has(a.alerg, "otra") }) + '</div>' +
+        '<div class="chips">' + chipBtn("alerg", "none", x.none, has(a.alerg, "none")) + '</div>';
+      if (has(a.alerg, "otra")) h += textField("alergOtra", S.lang === "es" ? "Escriba la alergia" : "Type the allergy", a.alergOtra);
+    } else if (id === "dieta") {
+      h += '<div class="opts" role="radiogroup" aria-labelledby="qt">' + DIETA.map(function (c, i) {
+        return optBtn({ act: "dieta", id: c.id, img: c.img, i: i, label: L(c.label), on: a.dieta === c.id, radio: 1 });
+      }).join("") + '</div>';
+    } else if (id === "evita") {
+      h += '<div class="opts" role="group" aria-labelledby="qt">' + EVITA.map(function (c, i) {
+        return optBtn({ act: "evita", id: c.id, img: c.img, i: i, label: L(c.label), on: has(a.evita, c.id) });
+      }).join("") + '</div>' + textField("evitaOtra", S.lang === "es" ? "Otro alimento a evitar (opcional)" : "Another food to avoid (optional)", a.evitaOtra);
+    } else if (id === "cocina") {
+      h += '<div class="cuis" role="group" aria-labelledby="qt">' + COCINA.map(function (c) {
+        var on = has(a.cocina, c.id);
+        return '<button type="button" class="cu" data-act="cocina" data-id="' + c.id + '" aria-pressed="' + on + '"><img src="img/' + c.img + '.webp" width="420" height="315" alt=""><span class="lbl"><span>' + esc(L(c.label)) + '</span><span class="tick" aria-hidden="true">✓</span></span></button>';
+      }).join("") + '<button type="button" class="cu" data-act="cocina" data-id="otra" aria-pressed="' + has(a.cocina, "otra") + '"><img src="img/cocina-otra.webp" width="420" height="315" alt=""><span class="lbl"><span>' + esc(x.other) + '</span><span class="tick" aria-hidden="true">✓</span></span></button></div>';
+    } else if (id === "tiempo") {
+      h += '<div class="field"><span id="tl" style="font-weight:500;color:var(--forest)">' + (S.lang === "es" ? "Tiempo máximo" : "Maximum time") + '</span><div class="chips" role="radiogroup" aria-labelledby="tl">' +
+        TIEMPOS.map(function (m) { return chipBtn("tiempo", String(m), x.mins(m), a.tiempo === m); }).join("") + '</div></div>' +
+        '<div class="field"><span id="pl" style="font-weight:500;color:var(--forest)">' + (S.lang === "es" ? "Porciones" : "Servings") + '</span><div class="chips" role="radiogroup" aria-labelledby="pl">' +
+        PORCIONES.map(function (m) { return chipBtn("porc", String(m), String(m), a.porc === m); }).join("") + '</div></div>';
+    } else if (id === "ingr") {
+      var custom = a.ingr.filter(function (v) { return v.indexOf("c:") === 0; });
+      h += '<div class="chips" role="group" aria-labelledby="qt">' + INGR.map(function (c) { return chipBtn("ingr", c.id, L(c.label), has(a.ingr, c.id)); }).join("") +
+        custom.map(function (v) { return chipBtn("ingr", v, v.slice(2), true); }).join("") + '</div>' +
+        '<div class="field"><label for="f-ingNew">' + (S.lang === "es" ? "Agregar otro ingrediente" : "Add another ingredient") + '</label><div class="addrow"><input id="f-ingNew" type="text" maxlength="40" autocomplete="off"><button type="button" class="btn btn-ghost" data-act="ingadd">' + (S.lang === "es" ? "Agregar" : "Add") + '</button></div></div>';
+    }
+    return h;
+  }
+
+  function stepsHtml(phase) {
+    return '<ol class="steps">' + u().ph.map(function (n, i) {
+      var cls = i < phase ? "done" : i === phase ? "now" : "";
+      return '<li class="' + cls + '"' + (i === phase ? ' aria-current="step"' : "") + '><span class="n">' + (i < phase ? "✓" : i + 1) + '</span><span>' + esc(n) + '</span></li>';
+    }).join("") + '</ol>';
+  }
+
+  function viewInicio() {
+    var x = u(), cont = hasAny();
+    var soon = function (cls, img, t, p) {
+      return '<a class="cta ' + cls + '" href="#inicio" aria-disabled="true" data-act="noop"><img src="img/' + img + '" width="' + (p ? 64 : 52) + '" height="' + (p ? 64 : 52) + '" alt=""><h3>' + esc(t) + '</h3>' + (p ? '<p>' + esc(p) + '</p>' : "") + '<span class="tag-soon">' + esc(x.soon) + '</span></a>';
+    };
+    var small = function (cls, img, t) { return soon("small " + cls, img, t, ""); };
+    return '<div class="hero"><h2 id="vt" tabindex="-1">' + esc(x.h1) + '</h2><p class="lead">' + esc(x.h1p) + '</p></div>' +
+      '<div class="cta-grid">' +
+      '<a class="cta c-peach cta-wide" href="#' + (cont ? "resumen" : "pais") + '"><img src="img/icono-tipo-cocina.webp" width="64" height="64" alt=""><h3>' + esc(x.c1) + '</h3><p>' + esc(x.c1p) + '</p><span class="go" aria-hidden="true">' + ARROW + '</span><span class="hint" style="color:var(--ink);font-weight:500">' + esc(cont ? x.resume : x.start) + '</span></a>' +
+      soon("c-lav cta-wide", "calendario.svg", x.c2, x.c2p) +
+      small("c-mint", "condiciones-salud.svg", x.s1) + small("c-gold", "alimentacion.svg", x.s2) +
+      small("c-rose", "icono-ingredientes-disponibles.webp", x.s3) + small("c-sky", "icono-consejos-recursos.webp", x.s4) + '</div>' +
+      '<p class="homelang">' + esc(x.homelang) + '</p>';
+  }
+
+  function viewQuestion(id) {
+    var x = u(), q = Q[id], idx = ORDER.indexOf(id), tot = ORDER.length, ok = answered(id);
+    var canNext = !q.required || ok;
+    var prev = idx === 0 ? "inicio" : ORDER[idx - 1], next = idx === tot - 1 ? "resumen" : ORDER[idx + 1];
+    var note = "";
+    if (!canNext) note = '<p class="need" id="need">' + esc(needsText(id) ? x.needText : x.needAnswer) + '</p>';
+    var h = '<div><span class="stepcount">' + esc(x.step + " " + (q.phase + 1) + " " + x.of + " 5 · " + x.ph[q.phase]) + ' — ' + esc(x.question + " " + (idx + 1) + "/" + tot) + '</span></div>' +
+      stepsHtml(q.phase) +
+      '<div class="qbar" role="progressbar" aria-label="' + esc(x.progress) + '" aria-valuemin="1" aria-valuemax="' + tot + '" aria-valuenow="' + (idx + 1) + '"><span style="width:' + Math.round((idx + 1) / tot * 100) + '%"></span></div>' +
+      '<div><h2 class="title" id="qt" tabindex="-1">' + esc(L(q.title)) + '</h2><p class="lead">' + esc(L(q.lead)) + ' ' + (q.required ? "" : esc(x.optional)) + '</p></div>' +
+      '<div id="qbody" style="display:grid;gap:14px;grid-template-columns:minmax(0,1fr)">' + qBody(id) + '</div>' + note +
+      '<div class="nav"><a class="btn btn-ghost" href="#' + prev + '">' + esc(x.back) + '</a>' +
+      '<a class="btn btn-primary" id="nextbtn" href="#' + next + '" data-act="next" data-id="' + id + '"' + (canNext ? "" : ' aria-disabled="true" aria-describedby="need"') + '>' + esc(x.next) + ' ' + ARROW + '</a></div>' +
+      '<div class="linkrow">' + (q.required ? "<span></span>" : '<a class="textbtn" href="#' + next + '">' + esc(x.skip) + '</a>') + clearBtn() + '</div>';
+    return h;
+  }
+  function clearBtn() {
+    if (confirming) {
+      return '<div class="confirm" role="alertdialog" aria-labelledby="cq" style="flex-basis:100%"><p id="cq">' + esc(u().clearQ) + '</p><div class="row"><button type="button" class="btn btn-ghost" data-act="clearno">' + esc(u().clearNo) + '</button><button type="button" class="btn btn-danger" data-act="clearyes">' + esc(u().clearYes) + '</button></div></div>';
+    }
+    return '<button type="button" class="textbtn" data-act="clear">' + esc(u().clear) + '</button>';
+  }
+
+  function labelsOf(list, ids, extra) {
+    var out = ids.map(function (id) {
+      if (id === "none") return null;
+      if (id === "otra") return extra ? extra : null;
+      var f = list.filter(function (c) { return c.id === id; })[0];
+      return f ? L(f.label) : null;
+    }).filter(Boolean);
+    return out;
+  }
+  function summaryValue(id) {
+    var a = S.a, x = u(), v;
+    switch (id) {
+      case "pais": return a.pais === "cr" ? "Costa Rica" : a.pais === "otro" ? a.paisOtro.trim() : "";
+      case "cond": if (has(a.cond, "none")) return x.none; v = labelsOf(COND, a.cond, a.condOtra.trim()); return v.join(x.sep);
+      case "meds": return a.meds === "no" ? (S.lang === "es" ? "No toma medicamentos" : "Takes no medications") : a.meds === "si" ? (S.lang === "es" ? "Sí toma medicamentos" : "Takes medications") + (a.medsTxt.trim() ? ": " + a.medsTxt.trim() : "") : "";
+      case "alerg": if (has(a.alerg, "none")) return x.none; v = labelsOf(ALERG, a.alerg, a.alergOtra.trim()); return v.join(x.sep);
+      case "dieta": var d = DIETA.filter(function (c) { return c.id === a.dieta; })[0]; return d ? L(d.label) : "";
+      case "evita": v = labelsOf(EVITA, a.evita, ""); if (a.evitaOtra.trim()) v.push(a.evitaOtra.trim()); return v.join(x.sep);
+      case "cocina": v = a.cocina.map(function (id) { var f = COCINA.filter(function (c) { return c.id === id; })[0]; return f ? L(f.label) : x.other; }); return v.join(x.sep);
+      case "tiempo": v = []; if (a.tiempo) v.push(x.mins(a.tiempo)); if (a.porc) v.push(x.porcs(a.porc)); return v.join(" · ");
+      case "ingr": v = a.ingr.map(function (id) { if (id.indexOf("c:") === 0) return id.slice(2); var f = INGR.filter(function (c) { return c.id === id; })[0]; return f ? L(f.label) : ""; }).filter(Boolean); return v.join(x.sep);
+    }
+    return "";
+  }
+  function viewResumen() {
+    var x = u(), miss = missingCritical();
+    var rows = ORDER.map(function (id) {
+      var val = summaryValue(id), crit = Q[id].required, m = !answered(id);
+      var shown = m ? (crit ? x.missing : x.unanswered) : val;
+      return '<li><span class="txt"><span class="k">' + esc(x.lbl[id === "porc" ? "porc" : id]) + '</span><span class="v' + (m && crit ? " miss" : "") + '">' + esc(shown) + '</span></span><a href="#' + id + '">' + esc(x.change) + '<span class="sr" style="position:absolute;left:-9999px"> — ' + esc(x.lbl[id]) + '</span></a></li>';
+    }).join("");
+    var warn = "";
+    if (miss.length) warn = '<p class="need">' + esc(x.getNeed) + ' ' + miss.map(function (id) { return '<a href="#' + id + '">' + esc(x.lbl[id]) + '</a>'; }).join(x.sep) + '.</p>';
+    return stepsHtml(4).replace(/<ol class="steps">/, '<ol class="steps">') +
+      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p></div><ul class="sum">' + rows + '</ul>' + warn +
+      '<div class="nav stack"><a class="btn btn-primary" href="#resultados" data-act="get"' + (miss.length ? ' aria-disabled="true"' : "") + '>' + esc(x.getBtn) + ' ' + ARROW + '</a>' +
+      '<a class="btn btn-ghost" href="#' + ORDER[ORDER.length - 1] + '">' + esc(x.back) + '</a></div>' +
+      '<div class="linkrow"><span></span>' + clearBtn() + '</div>';
+  }
+
+  /* ---------- Resultados ---------- */
+  var MPI = window.MPI_REGLAS, PLATOS = window.MPI_PLATOS;
+  var API = "https://api.saludintegral.site";
+  var LIVE = /(^|\.)saludintegral\.site$/.test(location.hostname) || window.__MPI_LIVE === true;
+  var RES = null;
+  function resetRes(sig) { return { sig: sig, state: "idle", recetas: [], reserva: [], vistos: [], code: null, retryAt: 0, simulated: !LIVE, n: 0, ctrl: null, cancelled: false }; }
+  RES = resetRes("");
+
+  var RS = {
+    es: {
+      loading: "Preparando sus propuestas…", slow: "Está tardando un poco más de lo habitual. Puede esperar o cancelar.", cancel: "Cancelar",
+      title: "Propuestas para hoy", leadN: function (n) { return n === 1 ? "Una propuesta pasó la revisión de sus restricciones." : n + " propuestas pasaron la revisión de sus restricciones."; },
+      fits: "Compatible con sus restricciones", see: "Ver receta", hide: "Ocultar receta", ing: "Ingredientes", steps: "Preparación",
+      min: function (n) { return n + " min"; }, srv: function (n) { return n + (n === 1 ? " porción" : " porciones"); },
+      photoNote: "Las fotos son ilustrativas del plato.", more: "Ver otras propuestas", edit: "Cambiar mis respuestas", retry: "Intentar de nuevo", wait: function (n) { return "Intentar de nuevo (" + n + " s)"; },
+      example: "Datos de ejemplo: esta vista previa no se conecta con Gemini",
+      cond: "Sus condiciones de salud o medicamentos todavía no tienen reglas validadas en esta aplicación. Estas propuestas respetan sus alergias y preferencias, pero no están ajustadas a su condición ni a sus medicamentos. Consulte a su profesional de salud.",
+      errT: "No se pudieron mostrar propuestas",
+      err: {
+        network: "No hay conexión con el servicio. Revise su conexión a internet e intente de nuevo.",
+        timeout: "El servicio tardó demasiado en responder. Intente de nuevo.",
+        rate_limited: "Hay demasiadas solicitudes en este momento. Espere un minuto e intente de nuevo.",
+        blocked: "No se pudo generar una propuesta con estos datos. Cambie alguna respuesta e intente de nuevo.",
+        incomplete: "La propuesta recibida estaba incompleta y no se mostrará. Intente de nuevo.",
+        invalid_response: "La respuesta recibida no tenía el formato esperado y no se mostrará. Intente de nuevo.",
+        upstream_error: "El servicio no está disponible en este momento. Intente de nuevo en unos minutos.",
+        upstream_timeout: "El servicio tardó demasiado en responder. Intente de nuevo.",
+        not_configured: "El servicio todavía no está configurado. Intente más tarde.",
+        forbidden_origin: "Esta página no tiene autorización para usar el servicio.",
+        bad_request: "La solicitud no es válida. Cambie alguna respuesta e intente de nuevo.",
+        too_large: "La solicitud es demasiado grande. Quite algunos ingredientes e intente de nuevo.",
+        noneValid: "Ninguna propuesta cumplió todas sus restricciones, así que no se muestra ninguna. Intente de nuevo o cambie alguna respuesta, por ejemplo los ingredientes.",
+        few: "No quedan más platos disponibles con sus restricciones. Cambie alguna respuesta para ver más opciones.",
+        other: "Ocurrió un error inesperado. Intente de nuevo."
+      },
+      avGen: "La aplicación excluye ingredientes. No garantiza la ausencia de trazas ni de contaminación cruzada: revise siempre las etiquetas de los productos envasados."
+    },
+    en: {
+      loading: "Preparing your suggestions…", slow: "This is taking a little longer than usual. You can wait or cancel.", cancel: "Cancel",
+      title: "Ideas for today", leadN: function (n) { return n === 1 ? "One idea passed the check against your restrictions." : n + " ideas passed the check against your restrictions."; },
+      fits: "Fits your restrictions", see: "View recipe", hide: "Hide recipe", ing: "Ingredients", steps: "Method",
+      min: function (n) { return n + " min"; }, srv: function (n) { return n + (n === 1 ? " serving" : " servings"); },
+      photoNote: "Photos are illustrative of the dish.", more: "See other ideas", edit: "Change my answers", retry: "Try again", wait: function (n) { return "Try again (" + n + " s)"; },
+      example: "Sample data: this preview does not connect to Gemini",
+      cond: "Your health conditions or medications do not have validated rules in this app yet. These ideas respect your allergies and preferences, but they are not adjusted to your condition or medications. Please check with your health professional.",
+      errT: "We could not show suggestions",
+      err: {
+        network: "Could not reach the service. Check your internet connection and try again.",
+        timeout: "The service took too long to respond. Please try again.",
+        rate_limited: "There are too many requests right now. Please wait a minute and try again.",
+        blocked: "A suggestion could not be generated with this information. Change an answer and try again.",
+        incomplete: "The suggestion received was incomplete and will not be shown. Please try again.",
+        invalid_response: "The response received did not have the expected format and will not be shown. Please try again.",
+        upstream_error: "The service is not available right now. Please try again in a few minutes.",
+        upstream_timeout: "The service took too long to respond. Please try again.",
+        not_configured: "The service is not set up yet. Please try again later.",
+        forbidden_origin: "This page is not authorized to use the service.",
+        bad_request: "The request is not valid. Change an answer and try again.",
+        too_large: "The request is too large. Remove some ingredients and try again.",
+        noneValid: "None of the suggestions met all your restrictions, so none is shown. Try again or change an answer, for example the ingredients.",
+        few: "No more dishes are available with your restrictions. Change an answer to see more options.",
+        other: "An unexpected error occurred. Please try again."
+      },
+      avGen: "The app excludes ingredients. It does not guarantee the absence of traces or cross-contamination: always check labels on packaged products."
+    }
+  };
+  function rs() { return RS[S.lang]; }
+
+  function splitLibres(t) { return String(t || "").split(/[,;\n]| y | and /i).map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 6); }
+  function perfil() {
+    var a = S.a, libres = [];
+    if (has(a.alerg, "otra")) libres = libres.concat(splitLibres(a.alergOtra));
+    libres = libres.concat(splitLibres(a.evitaOtra));
+    return { lang: S.lang, alergias: a.alerg.filter(function (x) { return x !== "none" && x !== "otra"; }), evitar: a.evita.slice(), dieta: a.dieta || null, libres: libres };
+  }
+  function condNotice() { var a = S.a; return (a.cond.length > 0 && !(a.cond.length === 1 && a.cond[0] === "none")) || a.meds === "si"; }
+
+  function platoOk(d, P, R) {
+    var nombre = d[0].replace(/-\d+$/, "").replace(/-/g, " ").replace(/^crema /, "sopa ");
+    return MPI.revisarIngrediente(nombre, P, R).ok && MPI.revisarEtiquetas(d[2], P, R);
+  }
+  function candidatos(P, excluir) {
+    var R = MPI.reglasDelPerfil(P);
+    return PLATOS.filter(function (d) { return excluir.indexOf(d[0]) < 0 && platoOk(d, P, R); });
+  }
+  function barajar(arr) { var a = arr.slice(), i, j, t; for (i = a.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function limpio(t, n) { return String(t).replace(/[\r\n{}\[\]"\\]/g, " ").replace(/\s+/g, " ").trim().slice(0, n); }
+
+  function armarPrompt(P, cands) {
+    var a = S.a, es = S.lang === "es", pref = a.cocina.filter(function (c) { return c !== "otra"; });
+    var pre = barajar(cands.filter(function (d) { return d[1].some(function (c) { return pref.indexOf(c) > -1; }); }));
+    var res = barajar(cands.filter(function (d) { return pre.indexOf(d) < 0; }));
+    var n = 24, lista, texto;
+    for (;;) {
+      lista = pre.slice(0, 16).concat(res).slice(0, n).map(function (d) { return d[0]; });
+      var dieta = P.dieta ? (DIETA.filter(function (x) { return x.id === P.dieta; })[0] || { label: T("", "") }).label : null;
+      var al = labelsOf(ALERG, P.alergias, "").concat(P.alergias.length ? [] : []);
+      var ev = labelsOf(EVITA, P.evitar, "");
+      var libres = P.libres.map(function (x) { return limpio(x, 40); });
+      var ingr = a.ingr.slice(0, 15).map(function (v) { if (v.indexOf("c:") === 0) return limpio(v.slice(2), 30); var f = INGR.filter(function (c) { return c.id === v; })[0]; return f ? L(f.label) : ""; }).filter(Boolean);
+      var pais = a.pais === "cr" ? "Costa Rica" : limpio(a.paisOtro, 40);
+      var cocinas = pref.map(function (c) { var f = COCINA.filter(function (x) { return x.id === c; })[0]; return f ? L(f.label) : ""; }).filter(Boolean);
+      if (es) {
+        texto = "Proponga 4 recetas distintas para una comida de hoy. Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]}. " +
+          "En \"plato\" use SOLO un id de esta lista y mantenga ese plato como base: " + lista.join(", ") + ". " +
+          "Ubicación: " + pais + "; use ingredientes de supermercado de ese lugar. " +
+          (al.length ? "Alergias (excluya por completo el alimento y todos sus derivados): " + al.join(", ") + ". " : "") +
+          (ev.length ? "Evitar: " + ev.join(", ") + ". " : "") + (libres.length ? "Evitar también: " + libres.join(", ") + ". " : "") +
+          (dieta ? "Tipo de alimentación: " + L(dieta) + ". " : "") + (cocinas.length ? "Cocinas preferidas: " + cocinas.join(", ") + ". " : "") +
+          (a.tiempo ? "Tiempo máximo: " + a.tiempo + " min. " : "") + (a.porc ? "Porciones: " + a.porc + ". " : "") +
+          (ingr.length ? "Ingredientes disponibles (priorícelos): " + ingr.join(", ") + ". " : "") +
+          "No afirme que una receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves por receta.";
+      } else {
+        texto = "Suggest 4 different recipes for a meal today. Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]}. " +
+          "For \"plato\" use ONLY an id from this list and keep that dish as the base: " + lista.join(", ") + ". " +
+          "Location: " + pais + "; use supermarket ingredients from that place. " +
+          (al.length ? "Allergies (exclude the food and all its derivatives entirely): " + al.join(", ") + ". " : "") +
+          (ev.length ? "Avoid: " + ev.join(", ") + ". " : "") + (libres.length ? "Also avoid: " + libres.join(", ") + ". " : "") +
+          (dieta ? "Eating style: " + L(dieta) + ". " : "") + (cocinas.length ? "Preferred cuisines: " + cocinas.join(", ") + ". " : "") +
+          (a.tiempo ? "Maximum time: " + a.tiempo + " min. " : "") + (a.porc ? "Servings: " + a.porc + ". " : "") +
+          (ingr.length ? "Available ingredients (prioritize them): " + ingr.join(", ") + ". " : "") +
+          "Do not claim any recipe is safe for any health condition. At most 12 ingredients and 6 short steps per recipe.";
+      }
+      if (texto.length <= 3900 || n <= 6) break;
+      n -= 4;
+    }
+    return texto;
+  }
+
+  var SAMPLE = {
+    es: [
+      { plato: "pollo-arroz-vegetales-vapor", titulo: "Pollo a la plancha con arroz y vegetales al vapor", tiempo_min: 30, porciones: 2, ingredientes: ["2 pechugas de pollo", "1 taza de arroz", "1 taza de brócoli", "1 zanahoria", "100 g de vainicas", "1 cdta de sal", "1 cda de aceite de oliva"], pasos: ["Cocine el arroz en el doble de agua con sal.", "Cocine al vapor el brócoli, la zanahoria y las vainicas durante 8 minutos.", "Dore las pechugas en una sartén con aceite, 6 minutos por lado.", "Sirva el pollo con el arroz y los vegetales."] },
+      { plato: "casado-vegetariano", titulo: "Casado vegetariano con plátano maduro", tiempo_min: 35, porciones: 2, ingredientes: ["1 taza de arroz", "1 taza de frijoles negros cocidos", "2 plátanos maduros", "1 tomate", "2 hojas de lechuga", "1 zanahoria rallada", "2 cdas de aceite"], pasos: ["Cocine el arroz y caliente los frijoles.", "Fría los plátanos en rodajas hasta que se doren.", "Arme el plato con la ensalada de tomate, lechuga y zanahoria."] },
+      { plato: "curry-vegetales-arroz", titulo: "Curry de vegetales con arroz", tiempo_min: 40, porciones: 2, ingredientes: ["1 taza de arroz", "1 papa", "1 zanahoria", "1 taza de coliflor", "1/2 taza de arvejas", "1 taza de leche de coco", "1 cda de curry en polvo", "1/2 cebolla"], pasos: ["Sofría la cebolla con el curry.", "Agregue los vegetales y la leche de coco y cocine 20 minutos.", "Sirva sobre el arroz cocido."] },
+      { plato: "tortillas-maiz-frijoles-aguacate", titulo: "Tortillas de maíz con frijoles y aguacate", tiempo_min: 15, porciones: 2, ingredientes: ["4 tortillas de maíz", "1 taza de frijoles negros cocidos", "1 aguacate", "1 limón", "sal al gusto"], pasos: ["Caliente las tortillas y los frijoles.", "Sirva los frijoles sobre las tortillas con el aguacate en láminas y unas gotas de limón."] },
+      { plato: "bowl-arroz-aguacate-pepino", titulo: "Bowl de arroz con aguacate y pepino", tiempo_min: 20, porciones: 2, ingredientes: ["1 taza de arroz cocido", "1 aguacate", "1 pepino", "1/2 taza de edamame", "1 cda de aceite de oliva", "1 limón"], pasos: ["Divida el arroz en dos bowls.", "Agregue el aguacate y el pepino en láminas y el edamame.", "Aliñe con aceite y limón."] },
+      { plato: "arroz-frito-huevo-vegetales", titulo: "Arroz frito con huevo y vegetales", tiempo_min: 20, porciones: 2, ingredientes: ["2 tazas de arroz cocido", "2 huevos", "1/2 taza de arvejas", "1 zanahoria picada", "2 cdas de aceite", "2 cdas de salsa de soya"], pasos: ["Revuelva los huevos en una sartén y apártelos.", "Saltee la zanahoria y las arvejas, agregue el arroz y la salsa de soya.", "Incorpore el huevo y sirva."] },
+      { plato: "tofu-salteado-vegetales", titulo: "Tofu salteado con vegetales", tiempo_min: 20, porciones: 2, ingredientes: ["200 g de tofu firme", "1 chile dulce", "1 taza de brócoli", "1 zanahoria", "1 cda de aceite", "1 cda de salsa de soya"], pasos: ["Dore el tofu en cubos.", "Agregue los vegetales y saltee 6 minutos.", "Termine con la salsa de soya."] }
+    ],
+    en: [
+      { plato: "pollo-arroz-vegetales-vapor", titulo: "Grilled chicken with rice and steamed vegetables", tiempo_min: 30, porciones: 2, ingredientes: ["2 chicken breasts", "1 cup rice", "1 cup broccoli", "1 carrot", "100 g green beans", "1 tsp salt", "1 tbsp olive oil"], pasos: ["Cook the rice in twice its volume of salted water.", "Steam the broccoli, carrot and green beans for 8 minutes.", "Brown the chicken in a frying pan with oil, 6 minutes per side.", "Serve the chicken with the rice and vegetables."] },
+      { plato: "casado-vegetariano", titulo: "Vegetarian casado with ripe plantain", tiempo_min: 35, porciones: 2, ingredientes: ["1 cup rice", "1 cup cooked black beans", "2 ripe plantains", "1 tomato", "2 lettuce leaves", "1 grated carrot", "2 tbsp oil"], pasos: ["Cook the rice and warm the beans.", "Fry the plantain slices until golden.", "Plate with the tomato, lettuce and carrot salad."] },
+      { plato: "curry-vegetales-arroz", titulo: "Vegetable curry with rice", tiempo_min: 40, porciones: 2, ingredientes: ["1 cup rice", "1 potato", "1 carrot", "1 cup cauliflower", "1/2 cup peas", "1 cup coconut milk", "1 tbsp curry powder", "1/2 onion"], pasos: ["Sauté the onion with the curry powder.", "Add the vegetables and coconut milk and cook for 20 minutes.", "Serve over the cooked rice."] },
+      { plato: "tortillas-maiz-frijoles-aguacate", titulo: "Corn tortillas with beans and avocado", tiempo_min: 15, porciones: 2, ingredientes: ["4 corn tortillas", "1 cup cooked black beans", "1 avocado", "1 lime", "salt to taste"], pasos: ["Warm the tortillas and the beans.", "Top the tortillas with beans, sliced avocado and a squeeze of lime."] },
+      { plato: "bowl-arroz-aguacate-pepino", titulo: "Rice bowl with avocado and cucumber", tiempo_min: 20, porciones: 2, ingredientes: ["1 cup cooked rice", "1 avocado", "1 cucumber", "1/2 cup edamame", "1 tbsp olive oil", "1 lime"], pasos: ["Divide the rice between two bowls.", "Add sliced avocado, cucumber and edamame.", "Dress with oil and lime."] },
+      { plato: "arroz-frito-huevo-vegetales", titulo: "Egg fried rice with vegetables", tiempo_min: 20, porciones: 2, ingredientes: ["2 cups cooked rice", "2 eggs", "1/2 cup peas", "1 chopped carrot", "2 tbsp oil", "2 tbsp soy sauce"], pasos: ["Scramble the eggs in a pan and set aside.", "Stir-fry the carrot and peas, then add the rice and soy sauce.", "Fold in the egg and serve."] },
+      { plato: "tofu-salteado-vegetales", titulo: "Stir-fried tofu with vegetables", tiempo_min: 20, porciones: 2, ingredientes: ["200 g firm tofu", "1 sweet pepper", "1 cup broccoli", "1 carrot", "1 tbsp oil", "1 tbsp soy sauce"], pasos: ["Brown the tofu cubes.", "Add the vegetables and stir-fry for 6 minutes.", "Finish with the soy sauce."] }
+    ]
+  };
+
+  function llamar(prompt) {
+    if (!LIVE) return new Promise(function (ok) { setTimeout(function () { ok({ ok: true, data: { recetas: SAMPLE[S.lang] } }); }, 900); });
+    var ctrl = new AbortController(), timedOut = false;
+    RES.ctrl = ctrl;
+    var timer = setTimeout(function () { timedOut = true; ctrl.abort(); }, window.__MPI_TIMEOUT || 30000);
+    return fetch(API + "/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: prompt, language: S.lang }), signal: ctrl.signal })
+      .then(function (res) {
+        return res.json().catch(function () { return null; }).then(function (body) {
+          clearTimeout(timer);
+          if (res.ok && body && body.ok && body.data) return { ok: true, data: body.data };
+          var code = body && body.error && body.error.code ? body.error.code : (res.status === 429 ? "rate_limited" : "other");
+          return { ok: false, code: code, retry: parseInt(res.headers.get("Retry-After"), 10) || 60 };
+        });
+      })
+      .catch(function (err) {
+        clearTimeout(timer);
+        if (err && err.name === "AbortError") return { ok: false, code: timedOut ? "timeout" : "cancel" };
+        return { ok: false, code: "network" };
+      });
+  }
+
+  function num(v) { var n = Math.round(Number(v)); return isFinite(n) && n > 0 && n < 1000 ? n : null; }
+  function recetaValida(x, P, R, ids) {
+    if (!x || typeof x !== "object") return null;
+    var tit = typeof x.titulo === "string" ? x.titulo.trim() : "";
+    if (tit.length < 3 || tit.length > 90 || typeof x.plato !== "string" || !ids[x.plato]) return null;
+    var okList = function (l, a, b, max) { return Array.isArray(l) && l.length >= a && l.length <= b && l.every(function (z) { return typeof z === "string" && z.trim().length >= 2 && z.length <= max; }); };
+    if (!okList(x.ingredientes, 2, 20, 120) || !okList(x.pasos, 1, 10, 400)) return null;
+    var textos = x.ingredientes.concat(x.pasos, [tit]);
+    for (var i = 0; i < textos.length; i++) { if (!MPI.revisarIngrediente(textos[i], P, R).ok) return null; }
+    if (!MPI.validarReceta({ ingredientes: x.ingredientes }, P).ok) return null;
+    return { plato: x.plato, titulo: tit, tiempo: num(x.tiempo_min), porciones: num(x.porciones), ingredientes: x.ingredientes.map(function (z) { return z.trim(); }), pasos: x.pasos.map(function (z) { return z.trim(); }) };
+  }
+  function filtrar(data, P, cands) {
+    var ids = {}; cands.forEach(function (d) { ids[d[0]] = 1; });
+    var R = MPI.reglasDelPerfil(P), vistos = {}, out = [];
+    (data && Array.isArray(data.recetas) ? data.recetas : []).forEach(function (x) {
+      var v = recetaValida(x, P, R, ids);
+      if (v && !vistos[v.plato]) { vistos[v.plato] = 1; out.push(v); }
+    });
+    return out;
+  }
+
+  function actualizar() { if (route() === "resultados") render(true); }
+  function mostrar() {
+    var tomar = RES.reserva.splice(0, 3);
+    RES.recetas = tomar; tomar.forEach(function (r) { RES.vistos.push(r.plato); });
+    RES.state = "ok"; actualizar();
+  }
+  function fallo(code, retry) {
+    RES.state = "error"; RES.code = code; RES.retryAt = code === "rate_limited" ? Date.now() + (retry || 60) * 1000 : 0; actualizar();
+  }
+  function intento(k, token) {
+    var P = perfil(), cands = candidatos(P, RES.vistos);
+    if (!cands.length) { fallo("few"); return; }
+    llamar(armarPrompt(P, cands)).then(function (r) {
+      if (token !== RES.n) return;
+      if (!r.ok) { if (r.code !== "cancel") fallo(r.code, r.retry); return; }
+      var validas = filtrar(r.data, P, cands);
+      if (validas.length) { RES.reserva = validas; mostrar(); }
+      else if (k < 2) intento(2, token);
+      else fallo("noneValid");
+    });
+  }
+  function lanzar(nuevo) {
+    if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} }
+    RES.n++; RES.state = "loading"; RES.code = null; RES.recetas = [];
+    if (nuevo) { RES.vistos = []; RES.reserva = []; }
+    var tk = RES.n; intento(1, tk);
+  }
+  function asegurarResultados() {
+    if (missingCritical().length) return;
+    var sig = JSON.stringify([S.lang, S.a]);
+    if (RES.sig !== sig) {
+      if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} }
+      var n = RES.n + 1; RES = resetRes(sig); RES.n = n - 1;
+      setTimeout(function () { lanzar(true); }, 0);
+      RES.state = "loading";
+    }
+  }
+  var slowTimer = null, waitTimer = null;
+  function viewResultados() {
+    if (missingCritical().length) { setTimeout(function () { location.hash = "#resumen"; }, 0); return ""; }
+    var x = u(), r = rs(), h = stepsHtml(4);
+    if (slowTimer) { clearTimeout(slowTimer); slowTimer = null; } if (waitTimer) { clearInterval(waitTimer); waitTimer = null; }
+    if (RES.state === "loading" || RES.state === "idle") {
+      slowTimer = setTimeout(function () { var e = $("#slow"); if (e) e.hidden = false; }, 12000);
+      return h + '<div class="loading" role="status"><div class="spin" aria-hidden="true"></div><h2 class="title" id="vt" tabindex="-1">' + esc(r.loading) + '</h2><p class="lead" id="slow" hidden>' + esc(r.slow) + '</p></div>' +
+        '<div class="nav stack"><a class="btn btn-ghost" href="#resumen" data-act="cancelar">' + esc(r.cancel) + '</a></div>';
+    }
+    if (RES.state === "error") {
+      var msg = r.err[RES.code] || r.err[/^http_/.test(RES.code) ? "upstream_error" : "other"];
+      var left = RES.retryAt ? Math.max(0, Math.ceil((RES.retryAt - Date.now()) / 1000)) : 0;
+      if (left > 0) waitTimer = setInterval(function () {
+        var b = $("#retrybtn"), l = Math.max(0, Math.ceil((RES.retryAt - Date.now()) / 1000));
+        if (!b) { clearInterval(waitTimer); return; }
+        if (l <= 0) { clearInterval(waitTimer); b.removeAttribute("aria-disabled"); b.textContent = r.retry; } else b.textContent = r.wait(l);
+      }, 1000);
+      return h + '<div class="errbox" role="alert"><h2 class="title" id="vt" tabindex="-1" style="font-size:22px">' + esc(r.errT) + '</h2><p>' + esc(msg) + '</p></div>' +
+        '<div class="nav stack"><button type="button" class="btn btn-primary" id="retrybtn" data-act="retry"' + (left > 0 ? ' aria-disabled="true"' : "") + '>' + esc(left > 0 ? r.wait(left) : r.retry) + '</button>' +
+        '<a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div>';
+    }
+    var cards = RES.recetas.map(function (c, i) {
+      var meta = [c.tiempo ? r.min(c.tiempo) : "", c.porciones ? r.srv(c.porciones) : ""].filter(Boolean).join(" · ");
+      return '<li class="recipe"><button type="button" class="photo" data-act="rtoggle" data-id="' + i + '" aria-label="' + esc(r.see + ": " + c.titulo) + '"><img src="img/platos/' + esc(c.plato) + '.webp" width="112" height="148" alt=""></button>' +
+        '<div class="body"><h3>' + esc(c.titulo) + '</h3>' + (meta ? '<p class="meta">' + esc(meta) + '</p>' : "") +
+        '<span class="pill"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>' + esc(r.fits) + '</span>' +
+        '<button type="button" class="see" data-act="rtoggle" data-id="' + i + '" aria-expanded="false" aria-controls="det' + i + '">' + esc(r.see) + '</button></div>' +
+        '<div class="det" id="det' + i + '" hidden><h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol></div></li>';
+    }).join("");
+    var avisos = [r.avGen]; if (has(S.a.alerg, "sulfitos")) avisos.push(MPI.AVISOS[S.lang].sulfitos); if (has(S.a.evita, "gluten")) avisos.push(MPI.AVISOS[S.lang].gluten);
+    if (perfil().libres.length) avisos.push(MPI.AVISOS[S.lang].libre);
+    return h + '<div><h2 class="title" id="vt" tabindex="-1">' + esc(r.title) + '</h2><p class="lead">' + esc(r.leadN(RES.recetas.length)) + '</p></div>' +
+      (RES.simulated ? '<span class="badge-example">' + esc(r.example) + '</span>' : "") +
+      (condNotice() ? '<p class="notice">' + esc(r.cond) + '</p>' : "") +
+      '<ul class="recipes">' + cards + '</ul><p class="hint">' + esc(r.photoNote) + '</p>' +
+      avisos.map(function (t) { return '<p class="hint">' + esc(t) + '</p>'; }).join("") +
+      '<div class="nav stack"><button type="button" class="btn btn-primary" data-act="mas">' + esc(r.more) + '</button><a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div>';
+  }
+
+  /* ---------- Render ---------- */
+  function route() { var h = (location.hash || "").replace(/^#/, ""); return ROUTES.indexOf(h) > -1 ? h : "inicio"; }
+  function chrome() {
+    var x = u(), lg = S.lang === "es" ? { s: "img/logo-es.webp", w: 149 } : { s: "img/logo-en.webp", w: 118 };
+    document.documentElement.lang = S.lang;
+    var im = $("#logo"); im.src = lg.s; im.width = lg.w; im.height = 34; im.alt = x.logoAlt;
+    $("#logolink").setAttribute("aria-label", x.logoAlt);
+    $("#langgrp").setAttribute("aria-label", x.langLabel);
+    document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === S.lang)); });
+    $("#privtxt").textContent = x.priv; var pl = $("#privlink"); pl.textContent = x.privl; pl.href = x.privacyUrl; $("#privimg").href = x.privacyUrl;
+    document.title = x.logoAlt;
+  }
+  function renderNotice() {
+    var n = $("#notice");
+    if (!storeOk) {
+      if (!n) { n = document.createElement("p"); n.id = "notice"; n.className = "toast"; n.setAttribute("role", "status"); $("#view").parentNode.insertBefore(n, $("#view")); }
+      n.textContent = u().noStore;
+    } else if (n) n.remove();
+  }
+  function render(focus) {
+    chrome();
+    var r = route(); if (r === "resultados") asegurarResultados();
+    var html = r === "inicio" ? viewInicio() : r === "resumen" ? viewResumen() : r === "resultados" ? viewResultados() : viewQuestion(r);
+    $("#view").innerHTML = html;
+    renderNotice();
+    if (focus) {
+      window.scrollTo(0, 0);
+      var t = $("#qt") || $("#vt"); if (t) t.focus({ preventScroll: true });
+    }
+  }
+  function refreshStepState() { // actualiza el botón Siguiente sin perder el foco de un campo de texto
+    var r = route(); if (ORDER.indexOf(r) < 0) return;
+    var q = Q[r], canNext = !q.required || answered(r), b = $("#nextbtn"), need = $("#need");
+    if (!b) return;
+    if (canNext) { b.removeAttribute("aria-disabled"); b.removeAttribute("aria-describedby"); if (need) need.remove(); }
+    else { b.setAttribute("aria-disabled", "true"); }
+  }
+
+  /* ---------- Eventos ---------- */
+  document.addEventListener("click", function (e) {
+    var lb = e.target.closest("[data-lang]");
+    if (lb) { S.lang = lb.getAttribute("data-lang"); save(); render(false); return; }
+    var el = e.target.closest("[data-act]"); if (!el) return;
+    var act = el.getAttribute("data-act"), id = el.getAttribute("data-id"), a = S.a;
+    if (act === "noop") { e.preventDefault(); return; }
+    if (act === "next") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); var nd = $("#need") || document.createElement("p"); if (!nd.id) { nd.id = "need"; nd.className = "need"; nd.setAttribute("role", "alert"); nd.textContent = u().needAnswer; $("#nextbtn").parentNode.parentNode.insertBefore(nd, $("#nextbtn").parentNode); } var f = $("#view .opt, #view .chip, #view input"); if (f) f.focus(); } return; }
+    if (act === "get") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); } return; }
+    if (act === "clear") { confirming = true; render(false); var c = $("#cq"); if (c) c.scrollIntoView({ block: "center" }); return; }
+    if (act === "clearno") { confirming = false; render(false); return; }
+    if (act === "clearyes") { var lang = S.lang; S = fresh(); S.lang = lang; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; return; }
+    if (act === "ingadd") { addIngredient(); return; }
+    if (act === "cancelar") { if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} } RES.n++; RES.sig = ""; return; }
+    if (act === "retry") { if (el.getAttribute("aria-disabled") === "true") return; lanzar(false); render(true); return; }
+    if (act === "mas") { if (RES.reserva.length) { mostrar(); } else { lanzar(false); render(true); } return; }
+    if (act === "rtoggle") { var li = el.closest(".recipe"), det = $(".det", li), btn = $(".see", li), op = det.hidden; det.hidden = !op; btn.setAttribute("aria-expanded", String(op)); btn.textContent = op ? rs().hide : rs().see; return; }
+    var keepFocus = id;
+    if (act === "pais") a.pais = id;
+    else if (act === "meds") a.meds = id;
+    else if (act === "dieta") a.dieta = (a.dieta === id ? null : id);
+    else if (act === "cond") toggleExcl(a.cond, id);
+    else if (act === "alerg") toggleExcl(a.alerg, id);
+    else if (act === "evita") toggleMulti(a.evita, id);
+    else if (act === "cocina") toggleMulti(a.cocina, id);
+    else if (act === "tiempo") a.tiempo = (a.tiempo === +id ? null : +id);
+    else if (act === "porc") a.porc = (a.porc === +id ? null : +id);
+    else if (act === "ingr") toggleMulti(a.ingr, id);
+    else return;
+    save(); render(false);
+    var again = document.querySelector('[data-act="' + act + '"][data-id="' + keepFocus + '"]'); if (again) again.focus({ preventScroll: true });
+    var tx = (act === "pais" && id === "otro") || (act === "cond" && id === "otra") || (act === "alerg" && id === "otra") || (act === "meds" && id === "si");
+    if (tx) { var inp = $("#qbody input, #qbody textarea"); if (inp) inp.focus({ preventScroll: true }); }
+  });
+  function addIngredient() {
+    var inp = $("#f-ingNew"); if (!inp) return;
+    var v = inp.value.replace(/\s+/g, " ").trim(); if (!v) { inp.focus(); return; }
+    var key = "c:" + v;
+    if (!has(S.a.ingr, key)) S.a.ingr.push(key);
+    save(); render(false); var n = $("#f-ingNew"); if (n) n.focus({ preventScroll: true });
+  }
+  document.addEventListener("input", function (e) {
+    var k = e.target.getAttribute && e.target.getAttribute("data-text"); if (!k) return;
+    S.a[k] = e.target.value; save(); refreshStepState();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && e.target.id === "f-ingNew") { e.preventDefault(); addIngredient(); }
+  });
+  window.addEventListener("hashchange", function () { confirming = false; render(true); });
+
+  load();
+  render(false);
+})();
+</script>
+</body>
+</html>
