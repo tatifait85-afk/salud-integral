@@ -5,14 +5,14 @@
 /* 1) ETIQUETAS: una por cada cosa que se puede excluir. Cada una lleva sus nombres y derivados (ES/EN).
       El motor busca estos nombres, sin tildes ni mayúsculas, como palabras completas (admite plural). */
 const ETIQUETAS = {
-  leche:     ["leche", "lacteo", "queso", "yogur", "yogurt", "mantequilla", "crema", "natilla", "requeson", "helado", "suero de leche", "caseina", "lactosa", "ghee", "nata", "mozzarella", "parmesano", "cheddar", "ricotta", "milk", "dairy", "cheese", "butter", "cream", "whey", "casein", "lactose", "ice cream"],
-  huevo:     ["huevo", "clara", "yema", "mayonesa", "merengue", "albumina", "egg", "mayonnaise", "meringue", "albumin"],
-  pescado:   ["pescado", "atun", "salmon", "sardina", "tilapia", "dorado", "corvina", "bacalao", "anchoa", "trucha", "mariscada", "salsa de pescado", "fish", "tuna", "cod", "anchovy", "trout", "fish sauce"],
+  leche:     ["leche", "lacteo", "queso", "yogur", "yogurt", "mantequilla", "crema", "natilla", "requeson", "helado", "suero de leche", "caseina", "lactosa", "ghee", "nata", "mozzarella", "parmesano", "cheddar", "ricotta", "paneer", "feta", "halloumi", "gouda", "brie", "burrata", "manchego", "gruyere", "provolone", "bechamel", "besamel", "milk", "dairy", "cheese", "butter", "cream", "whey", "casein", "lactose", "ice cream"],
+  huevo:     ["huevo", "clara", "yema", "mayonesa", "merengue", "albumina", "omelette", "omelet", "tortilla francesa", "egg", "mayonnaise", "meringue", "albumin"],
+  pescado:   ["pescado", "atun", "salmon", "sardina", "tilapia", "dorado", "corvina", "bacalao", "anchoa", "trucha", "mariscada", "salsa de pescado", "worcestershire", "salsa inglesa", "fish", "tuna", "cod", "anchovy", "trout", "fish sauce"],
   crustaceo: ["camaron", "cangrejo", "langosta", "langostino", "jaiba", "krill", "shrimp", "prawn", "crab", "lobster", "crayfish", "crawfish"],
   molusco:   ["calamar", "pulpo", "almeja", "mejillon", "ostion", "ostra", "caracol", "vieira", "squid", "octopus", "clam", "mussel", "oyster", "scallop", "snail"],
   mani:      ["mani", "cacahuate", "cacahuete", "peanut"],
-  soya:      ["soya", "soja", "tofu", "tempeh", "edamame", "miso", "salsa de soya", "salsa de soja", "soy", "soybean", "soy sauce"],
-  trigo:     ["trigo", "harina", "pan", "pasta", "fideo", "espagueti", "macarron", "tallarin", "semola", "cuscus", "bulgur", "seitan", "galleta", "empanizado", "pan molido", "tortilla de harina", "espelta", "kamut", "wheat", "flour", "bread", "noodle", "spaghetti", "couscous", "semolina", "breadcrumb", "cracker", "spelt"],
+  soya:      ["soya", "soja", "tofu", "tempeh", "edamame", "miso", "salsa de soya", "salsa de soja", "shoyu", "tamari", "natto", "soy", "soybean", "soy sauce"],
+  trigo:     ["trigo", "harina", "pan", "pasta", "fideo", "espagueti", "macarron", "tallarin", "semola", "cuscus", "bulgur", "seitan", "galleta", "penne", "lasana", "lasagna", "fusilli", "ravioli", "tortellini", "gnocchi", "noqui", "orzo", "udon", "ramen", "panko", "pita", "pizza", "tempura", "rebozado", "empanizado", "pan molido", "tortilla de harina", "espelta", "kamut", "wheat", "flour", "bread", "noodle", "spaghetti", "couscous", "semolina", "breadcrumb", "cracker", "spelt"],
   gluten_otros: ["centeno", "cebada", "avena", "malta", "cerveza", "rye", "barley", "oat", "oats", "malt", "beer"],
   nueces:    ["almendra", "nuez", "nueces", "pecana", "anacardo", "marañon", "maranon", "pistacho", "avellana", "macadamia", "castaña", "castana", "piñon", "pinon", "almond", "walnut", "pecan", "cashew", "pistachio", "hazelnut", "chestnut", "pine nut"], // el coco NO se incluye (criterio FDA, 2025)
   sesamo:    ["sesamo", "ajonjoli", "tahini", "tahina", "sesame"],

@@ -789,7 +789,13 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
   function platoOk(d, P, R) {
     var nombre = d[0].replace(/-\d+$/, "").replace(/-/g, " ").replace(/^crema /, "sopa ");
-    return MPI.revisarIngrediente(nombre, P, R).ok && MPI.revisarEtiquetas(d[2], P, R);
+    if (!MPI.revisarIngrediente(nombre, P, R).ok || !MPI.revisarEtiquetas(d[2], P, R)) return false;
+    if (R.vegetal) {
+      var an = {}, n = 0, tg = Array.from(MPI.detectar(nombre, P.lang).tags).concat(d[2]);
+      tg.forEach(function (t) { if (["pescado", "crustaceo", "molusco", "leche", "huevo", "miel"].indexOf(t) > -1 && !an[t]) { an[t] = 1; n++; } });
+      if (n > 1) return false;
+    }
+    return true;
   }
   function candidatos(P, excluir) {
     var R = MPI.reglasDelPerfil(P);
@@ -804,7 +810,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var res = barajar(cands.filter(function (d) { return pre.indexOf(d) < 0; }));
     var n = 24, lista, texto;
     for (;;) {
-      lista = pre.slice(0, 16).concat(res).slice(0, n).map(function (d) { return d[0]; });
+      lista = pre.slice(0, 16).concat(res).slice(0, n).map(function (d) { return d[0] + " (" + d[3] + " min)"; });
       var dieta = P.dieta ? (DIETA.filter(function (x) { return x.id === P.dieta; })[0] || { label: T("", "") }).label : null;
       var al = labelsOf(ALERG, P.alergias, "").concat(P.alergias.length ? [] : []);
       var ev = labelsOf(EVITA, P.evitar, "");
@@ -813,22 +819,22 @@ h2.title { font-size: 28px; line-height: 1.15; }
       var cocinas = pref.map(function (c) { var f = COCINA.filter(function (x) { return x.id === c; })[0]; return f ? L(f.label) : ""; }).filter(Boolean);
       if (es) {
         texto = "Proponga 2 recetas distintas para una comida de hoy. Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]}. " +
-          "En \"plato\" use SOLO un id de esta lista y mantenga ese plato como base: " + lista.join(", ") + ". " +
+          "En \"plato\" use SOLO un id de esta lista y mantenga ese plato como base. Cada elemento de la lista tiene el formato id (tiempo aproximado en minutos): en \"plato\" escriba SOLO el id, sin el tiempo. Si hay tiempo máximo, elija platos cuyo tiempo indicado no lo supere (si ninguno cabe, el más corto). Lista: " + lista.join(", ") + ". " +
           (al.length ? "Alergias (excluya por completo el alimento y todos sus derivados): " + al.join(", ") + ". " : "") +
           (ev.length ? "Evitar: " + ev.join(", ") + ". " : "") + (libres.length ? "Evitar también: " + libres.join(", ") + ". " : "") +
           (dieta ? "Tipo de alimentación: " + L(dieta) + ". " : "") + (cocinas.length ? "Cocinas preferidas: " + cocinas.join(", ") + ". " : "") +
           (a.tiempo ? "Tiempo máximo: " + a.tiempo + " min. " : "") + (a.porc ? "Porciones: " + a.porc + ". " : "") +
           (ingr.length ? "Ingredientes disponibles (priorícelos): " + ingr.join(", ") + ". " : "") +
-          "No afirme que una receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves por receta.";
+          "Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema». No afirme que una receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves por receta.";
       } else {
         texto = "Suggest 2 different recipes for a meal today. Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]}. " +
-          "For \"plato\" use ONLY an id from this list and keep that dish as the base: " + lista.join(", ") + ". " +
+          "For \"plato\" use ONLY an id from this list and keep that dish as the base. Each item in the list has the format id (approximate time in minutes): in \"plato\" write ONLY the id, without the time. If there is a maximum time, choose dishes whose listed time does not exceed it (if none fits, the shortest). List: " + lista.join(", ") + ". " +
           (al.length ? "Allergies (exclude the food and all its derivatives entirely): " + al.join(", ") + ". " : "") +
           (ev.length ? "Avoid: " + ev.join(", ") + ". " : "") + (libres.length ? "Also avoid: " + libres.join(", ") + ". " : "") +
           (dieta ? "Eating style: " + L(dieta) + ". " : "") + (cocinas.length ? "Preferred cuisines: " + cocinas.join(", ") + ". " : "") +
           (a.tiempo ? "Maximum time: " + a.tiempo + " min. " : "") + (a.porc ? "Servings: " + a.porc + ". " : "") +
           (ingr.length ? "Available ingredients (prioritize them): " + ingr.join(", ") + ". " : "") +
-          "Do not claim any recipe is safe for any health condition. At most 12 ingredients and 6 short steps per recipe.";
+          "Dishes whose id starts with «crema-» are dairy-free soups: in the title call them «soup» or «purée» and never «cream». Do not claim any recipe is safe for any health condition. At most 12 ingredients and 6 short steps per recipe.";
       }
       if (texto.length <= 3900 || n <= 6) break;
       n -= 4;
@@ -879,22 +885,33 @@ h2.title { font-size: 28px; line-height: 1.15; }
       });
   }
 
+  /* Los platos «crema-…» del catálogo son sopas sin lácteos: se nombran «sopa» para que la palabra «crema» no se confunda con el lácteo. */
+  function sinCrema(plato, t, titulo) {
+    if (typeof t !== "string" || typeof plato !== "string" || plato.indexOf("crema-") !== 0) return t;
+    if (S.lang === "es") return t.replace(/\bcrema\b/gi, function (m) { return m.charAt(0) === "C" ? "Sopa" : "sopa"; });
+    var r = t.replace(/\bcream of\s+/gi, "").replace(/\bcream\b/gi, "soup");
+    if (titulo && !/soup/i.test(r)) r = r.replace(/\s+$/, "") + " soup";
+    return r.charAt(0).toUpperCase() + r.slice(1);
+  }
   function num(v) { var n = Math.round(Number(v)); return isFinite(n) && n > 0 && n < 1000 ? n : null; }
   function recetaValida(x, P, R, ids) {
     if (!x || typeof x !== "object") return null;
-    var tit = typeof x.titulo === "string" ? x.titulo.trim() : "";
+    var tit = typeof x.titulo === "string" ? sinCrema(x.plato, x.titulo.trim(), true) : "";
+    var pas = Array.isArray(x.pasos) ? x.pasos.map(function (z) { return typeof z === "string" ? sinCrema(x.plato, z) : z; }) : x.pasos;
     if (tit.length < 3 || tit.length > 90 || typeof x.plato !== "string" || !ids[x.plato]) return null;
     var okList = function (l, a, b, max) { return Array.isArray(l) && l.length >= a && l.length <= b && l.every(function (z) { return typeof z === "string" && z.trim().length >= 2 && z.length <= max; }); };
-    if (!okList(x.ingredientes, 2, 20, 120) || !okList(x.pasos, 1, 10, 400)) return null;
-    var textos = x.ingredientes.concat(x.pasos, [tit]);
+    if (!okList(x.ingredientes, 2, 20, 120) || !okList(pas, 1, 10, 400)) return null;
+    var textos = x.ingredientes.concat(pas, [tit]);
     for (var i = 0; i < textos.length; i++) { if (!MPI.revisarIngrediente(textos[i], P, R).ok) return null; }
     if (!MPI.validarReceta({ ingredientes: x.ingredientes }, P).ok) return null;
-    return { plato: x.plato, titulo: tit, tiempo: num(x.tiempo_min), porciones: num(x.porciones), ingredientes: x.ingredientes.map(function (z) { return z.trim(); }), pasos: x.pasos.map(function (z) { return z.trim(); }) };
+    return { plato: x.plato, titulo: tit, tiempo: num(x.tiempo_min), porciones: num(x.porciones), ingredientes: x.ingredientes.map(function (z) { return z.trim(); }), pasos: pas.map(function (z) { return z.trim(); }) };
   }
+  function idPlato(v) { return typeof v === "string" ? v.replace(/\s*\(.*$/, "").trim() : v; }
   function filtrar(data, P, cands) {
     var ids = {}; cands.forEach(function (d) { ids[d[0]] = 1; });
     var R = MPI.reglasDelPerfil(P), vistos = {}, out = [];
     (data && Array.isArray(data.recetas) ? data.recetas : []).forEach(function (x) {
+      if (x && typeof x === "object") x.plato = idPlato(x.plato);
       var v = recetaValida(x, P, R, ids);
       if (v && !vistos[v.plato]) { vistos[v.plato] = 1; out.push(v); }
     });
@@ -1009,22 +1026,22 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var res = barajar(cands.filter(function (d) { return pre.indexOf(d) < 0; }));
     var n = 40, texto;
     for (;;) {
-      var lista = pre.slice(0, 20).concat(res).slice(0, n).map(function (d) { return d[0]; }).join(", ");
+      var lista = pre.slice(0, 20).concat(res).slice(0, n).map(function (d) { return d[0] + " (" + d[3] + " min)"; }).join(", ");
       texto = es
-        ? "Arme un menú de 7 días con almuerzo y cena. Responda solo con JSON: {\"dias\":[{\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"cantidad y nombre\"]}. Debe haber exactamente 7 elementos en \"dias\". En \"plato\" use SOLO un id de esta lista, repitiendo cada plato como máximo 2 veces en la semana: " + lista + ". " + restr(P, true) +
-          "\"compras\" es la lista de compras de toda la semana: máximo 35 ingredientes sin repetir, con cantidad aproximada. No afirme que ningún plato es seguro para una condición de salud."
-        : "Build a 7-day menu with lunch and dinner. Reply with JSON only: {\"dias\":[{\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"quantity and name\"]}. There must be exactly 7 items in \"dias\". For \"plato\" use ONLY an id from this list, repeating each dish at most 2 times in the week: " + lista + ". " + restr(P, false) +
-          "\"compras\" is the shopping list for the whole week: at most 35 ingredients without repeats, with approximate quantities. Do not claim any dish is safe for any health condition.";
+        ? "Arme un menú de 7 días con almuerzo y cena. Responda solo con JSON: {\"dias\":[{\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"cantidad y nombre\"]}. Debe haber exactamente 7 elementos en \"dias\". En \"plato\" use SOLO un id de esta lista, repitiendo cada plato como máximo 2 veces en la semana. Cada elemento de la lista tiene el formato id (tiempo aproximado en minutos): en \"plato\" escriba SOLO el id, sin el tiempo. Si hay tiempo máximo, elija platos cuyo tiempo indicado no lo supere (si ninguno cabe, el más corto). Lista: " + lista + ". " + restr(P, true) +
+          "\"compras\" es la lista de compras de toda la semana: máximo 35 ingredientes sin repetir, con cantidad aproximada. No afirme que ningún plato es seguro para una condición de salud. Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema»."
+        : "Build a 7-day menu with lunch and dinner. Reply with JSON only: {\"dias\":[{\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"quantity and name\"]}. There must be exactly 7 items in \"dias\". For \"plato\" use ONLY an id from this list, repeating each dish at most 2 times in the week. Each item in the list has the format id (approximate time in minutes): in \"plato\" write ONLY the id, without the time. If there is a maximum time, choose dishes whose listed time does not exceed it (if none fits, the shortest). List: " + lista + ". " + restr(P, false) +
+          "\"compras\" is the shopping list for the whole week: at most 35 ingredients without repeats, with approximate quantities. Do not claim any dish is safe for any health condition. Dishes whose id starts with «crema-» are dairy-free soups: in the title call them «soup» or «purée» and never «cream».";
       if (texto.length <= 3900 || n <= 10) break;
       n -= 4;
     }
     return texto;
   }
   function armarPromptUna(P, plato, titulo) {
-    var es = S.lang === "es", t = limpio(titulo, 90);
+    var es = S.lang === "es", t = limpio(titulo, 90), dd = PLATOS.filter(function (z) { return z[0] === plato; })[0], mm = dd && dd[3] ? dd[3] : 0;
     return es
-      ? "Escriba la receta completa de este plato: " + t + " (id: " + plato + "). Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]} con UNA sola receta y use exactamente el id indicado en \"plato\". " + restr(P, true) + "No afirme que la receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves."
-      : "Write the complete recipe for this dish: " + t + " (id: " + plato + "). Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]} with ONE recipe only and use exactly the given id in \"plato\". " + restr(P, false) + "Do not claim the recipe is safe for any health condition. At most 12 ingredients and 6 short steps.";
+      ? "Escriba la receta completa de este plato: " + t + " (id: " + plato + (mm ? "; tiempo aproximado: " + mm + " min" : "") + "). Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]} con UNA sola receta y use exactamente el id indicado en \"plato\". " + restr(P, true) + "Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema». No afirme que la receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves."
+      : "Write the complete recipe for this dish: " + t + " (id: " + plato + (mm ? "; approximate time: " + mm + " min" : "") + "). Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]} with ONE recipe only and use exactly the given id in \"plato\". " + restr(P, false) + "Dishes whose id starts with «crema-» are dairy-free soups: in the title call them «soup» or «purée» and never «cream». Do not claim the recipe is safe for any health condition. At most 12 ingredients and 6 short steps.";
   }
   function planSample() {
     var m = SAMPLE[S.lang], dias = [], comp = [], seen = {};
@@ -1038,7 +1055,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var R = MPI.reglasDelPerfil(P), cnt = {}, maxRep = Math.max(3, Math.ceil(14 / cands.length)), dias = [], i;
     var comida = function (m) {
       if (!m || typeof m !== "object") return null;
-      var t = typeof m.titulo === "string" ? m.titulo.trim() : "";
+      m.plato = idPlato(m.plato);
+      var t = typeof m.titulo === "string" ? sinCrema(m.plato, m.titulo.trim(), true) : "";
       if (t.length < 3 || t.length > 90 || typeof m.plato !== "string" || !ids[m.plato]) return null;
       if (!MPI.revisarIngrediente(t, P, R).ok) return null;
       cnt[m.plato] = (cnt[m.plato] || 0) + 1; if (cnt[m.plato] > maxRep) return null;
@@ -1053,7 +1071,6 @@ h2.title { font-size: 28px; line-height: 1.15; }
     for (i = 0; i < cp.length; i++) {
       if (typeof cp[i] !== "string" || cp[i].trim().length < 2 || cp[i].length > 80 || !MPI.revisarIngrediente(cp[i], P, R).ok) return null;
     }
-    if (!MPI.validarReceta({ ingredientes: cp }, P).ok) return null;
     return { dias: dias, compras: cp.map(function (z) { return z.trim(); }) };
   }
   function fallaPlan(code, retry) {
@@ -1098,7 +1115,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       llamar(armarPromptUna(P, m.plato, m.titulo), holder, { recetas: SAMPLE[S.lang].filter(function (z) { return z.plato === m.plato; }) }).then(function (r) {
         if (tk !== PLAN.n) return;
         var got = null;
-        if (r.ok) { var ids = {}; ids[m.plato] = 1; var R = MPI.reglasDelPerfil(P); (r.data && Array.isArray(r.data.recetas) ? r.data.recetas : []).forEach(function (x) { if (!got && x && x.plato === m.plato) got = recetaValida(x, P, R, ids); }); }
+        if (r.ok) { var ids = {}; ids[m.plato] = 1; var R = MPI.reglasDelPerfil(P); (r.data && Array.isArray(r.data.recetas) ? r.data.recetas : []).forEach(function (x) { if (x && typeof x === "object") x.plato = idPlato(x.plato); if (!got && x && x.plato === m.plato) got = recetaValida(x, P, R, ids); }); }
         PLAN.rec[key] = got ? { state: "ok", r: got } : { state: "error" };
         if (route() === "plan") { render(false); var b = document.querySelector('[data-act="prec"][data-id="' + key + '"]'); if (b) b.focus({ preventScroll: true }); }
       });
