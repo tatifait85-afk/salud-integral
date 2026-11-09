@@ -222,6 +222,32 @@ h2.title { font-size: 28px; line-height: 1.15; }
   .errbox, .loading { width: min(100%, 720px); margin-inline: auto; }
   .decor-tr { width: 380px; height: 254px; right: 0; } .decor-br { width: 400px; height: 268px; right: 0; } .decor-bl { width: 170px; height: 180px; }
 }
+
+.tips { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; grid-template-columns: minmax(0, 1fr); }
+.tip { background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 12px 14px; display: grid; gap: 4px; align-content: start; }
+.tip h3 { font-size: 18px; font-weight: 600; } .tip p { margin: 0; font-size: 15.5px; color: var(--ink-soft); }
+.subt { font-size: 22px; margin-top: 6px; }
+.days { align-items: start; display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; grid-template-columns: minmax(0, 1fr); }
+.day { background: var(--cream); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 14px; display: grid; gap: 10px; min-width: 0; align-content: start; }
+.day h3 { font-size: 20px; }
+.meal { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 8px 12px; align-items: center; padding-top: 10px; border-top: 1px solid var(--line); }
+.day h3 + .meal { border-top: 0; padding-top: 0; }
+.meal img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; }
+.meal .mt { display: grid; gap: 2px; min-width: 0; }
+.ml { font-size: 13px; font-weight: 600; color: var(--terra-d); } .mn { font-weight: 500; line-height: 1.2; overflow-wrap: anywhere; }
+.btn.sm { min-height: 44px; padding: 4px 14px; font-size: 15px; }
+.mdet { grid-column: 1 / -1; background: #fff; border: 1.5px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; display: grid; gap: 6px; }
+.mdet h4 { margin: 6px 0 0; font-family: var(--serif); font-size: 16px; color: var(--forest); }
+.mdet ul, .mdet ol { margin: 0; padding-left: 22px; display: grid; gap: 4px; font-size: 15.5px; }
+.mdet .meta { margin: 0; font-size: 14px; color: var(--ink-soft); }
+.shop { background: var(--cream); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 14px 16px; display: grid; gap: 8px; }
+.shop h3 { font-size: 20px; }
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; grid-template-columns: minmax(0, 1fr); }
+.checklist label { display: flex; gap: 10px; align-items: center; min-height: 44px; cursor: pointer; }
+.checklist input { width: 22px; height: 22px; accent-color: var(--forest); flex: none; }
+.checklist input:checked + span { text-decoration: line-through; color: var(--ink-soft); }
+@media (min-width: 900px) { .tips { grid-template-columns: repeat(2, minmax(0, 1fr)); } .days { grid-template-columns: repeat(2, minmax(0, 1fr)); } .checklist { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .meal { grid-template-columns: 56px minmax(0, 1fr); } .meal img { width: 56px; height: 56px; } .meal .btn { grid-column: 1 / -1; } }
 </style>
 </head>
 <body>
@@ -260,7 +286,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       logoAlt: "Mi Plato Inteligente", langLabel: "Idioma", privacyUrl: "https://saludintegral.site/privacidad/",
       priv: "Sus respuestas se guardan solo en este dispositivo. Para preparar la propuesta, se envían a un servicio de inteligencia artificial.", privl: "Política de privacidad",
       h1: "Coma más saludable, con facilidad.", h1p: "Recetas personalizadas según su salud, sus gustos y lo que tiene en casa.",
-      c1: "Resolver mi comida de hoy", c1p: "Reciba tres recetas personalizadas en minutos.",
+      c1: "Resolver mi comida de hoy", c1p: "Reciba dos recetas personalizadas en minutos.",
       c2: "Organizar mis siete días", c2p: "Obtenga un menú completo, recetas y lista de compras.",
       s1: "Por condición de salud", s2: "Por tipo de alimentación", s3: "Buscar por ingredientes", s4: "Consejos y recursos", soon: "Pronto",
       resume: "Continuar donde quedó", start: "Empezar",
@@ -287,7 +313,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       logoAlt: "My Smart Plate", langLabel: "Language", privacyUrl: "https://saludintegral.site/en/privacy/",
       priv: "Your answers are saved only on this device. To prepare your proposal, they are sent to an artificial intelligence service.", privl: "Privacy policy",
       h1: "Eat healthier, with ease.", h1p: "Personalized recipes based on your health, your tastes and what you have at home.",
-      c1: "Find my meal for today", c1p: "Get three personalized recipes in minutes.",
+      c1: "Find my meal for today", c1p: "Get two personalized recipes in minutes.",
       c2: "Plan my seven days", c2p: "Get a complete menu, recipes and a shopping list.",
       s1: "By health condition", s2: "By eating style", s3: "Search by ingredients", s4: "Tips and resources", soon: "Soon",
       resume: "Continue where you left off", start: "Start",
@@ -379,12 +405,80 @@ h2.title { font-size: 28px; line-height: 1.15; }
       lead: T("Toque los que tenga o escriba otros.", "Tap the ones you have or type others.") }
   };
   var ORDER = ["cond", "meds", "alerg", "dieta", "evita", "cocina", "tiempo", "ingr"];
-  var ROUTES = ["inicio"].concat(ORDER, ["resumen", "resultados"]);
+  var ENT = {
+    porcond: { q: "cond", next: "meds", ok: function () { return answered("cond"); } },
+    porestilo: { q: "dieta", next: "cond", ok: function () { return !!S.a.dieta; } },
+    poringr: { q: "ingr", next: "cond", ok: function () { return S.a.ingr.length > 0; } }
+  };
+  var ROUTES = ["inicio"].concat(ORDER, ["resumen", "resultados", "plan", "consejos"], Object.keys(ENT));
+
+  /* ---------- Textos de las secciones nuevas ---------- */
+  var X = {
+    es: {
+      entry: { porcond: "Empiece por su condición de salud; después le preguntaremos lo demás.", porestilo: "Empiece por su tipo de alimentación; después le preguntaremos lo demás.", poringr: "Empiece por los ingredientes que tiene en casa; después le preguntaremos lo demás." },
+      cont: "Continuar", needSel: "Elija al menos una opción para continuar.",
+      getPlan: "Armar mi menú", modeHoy: "Obtendrá recetas para su comida de hoy.", modePlan: "Obtendrá un menú de siete días con lista de compras.",
+      tipsT: "Consejos y recursos", tipsP: "Ideas sencillas para comer mejor todos los días.",
+      tips: [
+        ["Llene la mitad del plato con vegetales", "Combine colores: chayote, zanahoria, vainicas, tomate y hojas verdes. Variar aporta más vitaminas y fibra."],
+        ["Aproveche los frijoles y las lentejas", "Las leguminosas aportan fibra y proteína vegetal, y combinan muy bien con arroz y tortillas."],
+        ["Cocine con poca sal", "Dé sabor con culantro, orégano, ajo, cebolla y limón en lugar de agregar más sal."],
+        ["Elija granos integrales cuando pueda", "El arroz integral, la avena y el pan integral sacian más y aportan más fibra."],
+        ["Planifique y haga su lista de compras", "Un menú semanal evita compras innecesarias y reduce el desperdicio de comida."],
+        ["Lea las etiquetas", "En los productos envasados, revise siempre los ingredientes y las advertencias de alérgenos."],
+        ["Beba agua durante el día", "Tenga a mano una botella y prefiera el agua a las bebidas azucaradas."],
+        ["Guarde bien las sobras", "Refrigérelas dentro de las dos horas siguientes a cocinar y consúmalas en pocos días."]
+      ],
+      useT: "Cómo aprovechar Mi Plato Inteligente",
+      use: [
+        ["Indique sus alergias y lo que evita", "La aplicación excluye esos ingredientes de todas las propuestas."],
+        ["Marque lo que tiene en casa", "En «Buscar por ingredientes» elija lo que hay en su cocina para aprovecharlo."],
+        ["Cambie el idioma cuando quiera", "Use los botones ES y EN; sus respuestas se conservan."]
+      ],
+      tipsNote: "Son consejos generales de alimentación. No reemplazan la orientación de un profesional de salud.", tipsGo: "Empezar",
+      plan: {
+        loading: "Armando su menú…", title: "Su menú de siete días", lead: "Almuerzo y cena para cada día, con platos que pasaron la revisión de sus restricciones.",
+        day: function (n) { return "Día " + n; }, lunch: "Almuerzo", dinner: "Cena",
+        shopT: "Lista de compras", shopP: "Marque lo que ya tiene en casa.", recLoad: "Preparando la receta…", recErr: "No se pudo preparar la receta. Toque de nuevo para intentarlo.",
+        another: "Armar otro menú"
+      }
+    },
+    en: {
+      entry: { porcond: "Start with your health condition; we will ask the rest afterwards.", porestilo: "Start with your eating style; we will ask the rest afterwards.", poringr: "Start with the ingredients you have at home; we will ask the rest afterwards." },
+      cont: "Continue", needSel: "Choose at least one option to continue.",
+      getPlan: "Build my menu", modeHoy: "You will get recipes for your meal today.", modePlan: "You will get a seven-day menu with a shopping list.",
+      tipsT: "Tips and resources", tipsP: "Simple ideas to eat better every day.",
+      tips: [
+        ["Fill half your plate with vegetables", "Mix colors: chayote, carrot, green beans, tomato and leafy greens. Variety brings more vitamins and fiber."],
+        ["Make the most of beans and lentils", "Legumes provide fiber and plant protein, and pair well with rice and tortillas."],
+        ["Cook with less salt", "Add flavor with cilantro, oregano, garlic, onion and lime instead of more salt."],
+        ["Choose whole grains when you can", "Brown rice, oats and whole-grain bread are more filling and have more fiber."],
+        ["Plan and make a shopping list", "A weekly menu avoids unnecessary purchases and reduces food waste."],
+        ["Read the labels", "On packaged products, always check the ingredients and the allergen warnings."],
+        ["Drink water through the day", "Keep a bottle at hand and choose water over sugary drinks."],
+        ["Store leftovers well", "Refrigerate them within two hours of cooking and eat them within a few days."]
+      ],
+      useT: "Getting the most out of My Smart Plate",
+      use: [
+        ["Tell us your allergies and what you avoid", "The app excludes those ingredients from every suggestion."],
+        ["Mark what you have at home", "In “Search by ingredients”, choose what is in your kitchen to make use of it."],
+        ["Switch language any time", "Use the ES and EN buttons; your answers are kept."]
+      ],
+      tipsNote: "These are general eating tips. They do not replace the guidance of a health professional.", tipsGo: "Start",
+      plan: {
+        loading: "Building your menu…", title: "Your seven-day menu", lead: "Lunch and dinner for each day, with dishes that passed the check against your restrictions.",
+        day: function (n) { return "Day " + n; }, lunch: "Lunch", dinner: "Dinner",
+        shopT: "Shopping list", shopP: "Tick what you already have at home.", recLoad: "Preparing the recipe…", recErr: "The recipe could not be prepared. Tap again to retry.",
+        another: "Build another menu"
+      }
+    }
+  };
+  function XT() { return X[S.lang]; }
 
   /* ---------- Estado y guardado ---------- */
   function fresh() {
     return { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es",
-      a: { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [] } };
+      a: { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], mode: "hoy" } };
   }
   var S = fresh(), storeOk = true, confirming = false;
   function load() {
@@ -402,6 +496,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
               else if (typeof v === "string" || typeof v === "number") f.a[k] = v;
             }
           }
+          if (f.a.mode !== "plan") f.a.mode = "hoy";
           f.a.alerg = f.a.alerg.map(function (x) { return x === "crustaceos" ? "mariscos" : x; });
         }
         S = f;
@@ -520,18 +615,37 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
 
   function viewInicio() {
-    var x = u(), cont = hasAny();
-    var soon = function (cls, img, t, p) {
-      return '<a class="cta ' + cls + '" href="#inicio" aria-disabled="true" data-act="noop"><img src="img/' + img + '" width="' + (p ? 64 : 52) + '" height="' + (p ? 64 : 52) + '" alt=""><h3>' + esc(t) + '</h3>' + (p ? '<p>' + esc(p) + '</p>' : "") + '<span class="tag-soon">' + esc(x.soon) + '</span></a>';
+    var x = u(), cont = hasAny(), go = cont ? "resumen" : "cond", t = cont ? x.resume : x.start;
+    var small = function (cls, img, t, href) {
+      return '<a class="cta small ' + cls + '" href="#' + href + '"><img src="img/' + img + '" width="52" height="52" alt=""><h3>' + esc(t) + '</h3></a>';
     };
-    var small = function (cls, img, t) { return soon("small " + cls, img, t, ""); };
+    var wide = function (cls, img, tt, pp, mode) {
+      return '<a class="cta ' + cls + ' cta-wide" href="#' + go + '" data-act="modo" data-id="' + mode + '"><img src="img/' + img + '" width="64" height="64" alt=""><h3>' + esc(tt) + '</h3><p>' + esc(pp) + '</p><span class="go" aria-hidden="true">' + ARROW + '</span><span class="hint" style="color:var(--ink);font-weight:500">' + esc(t) + '</span></a>';
+    };
     return '<div class="hero"><h2 id="vt" tabindex="-1">' + esc(x.h1) + '</h2><p class="lead">' + esc(x.h1p) + '</p></div>' +
       '<div class="cta-grid">' +
-      '<a class="cta c-peach cta-wide" href="#' + (cont ? "resumen" : "cond") + '"><img src="img/icono-tipo-cocina.webp" width="64" height="64" alt=""><h3>' + esc(x.c1) + '</h3><p>' + esc(x.c1p) + '</p><span class="go" aria-hidden="true">' + ARROW + '</span><span class="hint" style="color:var(--ink);font-weight:500">' + esc(cont ? x.resume : x.start) + '</span></a>' +
-      soon("c-lav cta-wide", "calendario.svg", x.c2, x.c2p) +
-      small("c-mint", "condiciones-salud.svg", x.s1) + small("c-gold", "alimentacion.svg", x.s2) +
-      small("c-rose", "icono-ingredientes-disponibles.webp", x.s3) + small("c-sky", "icono-consejos-recursos.webp", x.s4) + '</div>' +
+      wide("c-peach", "icono-tipo-cocina.webp", x.c1, x.c1p, "hoy") +
+      wide("c-lav", "calendario.svg", x.c2, x.c2p, "plan") +
+      small("c-mint", "condiciones-salud.svg", x.s1, "porcond") + small("c-gold", "alimentacion.svg", x.s2, "porestilo") +
+      small("c-rose", "icono-ingredientes-disponibles.webp", x.s3, "poringr") + small("c-sky", "icono-consejos-recursos.webp", x.s4, "consejos") + '</div>' +
       '<p class="homelang">' + esc(x.homelang) + '</p>';
+  }
+
+  function viewEntrada(r) {
+    var x = u(), E = ENT[r], q = Q[E.q], ok = E.ok();
+    var note = ok ? "" : '<p class="need" id="need">' + esc(XT().needSel) + '</p>';
+    return '<div><h2 class="title" id="qt" tabindex="-1">' + esc(L(q.title)) + '</h2><p class="lead">' + esc(XT().entry[r]) + '</p></div>' +
+      '<div id="qbody" style="display:grid;gap:14px;grid-template-columns:minmax(0,1fr)">' + qBody(E.q) + '</div>' + note +
+      '<div class="nav"><a class="btn btn-ghost" href="#inicio">' + esc(x.back) + '</a>' +
+      '<a class="btn btn-primary" id="nextbtn" href="#' + E.next + '" data-act="entrar"' + (ok ? "" : ' aria-disabled="true" aria-describedby="need"') + '>' + esc(XT().cont) + ' ' + ARROW + '</a></div>';
+  }
+
+  function viewConsejos() {
+    var t = XT(), x = u();
+    var lst = function (a) { return '<ul class="tips">' + a.map(function (c) { return '<li class="tip"><h3>' + esc(c[0]) + '</h3><p>' + esc(c[1]) + '</p></li>'; }).join("") + '</ul>'; };
+    return '<section class="results"><div><h2 class="title" id="vt" tabindex="-1">' + esc(t.tipsT) + '</h2><p class="lead">' + esc(t.tipsP) + '</p></div>' + lst(t.tips) +
+      '<h3 class="subt">' + esc(t.useT) + '</h3>' + lst(t.use) + '<p class="hint">' + esc(t.tipsNote) + '</p>' +
+      '<div class="actions"><a class="btn btn-primary" href="#cond" data-act="modo" data-id="hoy">' + esc(t.tipsGo) + ' ' + ARROW + '</a><a class="btn btn-ghost" href="#inicio">' + esc(x.back) + '</a></div></section>';
   }
 
   function viewQuestion(id) {
@@ -590,8 +704,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var warn = "";
     if (miss.length) warn = '<p class="need">' + esc(x.getNeed) + ' ' + miss.map(function (id) { return '<a href="#' + id + '">' + esc(x.lbl[id]) + '</a>'; }).join(x.sep) + '.</p>';
     return stepsHtml(x.ph.length - 1).replace(/<ol class="steps">/, '<ol class="steps">') +
-      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p></div><ul class="sum">' + rows + '</ul>' + warn +
-      '<div class="nav stack"><a class="btn btn-primary" href="#resultados" data-act="get"' + (miss.length ? ' aria-disabled="true"' : "") + '>' + esc(x.getBtn) + ' ' + ARROW + '</a>' +
+      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p><p class="hint">' + esc(S.a.mode === "plan" ? XT().modePlan : XT().modeHoy) + '</p></div><ul class="sum">' + rows + '</ul>' + warn +
+      '<div class="nav stack"><a class="btn btn-primary" href="#' + (S.a.mode === "plan" ? "plan" : "resultados") + '" data-act="get"' + (miss.length ? ' aria-disabled="true"' : "") + '>' + esc(S.a.mode === "plan" ? XT().getPlan : x.getBtn) + ' ' + ARROW + '</a>' +
       '<a class="btn btn-ghost" href="#' + ORDER[ORDER.length - 1] + '">' + esc(x.back) + '</a></div>' +
       '<div class="linkrow"><span></span>' + clearBtn() + '</div>';
   }
@@ -743,10 +857,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
     ]
   };
 
-  function llamar(prompt) {
-    if (!LIVE) return new Promise(function (ok) { setTimeout(function () { ok({ ok: true, data: { recetas: SAMPLE[S.lang] } }); }, 900); });
+  function llamar(prompt, holder, sample) {
+    holder = holder || RES;
+    if (!LIVE) return new Promise(function (ok) { setTimeout(function () { ok({ ok: true, data: sample || { recetas: SAMPLE[S.lang] } }); }, 900); });
     var ctrl = new AbortController(), timedOut = false;
-    RES.ctrl = ctrl;
+    holder.ctrl = ctrl;
     var timer = setTimeout(function () { timedOut = true; ctrl.abort(); }, window.__MPI_TIMEOUT || 30000);
     return fetch(API + "/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: prompt, language: S.lang }), signal: ctrl.signal })
       .then(function (res) {
@@ -863,6 +978,180 @@ h2.title { font-size: 28px; line-height: 1.15; }
       '<div class="actions"><button type="button" class="btn btn-primary" data-act="mas">' + esc(r.more) + '</button><a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div></section>';
   }
 
+
+  /* ---------- Menú de siete días ---------- */
+  var PLAN = null;
+  function resetPlan(sig) { return { sig: sig, state: "idle", dias: [], compras: [], checked: {}, rec: {}, open: {}, code: null, retryAt: 0, n: 0, ctrl: null, simulated: !LIVE }; }
+  PLAN = resetPlan("");
+
+  function restr(P, es) {
+    var a = S.a, pref = a.cocina.filter(function (c) { return c !== "otra"; });
+    var dieta = P.dieta ? (DIETA.filter(function (x) { return x.id === P.dieta; })[0] || { label: T("", "") }).label : null;
+    var al = labelsOf(ALERG, P.alergias, ""), ev = labelsOf(EVITA, P.evitar, "");
+    var libres = P.libres.map(function (x) { return limpio(x, 40); });
+    var ingr = a.ingr.slice(0, 15).map(function (v) { if (v.indexOf("c:") === 0) return limpio(v.slice(2), 30); var f = INGR.filter(function (c) { return c.id === v; })[0]; return f ? L(f.label) : ""; }).filter(Boolean);
+    var cocinas = pref.map(function (c) { var f = COCINA.filter(function (x) { return x.id === c; })[0]; return f ? L(f.label) : ""; }).filter(Boolean);
+    return es
+      ? (al.length ? "Alergias (excluya por completo el alimento y todos sus derivados): " + al.join(", ") + ". " : "") +
+        (ev.length ? "Evitar: " + ev.join(", ") + ". " : "") + (libres.length ? "Evitar también: " + libres.join(", ") + ". " : "") +
+        (dieta ? "Tipo de alimentación: " + L(dieta) + ". " : "") + (cocinas.length ? "Cocinas preferidas: " + cocinas.join(", ") + ". " : "") +
+        (a.tiempo ? "Tiempo máximo por comida: " + a.tiempo + " min. " : "") + (a.porc ? "Porciones por comida: " + a.porc + ". " : "") +
+        (ingr.length ? "Ingredientes disponibles (priorícelos): " + ingr.join(", ") + ". " : "")
+      : (al.length ? "Allergies (exclude the food and all its derivatives entirely): " + al.join(", ") + ". " : "") +
+        (ev.length ? "Avoid: " + ev.join(", ") + ". " : "") + (libres.length ? "Also avoid: " + libres.join(", ") + ". " : "") +
+        (dieta ? "Eating style: " + L(dieta) + ". " : "") + (cocinas.length ? "Preferred cuisines: " + cocinas.join(", ") + ". " : "") +
+        (a.tiempo ? "Maximum time per meal: " + a.tiempo + " min. " : "") + (a.porc ? "Servings per meal: " + a.porc + ". " : "") +
+        (ingr.length ? "Available ingredients (prioritize them): " + ingr.join(", ") + ". " : "");
+  }
+  function armarPromptPlan(P, cands) {
+    var es = S.lang === "es", pref = S.a.cocina.filter(function (c) { return c !== "otra"; });
+    var pre = barajar(cands.filter(function (d) { return d[1].some(function (c) { return pref.indexOf(c) > -1; }); }));
+    var res = barajar(cands.filter(function (d) { return pre.indexOf(d) < 0; }));
+    var n = 40, texto;
+    for (;;) {
+      var lista = pre.slice(0, 20).concat(res).slice(0, n).map(function (d) { return d[0]; }).join(", ");
+      texto = es
+        ? "Arme un menú de 7 días con almuerzo y cena. Responda solo con JSON: {\"dias\":[{\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"cantidad y nombre\"]}. Debe haber exactamente 7 elementos en \"dias\". En \"plato\" use SOLO un id de esta lista, repitiendo cada plato como máximo 2 veces en la semana: " + lista + ". " + restr(P, true) +
+          "\"compras\" es la lista de compras de toda la semana: máximo 35 ingredientes sin repetir, con cantidad aproximada. No afirme que ningún plato es seguro para una condición de salud."
+        : "Build a 7-day menu with lunch and dinner. Reply with JSON only: {\"dias\":[{\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"quantity and name\"]}. There must be exactly 7 items in \"dias\". For \"plato\" use ONLY an id from this list, repeating each dish at most 2 times in the week: " + lista + ". " + restr(P, false) +
+          "\"compras\" is the shopping list for the whole week: at most 35 ingredients without repeats, with approximate quantities. Do not claim any dish is safe for any health condition.";
+      if (texto.length <= 3900 || n <= 10) break;
+      n -= 4;
+    }
+    return texto;
+  }
+  function armarPromptUna(P, plato, titulo) {
+    var es = S.lang === "es", t = limpio(titulo, 90);
+    return es
+      ? "Escriba la receta completa de este plato: " + t + " (id: " + plato + "). Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]} con UNA sola receta y use exactamente el id indicado en \"plato\". " + restr(P, true) + "No afirme que la receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves."
+      : "Write the complete recipe for this dish: " + t + " (id: " + plato + "). Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]} with ONE recipe only and use exactly the given id in \"plato\". " + restr(P, false) + "Do not claim the recipe is safe for any health condition. At most 12 ingredients and 6 short steps.";
+  }
+  function planSample() {
+    var m = SAMPLE[S.lang], dias = [], comp = [], seen = {};
+    for (var i = 0; i < 7; i++) { var a = m[i % 7], c = m[(i + 3) % 7]; dias.push({ almuerzo: { plato: a.plato, titulo: a.titulo }, cena: { plato: c.plato, titulo: c.titulo } }); }
+    m.forEach(function (r) { r.ingredientes.forEach(function (z) { if (!seen[z] && comp.length < 24) { seen[z] = 1; comp.push(z); } }); });
+    return { dias: dias, compras: comp };
+  }
+  function planValido(d, P, cands) {
+    if (!d || !Array.isArray(d.dias) || d.dias.length !== 7 || !Array.isArray(d.compras)) return null;
+    var ids = {}; cands.forEach(function (c) { ids[c[0]] = 1; });
+    var R = MPI.reglasDelPerfil(P), cnt = {}, maxRep = Math.max(3, Math.ceil(14 / cands.length)), dias = [], i;
+    var comida = function (m) {
+      if (!m || typeof m !== "object") return null;
+      var t = typeof m.titulo === "string" ? m.titulo.trim() : "";
+      if (t.length < 3 || t.length > 90 || typeof m.plato !== "string" || !ids[m.plato]) return null;
+      if (!MPI.revisarIngrediente(t, P, R).ok) return null;
+      cnt[m.plato] = (cnt[m.plato] || 0) + 1; if (cnt[m.plato] > maxRep) return null;
+      return { plato: m.plato, titulo: t };
+    };
+    for (i = 0; i < 7; i++) {
+      var a = comida(d.dias[i] && d.dias[i].almuerzo), c = comida(d.dias[i] && d.dias[i].cena);
+      if (!a || !c) return null; dias.push({ a: a, c: c });
+    }
+    var cp = d.compras;
+    if (cp.length < 3 || cp.length > 40) return null;
+    for (i = 0; i < cp.length; i++) {
+      if (typeof cp[i] !== "string" || cp[i].trim().length < 2 || cp[i].length > 80 || !MPI.revisarIngrediente(cp[i], P, R).ok) return null;
+    }
+    if (!MPI.validarReceta({ ingredientes: cp }, P).ok) return null;
+    return { dias: dias, compras: cp.map(function (z) { return z.trim(); }) };
+  }
+  function fallaPlan(code, retry) {
+    PLAN.state = "error"; PLAN.code = code; PLAN.retryAt = code === "rate_limited" ? Date.now() + (retry || 60) * 1000 : 0;
+    if (route() === "plan") render(true);
+  }
+  function intentoPlan(k, token) {
+    var P = perfil(), cands = candidatos(P, []);
+    if (cands.length < 4) { fallaPlan("few"); return; }
+    llamar(armarPromptPlan(P, cands), PLAN, planSample()).then(function (r) {
+      if (token !== PLAN.n) return;
+      if (!r.ok) { if (r.code !== "cancel") fallaPlan(r.code, r.retry); return; }
+      var v = planValido(r.data, P, cands);
+      if (v) { PLAN.dias = v.dias; PLAN.compras = v.compras; PLAN.checked = {}; PLAN.rec = {}; PLAN.open = {}; PLAN.state = "ok"; if (route() === "plan") render(true); }
+      else if (k < 2) intentoPlan(2, token);
+      else fallaPlan("noneValid");
+    });
+  }
+  function lanzarPlan() {
+    if (PLAN.ctrl) { try { PLAN.ctrl.abort(); } catch (e) {} }
+    PLAN.n++; PLAN.state = "loading"; PLAN.code = null;
+    var tk = PLAN.n; intentoPlan(1, tk);
+  }
+  function asegurarPlan() {
+    if (missingCritical().length) return;
+    var sig = JSON.stringify([S.lang, S.a]);
+    if (PLAN.sig !== sig) {
+      if (PLAN.ctrl) { try { PLAN.ctrl.abort(); } catch (e) {} }
+      var n = PLAN.n + 1; PLAN = resetPlan(sig); PLAN.n = n - 1;
+      setTimeout(lanzarPlan, 0);
+      PLAN.state = "loading";
+    }
+  }
+  function verReceta(key) {
+    var i = parseInt(key, 10), kind = key.slice(-1), d = PLAN.dias[i]; if (!d) return;
+    var m = kind === "a" ? d.a : d.c, rec = PLAN.rec[key];
+    if (rec && rec.state === "loading") return;
+    if (rec && rec.state === "ok") { PLAN.open[key] = !PLAN.open[key]; }
+    else {
+      var P = perfil(), tk = PLAN.n, holder = { ctrl: null };
+      PLAN.rec[key] = { state: "loading" }; PLAN.open[key] = true;
+      llamar(armarPromptUna(P, m.plato, m.titulo), holder, { recetas: SAMPLE[S.lang].filter(function (z) { return z.plato === m.plato; }) }).then(function (r) {
+        if (tk !== PLAN.n) return;
+        var got = null;
+        if (r.ok) { var ids = {}; ids[m.plato] = 1; var R = MPI.reglasDelPerfil(P); (r.data && Array.isArray(r.data.recetas) ? r.data.recetas : []).forEach(function (x) { if (!got && x && x.plato === m.plato) got = recetaValida(x, P, R, ids); }); }
+        PLAN.rec[key] = got ? { state: "ok", r: got } : { state: "error" };
+        if (route() === "plan") { render(false); var b = document.querySelector('[data-act="prec"][data-id="' + key + '"]'); if (b) b.focus({ preventScroll: true }); }
+      });
+    }
+    render(false); var b2 = document.querySelector('[data-act="prec"][data-id="' + key + '"]'); if (b2) b2.focus({ preventScroll: true });
+  }
+  function viewPlan() {
+    if (missingCritical().length) { setTimeout(function () { location.hash = "#resumen"; }, 0); return ""; }
+    var x = u(), r = rs(), p = XT().plan, h = stepsHtml(x.ph.length - 1);
+    if (slowTimer) { clearTimeout(slowTimer); slowTimer = null; } if (waitTimer) { clearInterval(waitTimer); waitTimer = null; }
+    if (PLAN.state === "loading" || PLAN.state === "idle") {
+      slowTimer = setTimeout(function () { var e = $("#slow"); if (e) e.hidden = false; }, 12000);
+      return h + '<div class="loading" role="status"><div class="spin" aria-hidden="true"></div><h2 class="title" id="vt" tabindex="-1">' + esc(p.loading) + '</h2><p class="lead" id="slow" hidden>' + esc(r.slow) + '</p></div>' +
+        '<div class="nav stack"><a class="btn btn-ghost" href="#resumen" data-act="cancelarplan">' + esc(r.cancel) + '</a></div>';
+    }
+    if (PLAN.state === "error") {
+      var msg = r.err[PLAN.code] || r.err[/^http_/.test(PLAN.code) ? "upstream_error" : "other"];
+      var left = PLAN.retryAt ? Math.max(0, Math.ceil((PLAN.retryAt - Date.now()) / 1000)) : 0;
+      if (left > 0) waitTimer = setInterval(function () {
+        var b = $("#retrybtn"), l = Math.max(0, Math.ceil((PLAN.retryAt - Date.now()) / 1000));
+        if (!b) { clearInterval(waitTimer); return; }
+        if (l <= 0) { clearInterval(waitTimer); b.removeAttribute("aria-disabled"); b.textContent = r.retry; } else b.textContent = r.wait(l);
+      }, 1000);
+      return h + '<div class="errbox" role="alert"><h2 class="title" id="vt" tabindex="-1" style="font-size:22px">' + esc(r.errT) + '</h2><p>' + esc(msg) + '</p></div>' +
+        '<div class="nav stack"><button type="button" class="btn btn-primary" id="retrybtn" data-act="retryplan"' + (left > 0 ? ' aria-disabled="true"' : "") + '>' + esc(left > 0 ? r.wait(left) : r.retry) + '</button>' +
+        '<a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div>';
+    }
+    var comida = function (i, k, m, label) {
+      var key = i + k, rec = PLAN.rec[key], open = !!PLAN.open[key] && !!rec, det = "";
+      if (open) {
+        if (rec.state === "loading") det = '<div class="mdet" role="status">' + esc(p.recLoad) + '</div>';
+        else if (rec.state === "error") det = '<div class="mdet"><p class="need">' + esc(p.recErr) + '</p></div>';
+        else {
+          var c = rec.r, meta = [c.tiempo ? r.min(c.tiempo) : "", c.porciones ? r.srv(c.porciones) : ""].filter(Boolean).join(" · ");
+          det = '<div class="mdet">' + (meta ? '<p class="meta">' + esc(meta) + '</p>' : "") + '<h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol></div>';
+        }
+      }
+      var txt = rec && rec.state === "ok" && open ? r.hide : r.see;
+      return '<div class="meal"><img src="img/platos/' + esc(m.plato) + '.webp" width="64" height="64" alt=""><div class="mt"><span class="ml">' + esc(label) + '</span><span class="mn">' + esc(m.titulo) + '</span></div>' +
+        '<button type="button" class="btn btn-ghost sm" data-act="prec" data-id="' + key + '" aria-expanded="' + (open ? "true" : "false") + '">' + esc(txt) + '</button>' + det + '</div>';
+    };
+    var dias = PLAN.dias.map(function (d, i) { return '<li class="day"><h3>' + esc(p.day(i + 1)) + '</h3>' + comida(i, "a", d.a, p.lunch) + comida(i, "c", d.c, p.dinner) + '</li>'; }).join("");
+    var lista = PLAN.compras.map(function (c, i) { return '<li><label><input type="checkbox" data-act="chk" data-id="' + i + '"' + (PLAN.checked[i] ? " checked" : "") + '><span>' + esc(c) + '</span></label></li>'; }).join("");
+    var avisos = [r.avGen]; if (has(S.a.alerg, "sulfitos")) avisos.push(MPI.AVISOS[S.lang].sulfitos); if (has(S.a.evita, "gluten")) avisos.push(MPI.AVISOS[S.lang].gluten);
+    if (perfil().libres.length) avisos.push(MPI.AVISOS[S.lang].libre);
+    return h + '<section class="results"><div><h2 class="title" id="vt" tabindex="-1">' + esc(p.title) + '</h2><p class="lead">' + esc(p.lead) + '</p></div>' +
+      (PLAN.simulated ? '<span class="badge-example">' + esc(r.example) + '</span>' : "") +
+      (condNotice() ? '<p class="notice">' + esc(r.cond) + '</p>' : "") +
+      '<ul class="days">' + dias + '</ul><section class="shop"><h3>' + esc(p.shopT) + '</h3><p class="hint">' + esc(p.shopP) + '</p><ul class="checklist">' + lista + '</ul></section>' +
+      '<p class="hint">' + esc(r.photoNote) + '</p>' + avisos.map(function (t) { return '<p class="hint">' + esc(t) + '</p>'; }).join("") +
+      '<div class="actions"><button type="button" class="btn btn-primary" data-act="otroplan">' + esc(p.another) + '</button><a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div></section>';
+  }
+
   /* ---------- Render ---------- */
   function route() { var h = (location.hash || "").replace(/^#/, ""); return ROUTES.indexOf(h) > -1 ? h : "inicio"; }
   function chrome() {
@@ -884,8 +1173,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   function render(focus) {
     chrome();
-    var r = route(); if (r === "resultados") asegurarResultados();
-    var html = r === "inicio" ? viewInicio() : r === "resumen" ? viewResumen() : r === "resultados" ? viewResultados() : viewQuestion(r);
+    var r = route(); if (r === "resultados") asegurarResultados(); if (r === "plan") asegurarPlan();
+    var html = r === "inicio" ? viewInicio() : r === "resumen" ? viewResumen() : r === "resultados" ? viewResultados() : r === "plan" ? viewPlan() : r === "consejos" ? viewConsejos() : ENT[r] ? viewEntrada(r) : viewQuestion(r);
     $("#view").innerHTML = html;
     renderNotice();
     if (focus) {
@@ -894,8 +1183,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     }
   }
   function refreshStepState() { // actualiza el botón Siguiente sin perder el foco de un campo de texto
-    var r = route(); if (ORDER.indexOf(r) < 0) return;
-    var q = Q[r], canNext = !q.required || answered(r), b = $("#nextbtn"), need = $("#need");
+    var r = route(); if (ORDER.indexOf(r) < 0 && !ENT[r]) return;
+    var canNext = ENT[r] ? ENT[r].ok() : (!Q[r].required || answered(r)), b = $("#nextbtn"), need = $("#need");
     if (!b) return;
     if (canNext) { b.removeAttribute("aria-disabled"); b.removeAttribute("aria-describedby"); if (need) need.remove(); }
     else { b.setAttribute("aria-disabled", "true"); }
@@ -908,6 +1197,13 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var el = e.target.closest("[data-act]"); if (!el) return;
     var act = el.getAttribute("data-act"), id = el.getAttribute("data-id"), a = S.a;
     if (act === "noop") { e.preventDefault(); return; }
+    if (act === "modo") { a.mode = id === "plan" ? "plan" : "hoy"; save(); return; }
+    if (act === "entrar") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); return; } a.mode = "hoy"; save(); return; }
+    if (act === "chk") { PLAN.checked[id] = !!el.checked; return; }
+    if (act === "cancelarplan") { if (PLAN.ctrl) { try { PLAN.ctrl.abort(); } catch (e2) {} } PLAN.n++; PLAN.sig = ""; return; }
+    if (act === "retryplan") { if (el.getAttribute("aria-disabled") === "true") return; lanzarPlan(); render(true); return; }
+    if (act === "otroplan") { lanzarPlan(); render(true); return; }
+    if (act === "prec") { verReceta(id); return; }
     if (act === "next") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); var nd = $("#need") || document.createElement("p"); if (!nd.id) { nd.id = "need"; nd.className = "need"; nd.setAttribute("role", "alert"); nd.textContent = u().needAnswer; $("#nextbtn").parentNode.parentNode.insertBefore(nd, $("#nextbtn").parentNode); } var f = $("#view .opt, #view .chip, #view input"); if (f) f.focus(); } return; }
     if (act === "get") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); } return; }
     if (act === "clear") { confirming = true; render(false); var c = $("#cq"); if (c) c.scrollIntoView({ block: "center" }); return; }
