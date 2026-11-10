@@ -1020,6 +1020,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     RES.recetas = tomar; tomar.forEach(function (r) { RES.vistos.push(r.plato); });
     RES.state = "ok"; actualizar();
   }
+  /* Fallas pasajeras del servicio: se reintenta una vez sola antes de mostrar el error. */
+  function reintentable(code) { return ["upstream_error", "incomplete", "invalid_response"].indexOf(code) > -1; }
   function fallo(code, retry) {
     RES.state = "error"; RES.code = code; RES.retryAt = code === "rate_limited" ? Date.now() + (retry || 60) * 1000 : 0; actualizar();
   }
@@ -1028,7 +1030,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (!cands.length) { fallo("few"); return; }
     llamar(armarPrompt(P, cands)).then(function (r) {
       if (token !== RES.n) return;
-      if (!r.ok) { if (r.code !== "cancel") fallo(r.code, r.retry); return; }
+      if (!r.ok) { if (k < 2 && reintentable(r.code)) { intento(2, token); return; } if (r.code !== "cancel") fallo(r.code, r.retry); return; }
       var validas = filtrar(r.data, P, cands);
       if (validas.length) { RES.reserva = validas; mostrar(); }
       else if (k < 2) intento(2, token);
@@ -1200,7 +1202,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (L.d.todos.length < 2 || L.a.todos.length < 3 || L.c.todos.length < 3) { fallaPlan("few"); return; }
     llamar(armarPromptPlan(P, L), PLAN, planSample(L)).then(function (r) {
       if (token !== PLAN.n) return;
-      if (!r.ok) { if (r.code !== "cancel") fallaPlan(r.code, r.retry); return; }
+      if (!r.ok) { if (k < 2 && reintentable(r.code)) { intentoPlan(2, token); return; } if (r.code !== "cancel") fallaPlan(r.code, r.retry); return; }
       var v = planValido(r.data, P, L);
       if (v) { PLAN.dias = v.dias; PLAN.compras = v.compras; PLAN.checked = {}; PLAN.rec = {}; PLAN.open = {}; PLAN.state = "ok"; if (route() === "plan") render(true); }
       else if (k < 2) intentoPlan(2, token);
