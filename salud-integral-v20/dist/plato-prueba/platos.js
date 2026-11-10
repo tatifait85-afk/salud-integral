@@ -58,7 +58,7 @@ const PLATOS = [
   ["penne-integral-brocoli-hongos", ["italiana"], ["trigo"], 25, ["almuerzo", "cena"]],
   ["pescado-horno-hierbas", ["mediterranea"], [], 30, ["almuerzo", "cena"]],
   ["pescado-salsa-coco", ["caribena"], [], 35, ["almuerzo", "cena"]],
-  ["picadillo-chayote", ["costarricense"], [], 30, ["almuerzo", "cena"]],
+  ["picadillo-chayote", ["costarricense"], ["carne"], 30, ["almuerzo", "cena"]],
   ["picadillo-papa-carne", ["costarricense"], ["carne"], 35, ["almuerzo", "cena"]],
   ["pollo-asado-brocoli-jengibre", ["china"], [], 45, ["almuerzo", "cena"]],
   ["pollo-horno-hierbas", ["mediterranea"], [], 60, ["almuerzo", "cena"]],

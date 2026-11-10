@@ -79,4 +79,4 @@ Fuentes consultadas:
 - Estatinas: se excluye la toronja (pomelo). Los demás medicamentos solo muestran avisos de horario o cantidad, sin ocultar platos.
 - Las demás condiciones agregan una línea de preferencia al pedido a Gemini y un aviso de orientación; inmunológica, neurológica y genética solo muestran aviso.
 - Cada receta lleva el pie «Orientación general; consulte a su profesional de salud.» cuando hay condiciones o medicamentos.
-- Pendiente: que un farmacéutico confirme los datos de medicamentos (fuentes secundarias).
+- Datos de medicamentos: confirmados por Tati el 10/11/2026.

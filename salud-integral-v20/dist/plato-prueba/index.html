@@ -352,7 +352,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     ["mariscos", "alergia-mariscos", T("Mariscos", "Shellfish")], ["huevo", "alergia-huevo", T("Huevo", "Egg")],
     ["mani", "alergia-mani", T("Maní", "Peanuts")], ["nueces", "alergia-nueces-arbol", T("Nueces de árbol", "Tree nuts")],
     ["pescado", "alergia-pescado", T("Pescado", "Fish")], ["sesamo", "alergia-sesamo", T("Sésamo", "Sesame")],
-    ["soya", "alergia-soya", T("Soya", "Soy")], ["leche", "alergia-leche", T("Leche", "Milk")], ["trigo", "alergia-trigo", T("Trigo", "Wheat")], ["sulfitos", "alergia-sulfitos", T("Sulfitos", "Sulfites")]
+    ["soya", "alergia-soya", T("Soya", "Soy")], ["leche", "alergia-leche", T("Leche", "Milk")], ["trigo", "alergia-trigo", T("Trigo", "Wheat")]
   ].map(function (c) { return { id: c[0], img: c[1], label: c[2] }; });
   var ALERG_OTRA_IMG = "alergia-otra";
   var DIETA = [
@@ -740,7 +740,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
         forbidden_origin: "Esta página no tiene autorización para usar el servicio.",
         bad_request: "La solicitud no es válida. Cambie alguna respuesta e intente de nuevo.",
         too_large: "La solicitud es demasiado grande. Quite algunos ingredientes e intente de nuevo.",
-        noneValid: "Ninguna propuesta cumplió todas sus restricciones, así que no se muestra ninguna. Intente de nuevo o cambie alguna respuesta, por ejemplo los ingredientes.",
+        noneValid: "Ocurrió un error. Inténtelo de nuevo.",
         few: "No quedan más platos disponibles con sus restricciones. Cambie alguna respuesta para ver más opciones.",
         other: "Ocurrió un error inesperado. Intente de nuevo."
       },
@@ -767,7 +767,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
         forbidden_origin: "This page is not authorized to use the service.",
         bad_request: "The request is not valid. Change an answer and try again.",
         too_large: "The request is too large. Remove some ingredients and try again.",
-        noneValid: "None of the suggestions met all your restrictions, so none is shown. Try again or change an answer, for example the ingredients.",
+        noneValid: "An error occurred. Please try again.",
         few: "No more dishes are available with your restrictions. Change an answer to see more options.",
         other: "An unexpected error occurred. Please try again."
       },
