@@ -177,7 +177,7 @@ const PLATOS = [
   ["pimientos-rellenos-arroz", ["caribena"], [], 50, ["almuerzo", "cena"]],
   ["calabaza-guisada-coco", ["caribena"], [], 30, ["almuerzo", "cena"]],
   ["res-guisada-name", ["caribena"], [], 90, ["almuerzo", "cena"]],
-  ["pan-coco-aguacate", ["caribena"], [], 10, ["desayuno"]],
+  ["pan-coco-aguacate", ["caribena"], ["trigo"], 10, ["desayuno"]],
   ["ensalada-pina-pollo", ["caribena"], [], 20, ["almuerzo", "cena"]],
   ["poha-vegetales", ["india"], ["mani"], 25, ["desayuno"]],
   ["upma-vegetales", ["india"], ["trigo"], 25, ["desayuno"]],
