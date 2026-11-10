@@ -437,8 +437,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
       ],
       tipsNote: "Son consejos generales de alimentación. No reemplazan la orientación de un profesional de salud.", tipsGo: "Empezar",
       plan: {
-        loading: "Armando su menú…", title: "Su menú de siete días", lead: "Almuerzo y cena para cada día, con platos que pasaron la revisión de sus restricciones.",
-        day: function (n) { return "Día " + n; }, lunch: "Almuerzo", dinner: "Cena",
+        loading: "Armando su menú…", title: "Su menú de siete días", lead: "Desayuno, almuerzo y cena para cada día, con platos que pasaron la revisión de sus restricciones.",
+        day: function (n) { return "Día " + n; }, breakfast: "Desayuno", lunch: "Almuerzo", dinner: "Cena",
         shopT: "Lista de compras", shopP: "Marque lo que ya tiene en casa.", recLoad: "Preparando la receta…", recErr: "No se pudo preparar la receta. Toque de nuevo para intentarlo.",
         another: "Armar otro menú"
       }
@@ -466,8 +466,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
       ],
       tipsNote: "These are general eating tips. They do not replace the guidance of a health professional.", tipsGo: "Start",
       plan: {
-        loading: "Building your menu…", title: "Your seven-day menu", lead: "Lunch and dinner for each day, with dishes that passed the check against your restrictions.",
-        day: function (n) { return "Day " + n; }, lunch: "Lunch", dinner: "Dinner",
+        loading: "Building your menu…", title: "Your seven-day menu", lead: "Breakfast, lunch and dinner for each day, with dishes that passed the check against your restrictions.",
+        day: function (n) { return "Day " + n; }, breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner",
         shopT: "Shopping list", shopP: "Tick what you already have at home.", recLoad: "Preparing the recipe…", recErr: "The recipe could not be prepared. Tap again to retry.",
         another: "Build another menu"
       }
@@ -726,7 +726,6 @@ h2.title { font-size: 28px; line-height: 1.15; }
       min: function (n) { return n + " min"; }, srv: function (n) { return n + (n === 1 ? " porción" : " porciones"); },
       photoNote: "Las fotos son ilustrativas del plato.", more: "Ver otras propuestas", edit: "Cambiar mis respuestas", retry: "Intentar de nuevo", wait: function (n) { return "Intentar de nuevo (" + n + " s)"; },
       example: "Datos de ejemplo: esta vista previa no se conecta con Gemini",
-      cond: "Sus condiciones de salud o medicamentos todavía no tienen reglas validadas en esta aplicación. Estas propuestas respetan sus alergias y preferencias, pero no están ajustadas a su condición ni a sus medicamentos. Consulte a su profesional de salud.",
       errT: "No se pudieron mostrar propuestas",
       err: {
         network: "No hay conexión con el servicio. Revise su conexión a internet e intente de nuevo.",
@@ -754,7 +753,6 @@ h2.title { font-size: 28px; line-height: 1.15; }
       min: function (n) { return n + " min"; }, srv: function (n) { return n + (n === 1 ? " serving" : " servings"); },
       photoNote: "Photos are illustrative of the dish.", more: "See other ideas", edit: "Change my answers", retry: "Try again", wait: function (n) { return "Try again (" + n + " s)"; },
       example: "Sample data: this preview does not connect to Gemini",
-      cond: "Your health conditions or medications do not have validated rules in this app yet. These ideas respect your allergies and preferences, but they are not adjusted to your condition or medications. Please check with your health professional.",
       errT: "We could not show suggestions",
       err: {
         network: "Could not reach the service. Check your internet connection and try again.",
@@ -783,9 +781,107 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var a = S.a, libres = [];
     if (has(a.alerg, "otra")) libres = libres.concat(splitLibres(a.alergOtra));
     libres = libres.concat(splitLibres(a.evitaOtra));
-    return { lang: S.lang, alergias: a.alerg.filter(function (x) { return x !== "none" && x !== "otra"; }), evitar: a.evita.slice(), dieta: a.dieta || null, libres: libres };
+    return { lang: S.lang, alergias: a.alerg.filter(function (x) { return x !== "none" && x !== "otra"; }), evitar: a.evita.slice(), dieta: a.dieta || null, libres: libres, condiciones: condIds(), medicamentos: medsClases() };
+  }
+  function condIds() { return S.a.cond.filter(function (x) { return x !== "none" && x !== "otra"; }); }
+  /* Medicamentos: se reconocen por nombre en el texto libre; solo sirven para mostrar avisos (el único bloqueo es la toronja con estatinas). */
+  var MEDS_RE = [
+    ["warfarina", /warfarin|coumadin|sintrom|acenocumarol|anticoagulante/],
+    ["imao", /\bimao\b|\bmaoi\b|fenelzina|selegilina|tranilcipromina|moclobemida|rasagilina|phenelzine|selegiline/],
+    ["estatinas", /statin|lipitor|crestor|zocor/],
+    ["antibiotico", /tetraciclina|doxiciclina|minociclina|ciprofloxacin|levofloxacin|tetracycline|doxycycline|minocycline|\bcipro\b/],
+    ["levotiroxina", /levotiroxina|levothyroxine|synthroid|eutirox|euthyrox|tiroxina/],
+    ["antitiroideo", /metimazol|methimazole|propiltiouracilo|propylthiouracil|tapazol/],
+    ["insulina", /insulin|glargina|lispro|aspart|glibenclamida|glimepirida|gliclazida|glyburide|glipizide|glimepiride/],
+    ["potasio", /enalapril|lisinopril|captopril|ramipril|losartan|valsartan|candesartan|irbesartan|telmisartan|espironolactona|spironolactone|amilorida|amiloride|\bieca\b|\bara ii\b/],
+    ["hierro", /\bhierro\b|\biron\b|ferroso|ferrous/]
+  ];
+  function medsClases() {
+    if (S.a.meds !== "si") return [];
+    var t = String(S.a.medsTxt || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return MEDS_RE.filter(function (m) { return m[1].test(t); }).map(function (m) { return m[0]; });
   }
   function condNotice() { var a = S.a; return (a.cond.length > 0 && !(a.cond.length === 1 && a.cond[0] === "none")) || a.meds === "si"; }
+  var SALUD_PREF = {
+    cardiovascular: ["poca sal, pocas grasas saturadas, sin frituras y sin bebidas azucaradas", "low in salt and saturated fat, no fried foods and no sugary drinks"],
+    endocrina: ["sin bebidas azucaradas ni dulces, pocas harinas refinadas, sin frituras, con verduras sin almidón y granos integrales", "no sugary drinks or sweets, few refined flours, no fried foods, with non-starchy vegetables and whole grains"],
+    metabolica: ["frutas, verduras y granos integrales, sin bebidas azucaradas, pocas grasas saturadas", "fruit, vegetables and whole grains, no sugary drinks, little saturated fat"],
+    hepatica: ["frutas, verduras y granos integrales, sin bebidas azucaradas y sin alcohol", "fruit, vegetables and whole grains, no sugary drinks and no alcohol"],
+    renal: ["poca sal, sin alimentos procesados, sin sal sustituta con potasio y sin frituras (no indique cantidades de potasio ni de proteína)", "low in salt, no processed foods, no potassium salt substitutes and no fried foods (do not state potassium or protein amounts)"],
+    digestiva: ["sin comidas muy grasosas, fritas ni picantes", "no very fatty, fried or spicy foods"],
+    embarazo: ["alimentos bien cocidos, solo lácteos pasteurizados, sin pescado ni mariscos crudos, sin huevo crudo o poco cocido y sin pescado con alto contenido de mercurio", "well-cooked foods, pasteurized dairy only, no raw fish or shellfish, no raw or runny eggs and no high-mercury fish"],
+    hematologica: ["fuentes de hierro junto con una fuente de vitamina C, sin café ni té en la comida", "iron sources together with a vitamin C source, no coffee or tea with the meal"],
+    musculoesqueletica: ["frutas, verduras, granos integrales y legumbres, pocas vísceras, carnes rojas y mariscos, sin cerveza ni bebidas azucaradas", "fruit, vegetables, whole grains and legumes, little organ meat, red meat and shellfish, no beer or sugary drinks"]
+  };
+  function saludPrompt(P, es) {
+    var out = [], i = es ? 0 : 1;
+    (P.condiciones || []).forEach(function (c) { if (SALUD_PREF[c]) out.push(SALUD_PREF[c][i]); });
+    var m = P.medicamentos || [];
+    if (m.indexOf("imao") > -1) out.push(es ? "sin alimentos con tiramina (quesos curados, embutidos, pescado ahumado, vino tinto, cerveza, chocolate)" : "no tyramine-rich foods (aged cheese, cured meats, smoked fish, red wine, beer, chocolate)");
+    if (m.indexOf("estatinas") > -1) out.push(es ? "sin toronja ni pomelo" : "no grapefruit or pomelo");
+    var uniq = out.filter(function (x, k) { return out.indexOf(x) === k; });
+    if (!uniq.length) return "";
+    return es ? "Preferencias por salud (sin afirmar que sean indicación médica): " + uniq.join("; ") + ". " : "Health preferences (do not claim they are medical advice): " + uniq.join("; ") + ". ";
+  }
+  var SALUD = {
+    es: {
+      emb: "Embarazo: estas propuestas excluyen pescado, mariscos, carne y huevo crudos o poco cocidos, productos sin pasteurizar y pescados con alto contenido de mercurio. Confirme con su profesional de salud.",
+      ori: "Sus condiciones de salud solo orientan las propuestas hacia una alimentación general adecuada. No son una indicación personal ni reemplazan a su profesional de salud.",
+      sin: "Para las categorías inmunológica, neurológica o genética no hay una regla alimentaria general segura: pida a su profesional las indicaciones propias. Las alergias y el tipo de alimentación que registró se siguen aplicando.",
+      otra: "Indicó otra condición de salud: la aplicación no tiene reglas para ella. Consulte a su profesional de salud.",
+      medsGen: "Esta aplicación no calcula dosis ni sugiere cambiar medicamentos. Los avisos sobre medicamentos son orientativos y deben confirmarse con su farmacéutico o médico.",
+      medsNone: "Indicó que toma medicamentos, pero no se reconoció ninguno con aviso en esta aplicación. Consulte a su farmacéutico o médico si alguno interactúa con alimentos.",
+      m: {
+        warfarina: "Warfarina: no elimine las verduras de hoja verde (espinaca, col rizada, brócoli); mantenga una cantidad constante cada semana y avise a su equipo de salud si la cambia.",
+        imao: "IMAO: evite alimentos con tiramina (quesos curados, embutidos, pescado ahumado, vino tinto, cerveza, chocolate).",
+        estatinas: "Estatinas: se excluyó la toronja (pomelo) y sus jugos, porque aumentan la cantidad de medicamento en la sangre.",
+        antibiotico: "Antibióticos como tetraciclinas, doxiciclina, ciprofloxacino o levofloxacino: los lácteos y los antiácidos con calcio disminuyen su absorción; tómelos 1 hora antes o 2 horas después.",
+        levotiroxina: "Levotiroxina: tómela en ayunas con agua, 30 a 60 minutos antes del desayuno; espere 1 hora para soya, lácteos, café, jugos, nueces y alimentos muy altos en fibra, y 4 horas para un suplemento de calcio.",
+        antitiroideo: "Antitiroideos: mariscos, algas y sal yodada pueden reducir su efecto; mantenga un consumo constante y coméntelo con su médico.",
+        insulina: "Insulina o medicamentos que suben la insulina: respete los horarios de comida indicados y no beba alcohol en ayunas.",
+        potasio: "Medicamentos para la presión o el riñón: pregunte a su profesional antes de usar sales sustitutas con potasio.",
+        hierro: "Suplementos de hierro: sepárelos del café, el té y el calcio."
+      },
+      orient: "Orientación general; consulte a su profesional de salud."
+    },
+    en: {
+      emb: "Pregnancy: these ideas exclude raw or undercooked fish, shellfish, meat and eggs, unpasteurized products and high-mercury fish. Please confirm with your health professional.",
+      ori: "Your health conditions only steer the ideas toward generally suitable eating. They are not personal advice and do not replace your health professional.",
+      sin: "For immune, neurological or genetic categories there is no safe general food rule: ask your professional for your own guidance. The allergies and eating style you entered still apply.",
+      otra: "You entered another health condition: the app has no rules for it. Please check with your health professional.",
+      medsGen: "This app does not calculate doses or suggest changing medications. Medication notices are general guidance and must be confirmed with your pharmacist or doctor.",
+      medsNone: "You said you take medications, but none with a notice was recognized in this app. Ask your pharmacist or doctor whether any interacts with food.",
+      m: {
+        warfarina: "Warfarin: do not cut out leafy green vegetables (spinach, kale, broccoli); keep a steady amount each week and tell your health team if it changes.",
+        imao: "MAOIs: avoid foods with tyramine (aged cheese, cured meats, smoked fish, red wine, beer, chocolate).",
+        estatinas: "Statins: grapefruit (pomelo) and its juices were excluded because they raise the amount of medicine in the blood.",
+        antibiotico: "Antibiotics such as tetracyclines, doxycycline, ciprofloxacin or levofloxacin: dairy and calcium antacids reduce absorption; take them 1 hour before or 2 hours after.",
+        levotiroxina: "Levothyroxine: take it on an empty stomach with water, 30 to 60 minutes before breakfast; wait 1 hour for soy, dairy, coffee, juice, nuts and very high-fibre foods, and 4 hours for a calcium supplement.",
+        antitiroideo: "Antithyroid drugs: shellfish, seaweed and iodized salt may reduce their effect; keep intake steady and tell your doctor.",
+        insulina: "Insulin or medicines that raise insulin: keep to the meal times you were given and do not drink alcohol on an empty stomach.",
+        potasio: "Blood pressure or kidney medicines: ask your professional before using potassium salt substitutes.",
+        hierro: "Iron supplements: keep them apart from coffee, tea and calcium."
+      },
+      orient: "General guidance; consult your health professional."
+    }
+  };
+  function avisoSalud() {
+    if (!condNotice()) return "";
+    var t = SALUD[S.lang], a = S.a, c = condIds(), out = [];
+    var CON_REGLA = ["cardiovascular", "digestiva", "endocrina", "hematologica", "hepatica", "metabolica", "musculoesqueletica", "renal"];
+    if (c.indexOf("embarazo") > -1) out.push(t.emb);
+    if (c.some(function (x) { return CON_REGLA.indexOf(x) > -1; })) out.push(t.ori);
+    if (c.some(function (x) { return ["inmunologica", "neurologica", "genetica"].indexOf(x) > -1; })) out.push(t.sin);
+    if (has(a.cond, "otra")) out.push(t.otra);
+    if (a.meds === "si") {
+      var m = medsClases();
+      m.forEach(function (k) { out.push(t.m[k]); });
+      if (!m.length) out.push(t.medsNone);
+      out.push(t.medsGen);
+    }
+    return out.map(function (x) { return '<p class="notice">' + esc(x) + '</p>'; }).join("");
+  }
+  function pieSalud() { return condNotice() ? '<p class="hint">' + esc(SALUD[S.lang].orient) + '</p>' : ""; }
 
   function platoOk(d, P, R) {
     var nombre = d[0].replace(/-\d+$/, "").replace(/-/g, " ").replace(/^crema /, "sopa ");
@@ -819,21 +915,21 @@ h2.title { font-size: 28px; line-height: 1.15; }
       var cocinas = pref.map(function (c) { var f = COCINA.filter(function (x) { return x.id === c; })[0]; return f ? L(f.label) : ""; }).filter(Boolean);
       if (es) {
         texto = "Proponga 2 recetas distintas para una comida de hoy. Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]}. " +
-          "En \"plato\" use SOLO un id de esta lista y mantenga ese plato como base. Cada elemento de la lista tiene el formato id (tiempo aproximado en minutos): en \"plato\" escriba SOLO el id, sin el tiempo. Si hay tiempo máximo, elija platos cuyo tiempo indicado no lo supere (si ninguno cabe, el más corto). Lista: " + lista.join(", ") + ". " +
+          "En \"plato\" use SOLO un id de esta lista y mantenga ese plato como base. Cada elemento de la lista tiene el formato id (tiempo aproximado en minutos): en \"plato\" escriba SOLO el id, sin el tiempo. El tiempo máximo es solo una indicación: prefiera platos cuyo tiempo indicado no lo supere (si ninguno cabe, el más corto). Lista: " + lista.join(", ") + ". " +
           (al.length ? "Alergias (excluya por completo el alimento y todos sus derivados): " + al.join(", ") + ". " : "") +
           (ev.length ? "Evitar: " + ev.join(", ") + ". " : "") + (libres.length ? "Evitar también: " + libres.join(", ") + ". " : "") +
           (dieta ? "Tipo de alimentación: " + L(dieta) + ". " : "") + (cocinas.length ? "Cocinas preferidas: " + cocinas.join(", ") + ". " : "") +
-          (a.tiempo ? "Tiempo máximo: " + a.tiempo + " min. " : "") + (a.porc ? "Porciones: " + a.porc + ". " : "") +
-          (ingr.length ? "Ingredientes disponibles (priorícelos): " + ingr.join(", ") + ". " : "") +
+          (a.tiempo ? "Tiempo máximo (solo una indicación): " + a.tiempo + " min. " : "") + (a.porc ? "Porciones: " + a.porc + ". " : "") +
+          (ingr.length ? "Ingredientes disponibles (priorícelos): " + ingr.join(", ") + ". " : "") + saludPrompt(P, true) +
           "Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema». No afirme que una receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves por receta.";
       } else {
         texto = "Suggest 2 different recipes for a meal today. Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]}. " +
-          "For \"plato\" use ONLY an id from this list and keep that dish as the base. Each item in the list has the format id (approximate time in minutes): in \"plato\" write ONLY the id, without the time. If there is a maximum time, choose dishes whose listed time does not exceed it (if none fits, the shortest). List: " + lista.join(", ") + ". " +
+          "For \"plato\" use ONLY an id from this list and keep that dish as the base. Each item in the list has the format id (approximate time in minutes): in \"plato\" write ONLY the id, without the time. The maximum time is only a guideline: prefer dishes whose listed time does not exceed it (if none fits, the shortest). List: " + lista.join(", ") + ". " +
           (al.length ? "Allergies (exclude the food and all its derivatives entirely): " + al.join(", ") + ". " : "") +
           (ev.length ? "Avoid: " + ev.join(", ") + ". " : "") + (libres.length ? "Also avoid: " + libres.join(", ") + ". " : "") +
           (dieta ? "Eating style: " + L(dieta) + ". " : "") + (cocinas.length ? "Preferred cuisines: " + cocinas.join(", ") + ". " : "") +
-          (a.tiempo ? "Maximum time: " + a.tiempo + " min. " : "") + (a.porc ? "Servings: " + a.porc + ". " : "") +
-          (ingr.length ? "Available ingredients (prioritize them): " + ingr.join(", ") + ". " : "") +
+          (a.tiempo ? "Maximum time (only a guideline): " + a.tiempo + " min. " : "") + (a.porc ? "Servings: " + a.porc + ". " : "") +
+          (ingr.length ? "Available ingredients (prioritize them): " + ingr.join(", ") + ". " : "") + saludPrompt(P, false) +
           "Dishes whose id starts with «crema-» are dairy-free soups: in the title call them «soup» or «purée» and never «cream». Do not claim any recipe is safe for any health condition. At most 12 ingredients and 6 short steps per recipe.";
       }
       if (texto.length <= 3900 || n <= 6) break;
@@ -983,13 +1079,13 @@ h2.title { font-size: 28px; line-height: 1.15; }
         '<div class="body"><h3>' + esc(c.titulo) + '</h3>' + (meta ? '<p class="meta">' + esc(meta) + '</p>' : "") +
         '<span class="pill"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>' + esc(r.fits) + '</span>' +
         '<button type="button" class="see" data-act="rtoggle" data-id="' + i + '" aria-expanded="false" aria-controls="det' + i + '">' + esc(r.see) + '</button></div>' +
-        '<div class="det" id="det' + i + '" hidden><h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol></div></li>';
+        '<div class="det" id="det' + i + '" hidden><h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol>' + pieSalud() + '</div></li>';
     }).join("");
     var avisos = [r.avGen]; if (has(S.a.alerg, "sulfitos")) avisos.push(MPI.AVISOS[S.lang].sulfitos); if (has(S.a.evita, "gluten")) avisos.push(MPI.AVISOS[S.lang].gluten);
     if (perfil().libres.length) avisos.push(MPI.AVISOS[S.lang].libre);
     return h + '<section class="results"><div><h2 class="title" id="vt" tabindex="-1">' + esc(r.title) + '</h2><p class="lead">' + esc(r.leadN(RES.recetas.length)) + '</p></div>' +
       (RES.simulated ? '<span class="badge-example">' + esc(r.example) + '</span>' : "") +
-      (condNotice() ? '<p class="notice">' + esc(r.cond) + '</p>' : "") +
+      avisoSalud() +
       '<ul class="recipes">' + cards + '</ul><p class="hint">' + esc(r.photoNote) + '</p>' +
       avisos.map(function (t) { return '<p class="hint">' + esc(t) + '</p>'; }).join("") +
       '<div class="actions"><button type="button" class="btn btn-primary" data-act="mas">' + esc(r.more) + '</button><a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div></section>';
@@ -1012,28 +1108,41 @@ h2.title { font-size: 28px; line-height: 1.15; }
       ? (al.length ? "Alergias (excluya por completo el alimento y todos sus derivados): " + al.join(", ") + ". " : "") +
         (ev.length ? "Evitar: " + ev.join(", ") + ". " : "") + (libres.length ? "Evitar también: " + libres.join(", ") + ". " : "") +
         (dieta ? "Tipo de alimentación: " + L(dieta) + ". " : "") + (cocinas.length ? "Cocinas preferidas: " + cocinas.join(", ") + ". " : "") +
-        (a.tiempo ? "Tiempo máximo por comida: " + a.tiempo + " min. " : "") + (a.porc ? "Porciones por comida: " + a.porc + ". " : "") +
-        (ingr.length ? "Ingredientes disponibles (priorícelos): " + ingr.join(", ") + ". " : "")
+        (a.tiempo ? "Tiempo máximo por comida (solo una indicación): " + a.tiempo + " min. " : "") + (a.porc ? "Porciones por comida: " + a.porc + ". " : "") +
+        (ingr.length ? "Ingredientes disponibles (priorícelos): " + ingr.join(", ") + ". " : "") + saludPrompt(P, true)
       : (al.length ? "Allergies (exclude the food and all its derivatives entirely): " + al.join(", ") + ". " : "") +
         (ev.length ? "Avoid: " + ev.join(", ") + ". " : "") + (libres.length ? "Also avoid: " + libres.join(", ") + ". " : "") +
         (dieta ? "Eating style: " + L(dieta) + ". " : "") + (cocinas.length ? "Preferred cuisines: " + cocinas.join(", ") + ". " : "") +
-        (a.tiempo ? "Maximum time per meal: " + a.tiempo + " min. " : "") + (a.porc ? "Servings per meal: " + a.porc + ". " : "") +
-        (ingr.length ? "Available ingredients (prioritize them): " + ingr.join(", ") + ". " : "");
+        (a.tiempo ? "Maximum time per meal (only a guideline): " + a.tiempo + " min. " : "") + (a.porc ? "Servings per meal: " + a.porc + ". " : "") +
+        (ingr.length ? "Available ingredients (prioritize them): " + ingr.join(", ") + ". " : "") + saludPrompt(P, false);
   }
-  function armarPromptPlan(P, cands) {
-    var es = S.lang === "es", pref = S.a.cocina.filter(function (c) { return c !== "otra"; });
-    var pre = barajar(cands.filter(function (d) { return d[1].some(function (c) { return pref.indexOf(c) > -1; }); }));
-    var res = barajar(cands.filter(function (d) { return pre.indexOf(d) < 0; }));
-    var n = 40, texto;
+  /* Listas del menú: una por comida (d = desayuno, a = almuerzo, c = cena), con las cocinas preferidas primero. */
+  var COMIDAS = [["d", "desayuno"], ["a", "almuerzo"], ["c", "cena"]];
+  function listasPlan(cands) {
+    var pref = S.a.cocina.filter(function (c) { return c !== "otra"; }), L = {};
+    COMIDAS.forEach(function (k) {
+      var l = cands.filter(function (d) { return d[4] && d[4].indexOf(k[1]) > -1; });
+      var pre = barajar(l.filter(function (d) { return d[1].some(function (c) { return pref.indexOf(c) > -1; }); }));
+      var res = barajar(l.filter(function (d) { return pre.indexOf(d) < 0; }));
+      L[k[0]] = { todos: l, pre: pre, res: res };
+    });
+    return L;
+  }
+  function armarPromptPlan(P, L) {
+    var es = S.lang === "es", n = { d: 12, a: 18, c: 18 }, min = { d: 4, a: 6, c: 6 }, texto;
     for (;;) {
-      var lista = pre.slice(0, 20).concat(res).slice(0, n).map(function (d) { return d[0] + " (" + d[3] + " min)"; }).join(", ");
+      var ls = {};
+      COMIDAS.forEach(function (k) {
+        var x = L[k[0]], h = Math.ceil(n[k[0]] / 2);
+        ls[k[0]] = x.pre.slice(0, h).concat(x.res, x.pre.slice(h)).slice(0, n[k[0]]).map(function (d) { return d[0] + " (" + d[3] + " min)"; }).join(", ");
+      });
       texto = es
-        ? "Arme un menú de 7 días con almuerzo y cena. Responda solo con JSON: {\"dias\":[{\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"cantidad y nombre\"]}. Debe haber exactamente 7 elementos en \"dias\". En \"plato\" use SOLO un id de esta lista, repitiendo cada plato como máximo 2 veces en la semana. Cada elemento de la lista tiene el formato id (tiempo aproximado en minutos): en \"plato\" escriba SOLO el id, sin el tiempo. Si hay tiempo máximo, elija platos cuyo tiempo indicado no lo supere (si ninguno cabe, el más corto). Lista: " + lista + ". " + restr(P, true) +
-          "\"compras\" es la lista de compras de toda la semana: máximo 35 ingredientes sin repetir, con cantidad aproximada. No afirme que ningún plato es seguro para una condición de salud. Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema»."
-        : "Build a 7-day menu with lunch and dinner. Reply with JSON only: {\"dias\":[{\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"quantity and name\"]}. There must be exactly 7 items in \"dias\". For \"plato\" use ONLY an id from this list, repeating each dish at most 2 times in the week. Each item in the list has the format id (approximate time in minutes): in \"plato\" write ONLY the id, without the time. If there is a maximum time, choose dishes whose listed time does not exceed it (if none fits, the shortest). List: " + lista + ". " + restr(P, false) +
-          "\"compras\" is the shopping list for the whole week: at most 35 ingredients without repeats, with approximate quantities. Do not claim any dish is safe for any health condition. Dishes whose id starts with «crema-» are dairy-free soups: in the title call them «soup» or «purée» and never «cream».";
-      if (texto.length <= 3900 || n <= 10) break;
-      n -= 4;
+        ? "Arme un menú de 7 días con desayuno, almuerzo y cena cada día. Responda solo con JSON: {\"dias\":[{\"desayuno\":{\"plato\":\"id\",\"titulo\":\"\"},\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"cantidad y nombre\"]}. Debe haber exactamente 7 elementos en \"dias\". En \"plato\" use SOLO un id de la lista de esa comida, repitiendo cada plato como máximo 2 veces en la semana. Cada elemento de las listas tiene el formato id (tiempo aproximado en minutos): en \"plato\" escriba SOLO el id, sin el tiempo. El tiempo máximo es solo una indicación: prefiera platos cuyo tiempo indicado no lo supere (si ninguno cabe, el más corto). Desayunos: " + ls.d + ". Almuerzos: " + ls.a + ". Cenas: " + ls.c + ". " + restr(P, true) +
+          "\"compras\" es la lista de compras de toda la semana: máximo 45 ingredientes sin repetir, con cantidad aproximada. No afirme que ningún plato es seguro para una condición de salud. Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema»."
+        : "Build a 7-day menu with breakfast, lunch and dinner every day. Reply with JSON only: {\"dias\":[{\"desayuno\":{\"plato\":\"id\",\"titulo\":\"\"},\"almuerzo\":{\"plato\":\"id\",\"titulo\":\"\"},\"cena\":{\"plato\":\"id\",\"titulo\":\"\"}}],\"compras\":[\"quantity and name\"]}. There must be exactly 7 items in \"dias\". For \"plato\" use ONLY an id from the list for that meal, repeating each dish at most 2 times in the week. Each item in the lists has the format id (approximate time in minutes): in \"plato\" write ONLY the id, without the time. The maximum time is only a guideline: prefer dishes whose listed time does not exceed it (if none fits, the shortest). Breakfasts: " + ls.d + ". Lunches: " + ls.a + ". Dinners: " + ls.c + ". " + restr(P, false) +
+          "\"compras\" is the shopping list for the whole week: at most 45 ingredients without repeats, with approximate quantities. Do not claim any dish is safe for any health condition. Dishes whose id starts with «crema-» are dairy-free soups: in the title call them «soup» or «purée» and never «cream».";
+      if (texto.length <= 3900 || (n.d <= min.d && n.a <= min.a && n.c <= min.c)) break;
+      COMIDAS.forEach(function (k) { n[k[0]] = Math.max(min[k[0]], n[k[0]] - 2); });
     }
     return texto;
   }
@@ -1043,31 +1152,40 @@ h2.title { font-size: 28px; line-height: 1.15; }
       ? "Escriba la receta completa de este plato: " + t + " (id: " + plato + (mm ? "; tiempo aproximado: " + mm + " min" : "") + "). Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]} con UNA sola receta y use exactamente el id indicado en \"plato\". " + restr(P, true) + "Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema». No afirme que la receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves."
       : "Write the complete recipe for this dish: " + t + " (id: " + plato + (mm ? "; approximate time: " + mm + " min" : "") + "). Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]} with ONE recipe only and use exactly the given id in \"plato\". " + restr(P, false) + "Dishes whose id starts with «crema-» are dairy-free soups: in the title call them «soup» or «purée» and never «cream». Do not claim the recipe is safe for any health condition. At most 12 ingredients and 6 short steps.";
   }
-  function planSample() {
+  function tituloDeId(id) { var t = id.replace(/-\d+$/, "").replace(/^crema-/, "sopa-").replace(/-/g, " "); return t.charAt(0).toUpperCase() + t.slice(1); }
+  function planSample(L) {
     var m = SAMPLE[S.lang], dias = [], comp = [], seen = {};
-    for (var i = 0; i < 7; i++) { var a = m[i % 7], c = m[(i + 3) % 7]; dias.push({ almuerzo: { plato: a.plato, titulo: a.titulo }, cena: { plato: c.plato, titulo: c.titulo } }); }
+    var mk = function (k, i) { var l = L[k].todos, d = l[i % l.length][0], z = m.filter(function (r) { return r.plato === d; })[0]; return { plato: d, titulo: z ? z.titulo : tituloDeId(d) }; };
+    for (var i = 0; i < 7; i++) dias.push({ desayuno: mk("d", i), almuerzo: mk("a", i), cena: mk("c", i + 3) });
     m.forEach(function (r) { r.ingredientes.forEach(function (z) { if (!seen[z] && comp.length < 24) { seen[z] = 1; comp.push(z); } }); });
     return { dias: dias, compras: comp };
   }
-  function planValido(d, P, cands) {
+  function recetaSample(m) {
+    var z = SAMPLE[S.lang].filter(function (r) { return r.plato === m.plato; });
+    if (z.length) return { recetas: z };
+    var es = S.lang === "es";
+    return { recetas: [{ plato: m.plato, titulo: m.titulo, tiempo_min: 30, porciones: 2, ingredientes: es ? [m.titulo, "Sal al gusto"] : [m.titulo, "Salt to taste"], pasos: es ? ["Esta es una receta de ejemplo: en el sitio real, Gemini escribe aquí la preparación."] : ["This is a sample recipe: on the live site, Gemini writes the preparation here."] }] };
+  }
+  function planValido(d, P, L) {
     if (!d || !Array.isArray(d.dias) || d.dias.length !== 7 || !Array.isArray(d.compras)) return null;
-    var ids = {}; cands.forEach(function (c) { ids[c[0]] = 1; });
-    var R = MPI.reglasDelPerfil(P), cnt = {}, maxRep = Math.max(3, Math.ceil(14 / cands.length)), dias = [], i;
-    var comida = function (m) {
+    var ids = {}, minLen = 99;
+    COMIDAS.forEach(function (k) { ids[k[0]] = {}; L[k[0]].todos.forEach(function (c) { ids[k[0]][c[0]] = 1; }); minLen = Math.min(minLen, L[k[0]].todos.length); });
+    var R = MPI.reglasDelPerfil(P), cnt = {}, maxRep = LIVE ? Math.max(3, Math.ceil(7 / Math.max(1, minLen))) : 99, dias = [], i;
+    var comida = function (m, k) {
       if (!m || typeof m !== "object") return null;
       m.plato = idPlato(m.plato);
       var t = typeof m.titulo === "string" ? sinCrema(m.plato, m.titulo.trim(), true) : "";
-      if (t.length < 3 || t.length > 90 || typeof m.plato !== "string" || !ids[m.plato]) return null;
+      if (t.length < 3 || t.length > 90 || typeof m.plato !== "string" || !ids[k][m.plato]) return null;
       if (!MPI.revisarIngrediente(t, P, R).ok) return null;
       cnt[m.plato] = (cnt[m.plato] || 0) + 1; if (cnt[m.plato] > maxRep) return null;
       return { plato: m.plato, titulo: t };
     };
     for (i = 0; i < 7; i++) {
-      var a = comida(d.dias[i] && d.dias[i].almuerzo), c = comida(d.dias[i] && d.dias[i].cena);
-      if (!a || !c) return null; dias.push({ a: a, c: c });
+      var x = d.dias[i] || {}, dd = comida(x.desayuno, "d"), a = comida(x.almuerzo, "a"), c = comida(x.cena, "c");
+      if (!dd || !a || !c) return null; dias.push({ d: dd, a: a, c: c });
     }
     var cp = d.compras;
-    if (cp.length < 3 || cp.length > 40) return null;
+    if (cp.length < 3 || cp.length > 50) return null;
     for (i = 0; i < cp.length; i++) {
       if (typeof cp[i] !== "string" || cp[i].trim().length < 2 || cp[i].length > 80 || !MPI.revisarIngrediente(cp[i], P, R).ok) return null;
     }
@@ -1078,12 +1196,12 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (route() === "plan") render(true);
   }
   function intentoPlan(k, token) {
-    var P = perfil(), cands = candidatos(P, []).filter(function (d) { return !d[4] || d[4].indexOf("almuerzo") > -1 || d[4].indexOf("cena") > -1; }); /* el menú es de almuerzo y cena: se omiten los platos que son solo de desayuno */
-    if (cands.length < 4) { fallaPlan("few"); return; }
-    llamar(armarPromptPlan(P, cands), PLAN, planSample()).then(function (r) {
+    var P = perfil(), L = listasPlan(candidatos(P, []));
+    if (L.d.todos.length < 2 || L.a.todos.length < 3 || L.c.todos.length < 3) { fallaPlan("few"); return; }
+    llamar(armarPromptPlan(P, L), PLAN, planSample(L)).then(function (r) {
       if (token !== PLAN.n) return;
       if (!r.ok) { if (r.code !== "cancel") fallaPlan(r.code, r.retry); return; }
-      var v = planValido(r.data, P, cands);
+      var v = planValido(r.data, P, L);
       if (v) { PLAN.dias = v.dias; PLAN.compras = v.compras; PLAN.checked = {}; PLAN.rec = {}; PLAN.open = {}; PLAN.state = "ok"; if (route() === "plan") render(true); }
       else if (k < 2) intentoPlan(2, token);
       else fallaPlan("noneValid");
@@ -1106,13 +1224,13 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   function verReceta(key) {
     var i = parseInt(key, 10), kind = key.slice(-1), d = PLAN.dias[i]; if (!d) return;
-    var m = kind === "a" ? d.a : d.c, rec = PLAN.rec[key];
+    var m = kind === "d" ? d.d : kind === "a" ? d.a : d.c, rec = PLAN.rec[key];
     if (rec && rec.state === "loading") return;
     if (rec && rec.state === "ok") { PLAN.open[key] = !PLAN.open[key]; }
     else {
       var P = perfil(), tk = PLAN.n, holder = { ctrl: null };
       PLAN.rec[key] = { state: "loading" }; PLAN.open[key] = true;
-      llamar(armarPromptUna(P, m.plato, m.titulo), holder, { recetas: SAMPLE[S.lang].filter(function (z) { return z.plato === m.plato; }) }).then(function (r) {
+      llamar(armarPromptUna(P, m.plato, m.titulo), holder, recetaSample(m)).then(function (r) {
         if (tk !== PLAN.n) return;
         var got = null;
         if (r.ok) { var ids = {}; ids[m.plato] = 1; var R = MPI.reglasDelPerfil(P); (r.data && Array.isArray(r.data.recetas) ? r.data.recetas : []).forEach(function (x) { if (x && typeof x === "object") x.plato = idPlato(x.plato); if (!got && x && x.plato === m.plato) got = recetaValida(x, P, R, ids); }); }
@@ -1150,20 +1268,20 @@ h2.title { font-size: 28px; line-height: 1.15; }
         else if (rec.state === "error") det = '<div class="mdet"><p class="need">' + esc(p.recErr) + '</p></div>';
         else {
           var c = rec.r, meta = [c.tiempo ? r.min(c.tiempo) : "", c.porciones ? r.srv(c.porciones) : ""].filter(Boolean).join(" · ");
-          det = '<div class="mdet">' + (meta ? '<p class="meta">' + esc(meta) + '</p>' : "") + '<h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol></div>';
+          det = '<div class="mdet">' + (meta ? '<p class="meta">' + esc(meta) + '</p>' : "") + '<h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol>' + pieSalud() + '</div>';
         }
       }
       var txt = rec && rec.state === "ok" && open ? r.hide : r.see;
       return '<div class="meal"><img src="img/platos/' + esc(m.plato) + '.webp" width="64" height="64" alt=""><div class="mt"><span class="ml">' + esc(label) + '</span><span class="mn">' + esc(m.titulo) + '</span></div>' +
         '<button type="button" class="btn btn-ghost sm" data-act="prec" data-id="' + key + '" aria-expanded="' + (open ? "true" : "false") + '">' + esc(txt) + '</button>' + det + '</div>';
     };
-    var dias = PLAN.dias.map(function (d, i) { return '<li class="day"><h3>' + esc(p.day(i + 1)) + '</h3>' + comida(i, "a", d.a, p.lunch) + comida(i, "c", d.c, p.dinner) + '</li>'; }).join("");
+    var dias = PLAN.dias.map(function (d, i) { return '<li class="day"><h3>' + esc(p.day(i + 1)) + '</h3>' + comida(i, "d", d.d, p.breakfast) + comida(i, "a", d.a, p.lunch) + comida(i, "c", d.c, p.dinner) + '</li>'; }).join("");
     var lista = PLAN.compras.map(function (c, i) { return '<li><label><input type="checkbox" data-act="chk" data-id="' + i + '"' + (PLAN.checked[i] ? " checked" : "") + '><span>' + esc(c) + '</span></label></li>'; }).join("");
     var avisos = [r.avGen]; if (has(S.a.alerg, "sulfitos")) avisos.push(MPI.AVISOS[S.lang].sulfitos); if (has(S.a.evita, "gluten")) avisos.push(MPI.AVISOS[S.lang].gluten);
     if (perfil().libres.length) avisos.push(MPI.AVISOS[S.lang].libre);
     return h + '<section class="results"><div><h2 class="title" id="vt" tabindex="-1">' + esc(p.title) + '</h2><p class="lead">' + esc(p.lead) + '</p></div>' +
       (PLAN.simulated ? '<span class="badge-example">' + esc(r.example) + '</span>' : "") +
-      (condNotice() ? '<p class="notice">' + esc(r.cond) + '</p>' : "") +
+      avisoSalud() +
       '<ul class="days">' + dias + '</ul><section class="shop"><h3>' + esc(p.shopT) + '</h3><p class="hint">' + esc(p.shopP) + '</p><ul class="checklist">' + lista + '</ul></section>' +
       '<p class="hint">' + esc(r.photoNote) + '</p>' + avisos.map(function (t) { return '<p class="hint">' + esc(t) + '</p>'; }).join("") +
       '<div class="actions"><button type="button" class="btn btn-primary" data-act="otroplan">' + esc(p.another) + '</button><a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div></section>';

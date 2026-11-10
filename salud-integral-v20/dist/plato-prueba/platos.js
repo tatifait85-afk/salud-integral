@@ -89,7 +89,7 @@ const PLATOS = [
   ["arroz-frito-huevo-vegetales", ["china"], ["soya"], 25, ["almuerzo", "cena"]],
   ["curry-vegetales-arroz", ["india"], [], 40, ["almuerzo", "cena"]],
   ["bowl-arroz-aguacate-pepino", ["japonesa"], [], 25, ["almuerzo", "cena"]],
-  ["platano-maduro-horno-frijoles", ["costarricense", "caribena"], [], 40, ["almuerzo", "cena"]],
+  ["platano-maduro-horno-frijoles", ["costarricense", "caribena"], [], 40, ["desayuno", "almuerzo", "cena"]],
   ["huevos-revueltos-vegetales", ["costarricense"], [], 15, ["desayuno"]],
   ["tortillas-maiz-frijoles-aguacate", ["costarricense"], [], 15, ["desayuno", "cena"]],
   ["pollo-arroz-vegetales-vapor", ["costarricense"], [], 40, ["almuerzo", "cena"]],

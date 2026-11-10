@@ -22,6 +22,12 @@ const ETIQUETAS = {
   embutido:  ["chorizo", "salchicha", "salchichon", "mortadela", "longaniza", "sausage", "salami", "hot dog"],
   gelatina:  ["gelatina", "gelatin"],
   miel:      ["miel", "honey"],
+  // Embarazo (reglas firmes de seguridad): frases específicas, para no marcar una ensalada de tomate crudo.
+  crudo:     ["pescado crudo", "pescados crudos", "mariscos crudos", "marisco crudo", "carne cruda", "carnes crudas", "huevo crudo", "huevos crudos", "huevo poco cocido", "huevos poco cocidos", "yema cruda", "brotes crudos", "brotes de alfalfa", "alfalfa", "sushi", "sashimi", "ceviche", "carpaccio", "tartar de", "steak tartare", "atun sellado", "atun rosado", "raw fish", "raw egg", "raw eggs", "raw shellfish", "raw oysters", "undercooked egg", "undercooked eggs", "runny egg", "seared tuna", "raw sprouts"],
+  sin_pasteurizar: ["sin pasteurizar", "no pasteurizado", "no pasteurizada", "leche cruda", "queso crudo", "unpasteurized", "unpasteurised", "raw milk", "raw cheese"],
+  alto_mercurio: ["tiburon", "pez espada", "marlin", "caballa rey", "caballa real", "blanquillo", "reloj anaranjado", "atun rojo", "atun ojo grande", "shark", "swordfish", "king mackerel", "tilefish", "bigeye tuna", "orange roughy", "bluefin tuna"],
+  // Medicamentos: toronja (estatinas).
+  toronja:   ["toronja", "pomelo", "grapefruit"],
 };
 
 /* 2) FRASES QUE ENGAÑAN: se eliminan o se reescriben ANTES de buscar (evitan falsos positivos y falsos negativos). */
@@ -46,6 +52,12 @@ const GRUPOS = {
     vegana: ["carne", "ave", "embutido", "pescado", "crustaceo", "molusco", "gelatina", "leche", "huevo", "miel"],
     pescetariana: ["carne", "ave", "embutido", "gelatina"],
     vegetal: ["carne", "ave", "embutido", "gelatina"], // + máximo 1 ingrediente animal (pescado, lácteo, huevo, miel)
+  },
+  condicion: {           // condiciones de salud con reglas firmes de seguridad (el resto solo orienta o avisa, ver index.html)
+    embarazo: ["crudo", "sin_pasteurizar", "alto_mercurio"],
+  },
+  medicamento: {         // único bloqueo por medicamentos: toronja con estatinas (el resto son avisos de horario o cantidad)
+    estatinas: ["toronja"],
   },
 };
 const MAX_ANIMAL_VEGETAL = 1;
@@ -84,7 +96,7 @@ function detectar(texto, lang) {
   return { tags, sinLactosa };
 }
 
-/** Perfil: { alergias:[ids], evitar:[ids], dieta:"vegana"|…|null, libres:[textos escritos por la persona] } */
+/** Perfil: { alergias:[ids], evitar:[ids], dieta:"vegana"|…|null, libres:[textos escritos por la persona], condiciones:[ids], medicamentos:[ids] } */
 function reglasDelPerfil(p) {
   const pick = (g, ids) => (ids || []).flatMap((id) => GRUPOS[g][id] || []);
   const libres = (p.libres || []).map(norm).filter(Boolean);
@@ -93,6 +105,7 @@ function reglasDelPerfil(p) {
     evitar: new Set(pick("evitar", p.evitar)),
     soloLactosa: (p.evitar || []).includes("lactosa") && !(p.evitar || []).includes("lacteos"),
     dieta: new Set(p.dieta ? GRUPOS.dieta[p.dieta] : []),
+    salud: new Set([...pick("condicion", p.condiciones), ...pick("medicamento", p.medicamentos)]),
     vegetal: p.dieta === "vegetal",
     libres,
   };
@@ -106,6 +119,7 @@ function revisarIngrediente(texto, p, R = reglasDelPerfil(p)) {
     if (R.alergia.has(tag)) motivos.push({ grupo: "alergia", etiqueta: tag });
     else if (R.evitar.has(tag) && !(sinLactosa && R.soloLactosa && tag === "leche")) motivos.push({ grupo: "evitar", etiqueta: tag });
     else if (R.dieta.has(tag)) motivos.push({ grupo: "dieta", etiqueta: tag });
+    else if (R.salud.has(tag)) motivos.push({ grupo: "salud", etiqueta: tag });
   });
   const n = norm(texto);
   R.libres.forEach((l) => { if (new RegExp("\\b" + esc(l) + "(s|es)?\\b").test(n)) motivos.push({ grupo: "libre", etiqueta: l }); });
@@ -114,7 +128,7 @@ function revisarIngrediente(texto, p, R = reglasDelPerfil(p)) {
 
 /** Etiquetas ya conocidas (p. ej. las de un plato del catálogo) → ¿compatibles? */
 function revisarEtiquetas(tags, p, R = reglasDelPerfil(p)) {
-  return !(tags || []).some((t) => R.alergia.has(t) || R.evitar.has(t) || R.dieta.has(t));
+  return !(tags || []).some((t) => R.alergia.has(t) || R.evitar.has(t) || R.dieta.has(t) || R.salud.has(t));
 }
 
 /** Receta: { ingredientes:[texto,…] }. Compatible solo si TODOS los ingredientes lo son. */
@@ -131,7 +145,7 @@ function validarReceta(receta, p) {
 
 /** Lista de exclusión en texto, para incluirla en el prompt a Gemini (la validación final sigue siendo la de arriba). */
 function listaParaPrompt(p) {
-  const R = reglasDelPerfil(p), tags = new Set([...R.alergia, ...R.evitar, ...R.dieta]);
+  const R = reglasDelPerfil(p), tags = new Set([...R.alergia, ...R.evitar, ...R.dieta, ...R.salud]);
   return [...tags].flatMap((t) => ETIQUETAS[t].filter((n) => !/^e2\d\d$/.test(n))).concat(R.libres);
 }
 
