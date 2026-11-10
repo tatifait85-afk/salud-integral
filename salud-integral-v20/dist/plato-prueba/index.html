@@ -110,6 +110,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .opt[aria-pressed="true"] { border: 2.5px solid var(--forest); background: var(--mint); padding: 6.5px 12.5px 6.5px 8.5px; }
 .opt.noimg[aria-pressed="true"] { padding-left: 12.5px; }
 .opt[aria-pressed="true"] .tick { background: var(--forest); color: var(--cream); }
+.grp { margin-top: 18px; padding: 12px; display: grid; gap: 12px; border: 1.5px solid var(--line); border-radius: var(--r-md); }
+.grp-h { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 10px; }
+.grp-h .ic { display: block; width: 48px; height: 48px; border-radius: 12px; overflow: hidden; background: var(--tile); }
+.grp-h .ic img { width: 48px; height: 48px; mix-blend-mode: multiply; }
+.grp-h .gt { font-weight: 600; font-size: 18px; line-height: 1.15; }
 .t-peach { --tile: #F9D3A6; } .t-rose { --tile: #F5C3C0; } .t-gold { --tile: #F1DB8F; } .t-sage { --tile: #BFDDA6; } .t-sky { --tile: #BFD9EC; } .t-lav { --tile: #D3C3EE; }
 .cuis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .cu { position: relative; display: grid; grid-template-rows: auto auto; text-align: left; cursor: pointer; padding: 0; overflow: hidden; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); box-shadow: 0 6px 16px -12px rgba(23,58,30,.45); min-width: 0; }
@@ -338,19 +343,34 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
   /* ---------- Contenido del cuestionario ---------- */
   var TILES = ["peach", "rose", "gold", "sage", "sky", "lav"];
-  var COND = [
+  var COND_MAP = function (c) { return { id: c[0], img: c[2] || "condicion-" + c[0], label: c[1] }; };
+  /* 16 áreas sueltas, en el orden decidido. */
+  var COND_AREAS = [
     ["cardiovascular", T("Cardiología", "Cardiology")],
     ["endocrina", T("Endocrinología y metabolismo", "Endocrinology and metabolism")],
     ["digestiva", T("Gastroenterología", "Gastroenterology")],
-    ["hepatica", T("Hepatología (hígado)", "Hepatology (liver)")],
-    ["renal", T("Nefrología (riñón)", "Nephrology (kidney)")],
+    ["hepatica", T("Hepatología", "Hepatology")],
+    ["renal", T("Nefrología", "Nephrology")],
+    ["urologia", T("Urología", "Urology")],
+    ["neumologia", T("Neumología", "Pulmonology")],
     ["hematologica", T("Hematología", "Hematology")],
-    ["ginecologia", T("Ginecología y obstetricia", "Gynecology and obstetrics")],
+    ["oncologia", T("Oncología", "Oncology")],
     ["neurologica", T("Neurología", "Neurology")],
-    ["reumatologia", T("Reumatología e inmunología", "Rheumatology and immunology"), "condicion-inmunologica"],
+    ["mental", T("Salud mental", "Mental health"), "condicion-salud-mental"],
+    ["reumatologia", T("Reumatología", "Rheumatology")],
+    ["inmunologia", T("Inmunología", "Immunology"), "condicion-inmunologica"],
     ["ortopedia", T("Ortopedia y huesos", "Orthopedics and bones"), "condicion-musculoesqueletica"],
-    ["genetica", T("Genética", "Genetics")]
-  ].map(function (c) { return { id: c[0], img: c[2] || "condicion-" + (c[0] === "ginecologia" ? "ginecologia" : c[0]), label: c[1] }; });
+    ["genetica", T("Genética", "Genetics")],
+    ["dermatologia", T("Dermatología", "Dermatology")]
+  ].map(COND_MAP);
+  /* Sección «Salud femenina»: es un encabezado (no se elige) con tres subsecciones que sí se eligen. */
+  var COND_FEM = { img: "condicion-salud-femenina", label: T("Salud femenina", "Women's health") };
+  var COND_FEM_ITEMS = [
+    ["ginecologia", T("Ginecología", "Gynecology")],
+    ["embarazo", T("Embarazo", "Pregnancy")],
+    ["menopausia", T("Menopausia", "Menopause")]
+  ].map(COND_MAP);
+  var COND = COND_AREAS.concat(COND_FEM_ITEMS);
   var ALERG = [
     ["mariscos", "alergia-mariscos", T("Mariscos", "Shellfish")], ["huevo", "alergia-huevo", T("Huevo", "Egg")],
     ["mani", "alergia-mani", T("Maní", "Peanuts")], ["nueces", "alergia-nueces-arbol", T("Nueces de árbol", "Tree nuts")],
@@ -481,7 +501,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   /* ---------- Estado y guardado ---------- */
   function fresh() {
     return { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es",
-      a: { cond: [], condOtra: "", emb: null, meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], mode: "hoy" } };
+      a: { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], mode: "hoy" } };
   }
   var S = fresh(), storeOk = true, confirming = false;
   function load() {
@@ -501,10 +521,12 @@ h2.title { font-size: 28px; line-height: 1.15; }
           }
           if (f.a.mode !== "plan") f.a.mode = "hoy";
           /* Cambio de lista de áreas de salud: se pasan las respuestas guardadas a las áreas nuevas. */
-          var MIG = { embarazo: "ginecologia", metabolica: "endocrina", inmunologica: "reumatologia", musculoesqueletica: "reumatologia" };
-          if (has(f.a.cond, "embarazo") && f.a.emb !== "si" && f.a.emb !== "no") f.a.emb = "si";
-          f.a.cond = f.a.cond.map(function (z) { return MIG[z] || z; }).filter(function (z, k, arr) { return arr.indexOf(z) === k; });
-          if (f.a.emb !== "si" && f.a.emb !== "no") f.a.emb = null;
+          /* Ids antiguos: metabolica → endocrina, inmunologica → inmunologia, musculoesqueletica → ortopedia.
+             «Ginecología y obstetricia» con la respuesta «sí, estoy embarazada» (o.a.emb === "si") pasa a Embarazo; sin ese «sí» queda en Ginecología.
+             El id «embarazo» antiguo sigue siendo Embarazo. */
+          var MIG = { metabolica: "endocrina", inmunologica: "inmunologia", musculoesqueletica: "ortopedia" };
+          var embAntes = o.a && o.a.emb === "si";
+          f.a.cond = f.a.cond.map(function (z) { return z === "ginecologia" && embAntes ? "embarazo" : (MIG[z] || z); }).filter(function (z, k, arr) { return arr.indexOf(z) === k; });
           f.a.alerg = f.a.alerg.map(function (x) { return x === "crustaceos" ? "mariscos" : x; });
         }
         S = f;
@@ -535,7 +557,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function answered(id) {
     var a = S.a;
     switch (id) {
-      case "cond": return a.cond.length > 0 && (!has(a.cond, "otra") || a.condOtra.trim() !== "") && (!has(a.cond, "ginecologia") || a.emb === "si" || a.emb === "no");
+      case "cond": return a.cond.length > 0 && (!has(a.cond, "otra") || a.condOtra.trim() !== "");
       case "meds": return a.meds === "no" || a.meds === "si";
       case "alerg": return a.alerg.length > 0 && (!has(a.alerg, "otra") || a.alergOtra.trim() !== "");
       case "dieta": return !!a.dieta;
@@ -572,12 +594,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function qBody(id) {
     var a = S.a, h = "", x = u();
     if (id === "cond") {
-      h += '<div class="opts" role="group" aria-labelledby="qt">' + COND.map(function (c, i) {
-        return optBtn({ act: "cond", id: c.id, img: c.img, i: i, label: L(c.label), sub: condSub(c.id), on: has(a.cond, c.id) });
-      }).join("") + '</div><div class="chips">' + chipBtn("cond", "none", x.none, has(a.cond, "none")) + chipBtn("cond", "otra", x.other + ": " + (S.lang === "es" ? "escribirla" : "type it in"), has(a.cond, "otra")) + '</div>';
-      if (has(a.cond, "ginecologia")) h += '<p class="lead" id="embq" style="margin-top:18px"><strong>' + (S.lang === "es" ? "¿Está embarazada actualmente?" : "Are you currently pregnant?") + '</strong></p><div class="opts" role="radiogroup" aria-labelledby="embq">' +
-        optBtn({ act: "emb", id: "si", img: "condicion-embarazo", i: 0, label: S.lang === "es" ? "Sí, estoy embarazada" : "Yes, I am pregnant", sub: S.lang === "es" ? "Se excluyen alimentos de riesgo" : "Risky foods are excluded", on: a.emb === "si", radio: 1 }) +
-        optBtn({ act: "emb", id: "no", label: S.lang === "es" ? "No" : "No", on: a.emb === "no", radio: 1 }) + '</div>';
+      var oc = function (c, i) { return optBtn({ act: "cond", id: c.id, img: c.img, i: i, label: L(c.label), sub: condSub(c.id), on: has(a.cond, c.id) }); };
+      h += '<div class="opts" role="group" aria-labelledby="qt">' + COND_AREAS.map(oc).join("") + '</div>' +
+        '<div class="grp" role="group" aria-labelledby="gfem"><div class="grp-h"><span class="ic t-' + TILES[COND_AREAS.length % TILES.length] + '"><img src="img/' + COND_FEM.img + '.webp" width="48" height="48" alt=""></span><span class="gt" id="gfem">' + esc(L(COND_FEM.label)) + '</span></div>' +
+        '<div class="opts">' + COND_FEM_ITEMS.map(function (c, i) { return oc(c, COND_AREAS.length + 1 + i); }).join("") + '</div></div>' +
+        '<div class="chips" style="margin-top:18px">' + chipBtn("cond", "none", x.none, has(a.cond, "none")) + chipBtn("cond", "otra", x.other + ": " + (S.lang === "es" ? "escribirla" : "type it in"), has(a.cond, "otra")) + '</div>';
       if (has(a.cond, "otra")) h += textField("condOtra", S.lang === "es" ? "Escriba el área o la condición" : "Type the area or condition", a.condOtra);
       h += '<p class="hint">' + (S.lang === "es" ? "Las áreas de salud orientan las propuestas hacia una alimentación general adecuada; el embarazo, además, excluye alimentos de riesgo. No reemplazan la indicación de su profesional de salud." : "Health areas steer the ideas toward generally suitable eating; pregnancy also excludes risky foods. They do not replace your health professional's guidance.") + '</p>';
     } else if (id === "meds") {
@@ -796,21 +817,29 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   /* Texto bajo cada condición: enfermedades más comunes de esa categoría (solo informativo; las reglas de la página se describen en el párrafo inferior). */
   var COND_ENF = {
-    cardiovascular: ["Hipertensión arterial, enfermedad coronaria, insuficiencia cardíaca, arritmias cardíacas, colesterol y triglicéridos altos", "High blood pressure, coronary artery disease, heart failure, heart rhythm disorders, high cholesterol and triglycerides"],
-    endocrina: ["Diabetes tipo 1, diabetes tipo 2, prediabetes, hipotiroidismo, hipertiroidismo, obesidad y sobrepeso, síndrome metabólico", "Type 1 diabetes, type 2 diabetes, prediabetes, hypothyroidism, hyperthyroidism, obesity and overweight, metabolic syndrome"],
-    digestiva: ["Reflujo (ERGE), gastritis, síndrome del intestino irritable, úlcera péptica, enfermedad de Crohn, colitis ulcerosa, enfermedad celíaca", "Reflux (GERD), gastritis, irritable bowel syndrome, peptic ulcer, Crohn's disease, ulcerative colitis, celiac disease"],
-    hepatica: ["Hígado graso, hepatitis viral, cirrosis", "Fatty liver, viral hepatitis, cirrhosis"],
-    renal: ["Enfermedad renal crónica, cálculos renales, síndrome nefrótico, diálisis", "Chronic kidney disease, kidney stones, nephrotic syndrome, dialysis"],
-    hematologica: ["Anemia por falta de hierro, anemia por falta de B12 o folato, talasemia, anemia de células falciformes, hemofilia", "Iron-deficiency anemia, vitamin B12 or folate deficiency anemia, thalassemia, sickle cell anemia, hemophilia"],
-    ginecologia: ["Embarazo, diabetes gestacional, preeclampsia, síndrome de ovario poliquístico, endometriosis, menopausia", "Pregnancy, gestational diabetes, preeclampsia, polycystic ovary syndrome, endometriosis, menopause"],
-    neurologica: ["Enfermedad cerebrovascular (derrame cerebral), epilepsia, migraña, Parkinson, Alzheimer, esclerosis múltiple", "Cerebrovascular disease (stroke), epilepsy, migraine, Parkinson's disease, Alzheimer's disease, multiple sclerosis"],
-    reumatologia: ["Gota, artritis reumatoide, lupus, síndrome de Sjögren, fibromialgia, inmunodeficiencias", "Gout, rheumatoid arthritis, lupus, Sjögren's syndrome, fibromyalgia, immunodeficiencies"],
-    ortopedia: ["Osteoporosis, artrosis, sarcopenia", "Osteoporosis, osteoarthritis, sarcopenia"],
-    genetica: ["Fenilcetonuria, fibrosis quística, hemocromatosis, síndrome de Down, galactosemia", "Phenylketonuria, cystic fibrosis, hemochromatosis, Down syndrome, galactosemia"]
+    cardiovascular: ["Presión alta, colesterol alto, triglicéridos altos, angina o infarto, corazón débil (insuficiencia cardíaca), latidos irregulares", "High blood pressure, high cholesterol, high triglycerides, angina or heart attack, weak heart (heart failure), irregular heartbeat"],
+    endocrina: ["Diabetes, prediabetes, tiroides lenta, tiroides acelerada, sobrepeso y obesidad, azúcar baja", "Diabetes, prediabetes, underactive thyroid, overactive thyroid, overweight and obesity, low blood sugar"],
+    digestiva: ["Reflujo, gastritis, colon irritable, úlcera de estómago, enfermedad de Crohn y colitis, celiaquía, estreñimiento, piedras en la vesícula, diverticulitis, dificultad para tragar", "Reflux, gastritis, irritable bowel, stomach ulcer, Crohn's disease and colitis, celiac disease, constipation, gallstones, diverticulitis, trouble swallowing"],
+    hepatica: ["Hígado graso, hepatitis, cirrosis", "Fatty liver, hepatitis, cirrhosis"],
+    renal: ["Enfermedad de los riñones (insuficiencia renal), diálisis, inflamación de los riñones", "Kidney disease (kidney failure), dialysis, kidney inflammation"],
+    urologia: ["Piedras en el riñón, infecciones urinarias frecuentes, próstata agrandada, pérdida involuntaria de orina, problemas de erección", "Kidney stones, frequent urinary infections, enlarged prostate, urine leakage, erection problems"],
+    neumologia: ["Asma, EPOC (bronquitis crónica o enfisema), apnea del sueño", "Asthma, COPD (chronic bronchitis or emphysema), sleep apnea"],
+    hematologica: ["Anemia por falta de hierro, anemia por falta de vitamina B12 o ácido fólico, anemias hereditarias (talasemia, células falciformes), problemas de coagulación (hemofilia)", "Iron-deficiency anemia, anemia from lack of vitamin B12 or folic acid, inherited anemias (thalassemia, sickle cell), clotting problems (hemophilia)"],
+    oncologia: ["Cáncer de mama, de próstata, de colon, de pulmón, de piel, y cáncer de la sangre (leucemia y linfoma)", "Breast, prostate, colon, lung and skin cancer, and blood cancer (leukemia and lymphoma)"],
+    neurologica: ["Derrame cerebral, epilepsia, migraña, Parkinson, Alzheimer y otras demencias, esclerosis múltiple", "Stroke, epilepsy, migraine, Parkinson's, Alzheimer's and other dementias, multiple sclerosis"],
+    mental: ["Depresión, ansiedad, trastorno bipolar, déficit de atención (TDAH), autismo, trastornos de la conducta alimentaria (anorexia, bulimia, atracones)", "Depression, anxiety, bipolar disorder, attention deficit (ADHD), autism, eating disorders (anorexia, bulimia, binge eating)"],
+    reumatologia: ["Gota, artritis reumatoide, lupus, fibromialgia, ojos y boca secos (síndrome de Sjögren)", "Gout, rheumatoid arthritis, lupus, fibromyalgia, dry eyes and mouth (Sjögren's syndrome)"],
+    inmunologia: ["Defensas bajas, alergias respiratorias, ronchas crónicas (urticaria)", "Weak immune system, respiratory allergies, chronic hives (urticaria)"],
+    ortopedia: ["Osteoporosis, artrosis (desgaste de las articulaciones), pérdida de masa muscular, recuperación de fracturas, dolor de espalda crónico", "Osteoporosis, osteoarthritis (joint wear), muscle loss, fracture recovery, chronic back pain"],
+    genetica: ["Fenilcetonuria, fibrosis quística, hemocromatosis (exceso de hierro hereditario), síndrome de Down, galactosemia", "Phenylketonuria, cystic fibrosis, hemochromatosis (inherited iron overload), Down syndrome, galactosemia"],
+    dermatologia: ["Acné, psoriasis, rosácea, eczema", "Acne, psoriasis, rosacea, eczema"],
+    ginecologia: ["Ovario poliquístico, endometriosis, miomas, quistes en los ovarios, menstruación dolorosa o muy abundante, bolitas en el seno (enfermedad fibroquística)", "Polycystic ovaries, endometriosis, fibroids, ovarian cysts, painful or very heavy periods, breast lumps (fibrocystic disease)"],
+    embarazo: ["Embarazo, diabetes del embarazo, presión alta del embarazo (preeclampsia), náuseas y vómitos, lactancia", "Pregnancy, diabetes in pregnancy, high blood pressure in pregnancy (preeclampsia), nausea and vomiting, breastfeeding"],
+    menopausia: ["Menopausia, bochornos, problemas para dormir, cambios de ánimo, menopausia temprana", "Menopause, hot flashes, trouble sleeping, mood changes, early menopause"]
   };
   function condSub(id) { var e = COND_ENF[id]; return e ? e[S.lang === "es" ? 0 : 1] : ""; }
-  /* Áreas elegidas, como las usan las reglas: Ginecología y obstetricia solo activa las reglas de embarazo si la persona responde que está embarazada. */
-  function condIds() { return S.a.cond.filter(function (x) { return x !== "none" && x !== "otra"; }).map(function (x) { return x === "ginecologia" && S.a.emb === "si" ? "embarazo" : x; }); }
+  /* Áreas elegidas, como las usan las reglas: elegir Embarazo activa directamente las reglas firmes (id «embarazo»). */
+  function condIds() { return S.a.cond.filter(function (x) { return x !== "none" && x !== "otra"; }); }
   /* Medicamentos: se reconocen por nombre en el texto libre; solo sirven para mostrar avisos (el único bloqueo es la toronja con estatinas). */
   var MEDS_RE = [
     ["warfarina", /warfarin|coumadin|sintrom|acenocumarol|anticoagulante/],
@@ -837,7 +866,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     digestiva: ["sin comidas muy grasosas, fritas ni picantes", "no very fatty, fried or spicy foods"],
     embarazo: ["alimentos bien cocidos, solo lácteos pasteurizados, sin pescado ni mariscos crudos, sin huevo crudo o poco cocido y sin pescado con alto contenido de mercurio", "well-cooked foods, pasteurized dairy only, no raw fish or shellfish, no raw or runny eggs and no high-mercury fish"],
     hematologica: ["fuentes de hierro junto con una fuente de vitamina C, sin café ni té en la comida", "iron sources together with a vitamin C source, no coffee or tea with the meal"],
-    reumatologia: ["frutas, verduras, granos integrales y legumbres, pocas vísceras, carnes rojas y mariscos, sin cerveza ni bebidas azucaradas", "fruit, vegetables, whole grains and legumes, little organ meat, red meat and shellfish, no beer or sugary drinks"]
+    reumatologia: ["verduras, granos integrales, poca carne roja y pocas vísceras", "vegetables, whole grains, little red meat and little organ meat"]
   };
   function saludPrompt(P, es) {
     var out = [], i = es ? 0 : 1;
@@ -897,7 +926,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var CON_REGLA = ["cardiovascular", "digestiva", "endocrina", "hematologica", "hepatica", "reumatologia", "renal"];
     if (c.indexOf("embarazo") > -1) out.push(t.emb);
     if (c.some(function (x) { return CON_REGLA.indexOf(x) > -1; })) out.push(t.ori);
-    if (c.some(function (x) { return ["neurologica", "genetica", "ortopedia", "ginecologia"].indexOf(x) > -1; })) out.push(t.sin);
+    /* Áreas que solo muestran aviso de orientación, sin reglas. */
+    if (c.some(function (x) { return ["urologia", "neumologia", "oncologia", "mental", "neurologica", "inmunologia", "ortopedia", "genetica", "dermatologia", "ginecologia", "menopausia"].indexOf(x) > -1; })) out.push(t.sin);
     if (has(a.cond, "otra")) out.push(t.otra);
     if (a.meds === "si") {
       var m = medsClases();
@@ -1380,8 +1410,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var keepFocus = id;
     if (act === "meds") a.meds = id;
     else if (act === "dieta") a.dieta = (a.dieta === id ? null : id);
-    else if (act === "cond") { toggleExcl(a.cond, id); if (!has(a.cond, "ginecologia")) a.emb = null; }
-    else if (act === "emb") a.emb = id;
+    else if (act === "cond") toggleExcl(a.cond, id);
     else if (act === "alerg") toggleExcl(a.alerg, id);
     else if (act === "evita") toggleMulti(a.evita, id);
     else if (act === "cocina") toggleMulti(a.cocina, id);
