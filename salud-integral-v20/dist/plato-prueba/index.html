@@ -299,7 +299,6 @@ h2.title { font-size: 28px; line-height: 1.15; }
       clearQ: "¿Borrar todas sus respuestas de este dispositivo? No se puede deshacer.", clearYes: "Sí, borrar", clearNo: "Cancelar",
       noStore: "No fue posible guardar sus respuestas en este dispositivo. Se conservarán solo mientras esta página esté abierta.",
       none: "Ninguna", noneM: "Ninguno", other: "Otra", otherM: "Otro",
-      notSup: "Aún sin reglas validadas",
       change: "Cambiar", unanswered: "Sin indicar", missing: "Falta responder",
       sumT: "Revise sus respuestas", sumP: "Puede cambiar cualquiera antes de continuar.",
       getBtn: "Obtener mis recetas", getNeed: "Para continuar falta responder:",
@@ -326,7 +325,6 @@ h2.title { font-size: 28px; line-height: 1.15; }
       clearQ: "Clear all your answers from this device? This cannot be undone.", clearYes: "Yes, clear", clearNo: "Cancel",
       noStore: "We could not save your answers on this device. They will be kept only while this page stays open.",
       none: "None", noneM: "None", other: "Other", otherM: "Other",
-      notSup: "No validated rules yet",
       change: "Change", unanswered: "Not specified", missing: "Still to answer",
       sumT: "Review your answers", sumP: "You can change any of them before continuing.",
       getBtn: "Get my recipes", getNeed: "To continue, please answer:",
@@ -565,10 +563,10 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var a = S.a, h = "", x = u();
     if (id === "cond") {
       h += '<div class="opts" role="group" aria-labelledby="qt">' + COND.map(function (c, i) {
-        return optBtn({ act: "cond", id: c.id, img: c.img, i: i, label: L(c.label), sub: x.notSup, on: has(a.cond, c.id) });
+        return optBtn({ act: "cond", id: c.id, img: c.img, i: i, label: L(c.label), sub: condSub(c.id), on: has(a.cond, c.id) });
       }).join("") + '</div><div class="chips">' + chipBtn("cond", "none", x.none, has(a.cond, "none")) + chipBtn("cond", "otra", x.other + ": " + (S.lang === "es" ? "escribirla" : "type it in"), has(a.cond, "otra")) + '</div>';
       if (has(a.cond, "otra")) h += textField("condOtra", S.lang === "es" ? "Escriba la condición" : "Type the condition", a.condOtra);
-      h += '<p class="hint">' + (S.lang === "es" ? "Por ahora ninguna condición tiene reglas validadas. Se irán activando una a una, con fuentes oficiales, y cada una indicará si su cobertura es validada, parcial o aún no compatible." : "For now no condition has validated rules. They will be activated one by one, with official sources, and each will show whether its coverage is validated, partial or not yet supported.") + '</p>';
+      h += '<p class="hint">' + (S.lang === "es" ? "Las condiciones orientan las propuestas hacia una alimentación general adecuada; embarazo, además, excluye alimentos de riesgo. No reemplazan la indicación de su profesional de salud." : "Conditions steer the ideas toward generally suitable eating; pregnancy also excludes risky foods. They do not replace your health professional's guidance.") + '</p>';
     } else if (id === "meds") {
       h += '<div class="opts" role="radiogroup" aria-labelledby="qt">' +
         optBtn({ act: "meds", id: "no", label: S.lang === "es" ? "No tomo medicamentos" : "I don't take medications", on: a.meds === "no", radio: 1 }) +
@@ -782,6 +780,13 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (has(a.alerg, "otra")) libres = libres.concat(splitLibres(a.alergOtra));
     libres = libres.concat(splitLibres(a.evitaOtra));
     return { lang: S.lang, alergias: a.alerg.filter(function (x) { return x !== "none" && x !== "otra"; }), evitar: a.evita.slice(), dieta: a.dieta || null, libres: libres, condiciones: condIds(), medicamentos: medsClases() };
+  }
+  /* Texto bajo cada condición: lo que la página hace con ella (ver docs/plato-condiciones-salud-medicamentos.md). */
+  function condSub(id) {
+    var es = S.lang === "es";
+    if (id === "embarazo") return es ? "Excluye alimentos de riesgo" : "Excludes risky foods";
+    if (["inmunologica", "neurologica", "genetica"].indexOf(id) > -1) return es ? "Solo aviso" : "Notice only";
+    return es ? "Orienta las propuestas" : "Guides the ideas";
   }
   function condIds() { return S.a.cond.filter(function (x) { return x !== "none" && x !== "otra"; }); }
   /* Medicamentos: se reconocen por nombre en el texto libre; solo sirven para mostrar avisos (el único bloqueo es la toronja con estatinas). */
