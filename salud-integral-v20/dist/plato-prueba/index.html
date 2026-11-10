@@ -110,7 +110,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .opt[aria-pressed="true"] { border: 2.5px solid var(--forest); background: var(--mint); padding: 6.5px 12.5px 6.5px 8.5px; }
 .opt.noimg[aria-pressed="true"] { padding-left: 12.5px; }
 .opt[aria-pressed="true"] .tick { background: var(--forest); color: var(--cream); }
-.grp { margin-top: 18px; padding: 12px; display: grid; gap: 12px; border: 1.5px solid var(--line); border-radius: var(--r-md); }
+.grp { margin-bottom: 18px; padding: 12px; display: grid; gap: 12px; border: 1.5px solid var(--line); border-radius: var(--r-md); }
 .grp-h { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 10px; }
 .grp-h .ic { display: block; width: 48px; height: 48px; border-radius: 12px; overflow: hidden; background: var(--tile); }
 .grp-h .ic img { width: 48px; height: 48px; mix-blend-mode: multiply; }
@@ -595,9 +595,10 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var a = S.a, h = "", x = u();
     if (id === "cond") {
       var oc = function (c, i) { return optBtn({ act: "cond", id: c.id, img: c.img, i: i, label: L(c.label), sub: condSub(c.id), on: has(a.cond, c.id) }); };
-      h += '<div class="opts" role="group" aria-labelledby="qt">' + COND_AREAS.map(oc).join("") + '</div>' +
-        '<div class="grp" role="group" aria-labelledby="gfem"><div class="grp-h"><span class="ic t-' + TILES[COND_AREAS.length % TILES.length] + '"><img src="img/' + COND_FEM.img + '.webp" width="48" height="48" alt=""></span><span class="gt" id="gfem">' + esc(L(COND_FEM.label)) + '</span></div>' +
+      /* Salud femenina va primero, al principio de la lista. */
+      h += '<div class="grp" role="group" aria-labelledby="gfem"><div class="grp-h"><span class="ic t-' + TILES[COND_AREAS.length % TILES.length] + '"><img src="img/' + COND_FEM.img + '.webp" width="48" height="48" alt=""></span><span class="gt" id="gfem">' + esc(L(COND_FEM.label)) + '</span></div>' +
         '<div class="opts">' + COND_FEM_ITEMS.map(function (c, i) { return oc(c, COND_AREAS.length + 1 + i); }).join("") + '</div></div>' +
+        '<div class="opts" role="group" aria-labelledby="qt">' + COND_AREAS.map(oc).join("") + '</div>' +
         '<div class="chips" style="margin-top:18px">' + chipBtn("cond", "none", x.none, has(a.cond, "none")) + chipBtn("cond", "otra", x.other + ": " + (S.lang === "es" ? "escribirla" : "type it in"), has(a.cond, "otra")) + '</div>';
       if (has(a.cond, "otra")) h += textField("condOtra", S.lang === "es" ? "Escriba el área o la condición" : "Type the area or condition", a.condOtra);
       h += '<p class="hint">' + (S.lang === "es" ? "Las áreas de salud orientan las propuestas hacia una alimentación general adecuada; el embarazo, además, excluye alimentos de riesgo. No reemplazan la indicación de su profesional de salud." : "Health areas steer the ideas toward generally suitable eating; pregnancy also excludes risky foods. They do not replace your health professional's guidance.") + '</p>';
