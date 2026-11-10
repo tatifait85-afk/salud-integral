@@ -1078,7 +1078,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (route() === "plan") render(true);
   }
   function intentoPlan(k, token) {
-    var P = perfil(), cands = candidatos(P, []);
+    var P = perfil(), cands = candidatos(P, []).filter(function (d) { return !d[4] || d[4].indexOf("almuerzo") > -1 || d[4].indexOf("cena") > -1; }); /* el menú es de almuerzo y cena: se omiten los platos que son solo de desayuno */
     if (cands.length < 4) { fallaPlan("few"); return; }
     llamar(armarPromptPlan(P, cands), PLAN, planSample()).then(function (r) {
       if (token !== PLAN.n) return;
