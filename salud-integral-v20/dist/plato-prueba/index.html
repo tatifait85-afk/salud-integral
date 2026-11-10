@@ -288,7 +288,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       h1: "Coma más saludable, con facilidad.", h1p: "Recetas personalizadas según su salud, sus gustos y lo que tiene en casa.",
       c1: "Resolver mi comida de hoy", c1p: "Reciba dos recetas personalizadas en minutos.",
       c2: "Organizar mis siete días", c2p: "Obtenga un menú completo, recetas y lista de compras.",
-      s1: "Por condición de salud", s2: "Por tipo de alimentación", s3: "Buscar por ingredientes", s4: "Consejos y recursos", soon: "Pronto",
+      s1: "Por área de salud", s2: "Por tipo de alimentación", s3: "Buscar por ingredientes", s4: "Consejos y recursos", soon: "Pronto",
       resume: "Continuar donde quedó", start: "Empezar",
       homelang: "Idioma de la aplicación: puede cambiarlo en cualquier momento con los botones ES y EN; sus respuestas se conservan.",
       step: "Paso", of: "de", question: "Pregunta", progress: "Progreso",
@@ -304,7 +304,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       getBtn: "Obtener mis recetas", getNeed: "Para continuar falta responder:",
       resT: "Sus respuestas están completas", resP: "Las propuestas de recetas todavía no están activas. Se mostrarán únicamente cuando las reglas de salud estén documentadas con fuentes oficiales y el validador esté en funcionamiento. Hasta entonces no se muestra ninguna receta.",
       resBack: "Revisar mis respuestas",
-      lbl: { cond: "Condiciones de salud", meds: "Medicamentos", alerg: "Alergias", dieta: "Tipo de alimentación", evita: "Prefiere evitar", cocina: "Cocina", tiempo: "Tiempo", porc: "Porciones", ingr: "Ingredientes en casa" },
+      lbl: { cond: "Áreas de salud", meds: "Medicamentos", alerg: "Alergias", dieta: "Tipo de alimentación", evita: "Prefiere evitar", cocina: "Cocina", tiempo: "Tiempo", porc: "Porciones", ingr: "Ingredientes en casa" },
       min: "min", porcs: function (n) { return n + (n === 1 ? " porción" : " porciones"); }, mins: function (n) { return n + " min"; },
       sep: ", "
     },
@@ -314,7 +314,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       h1: "Eat healthier, with ease.", h1p: "Personalized recipes based on your health, your tastes and what you have at home.",
       c1: "Find my meal for today", c1p: "Get two personalized recipes in minutes.",
       c2: "Plan my seven days", c2p: "Get a complete menu, recipes and a shopping list.",
-      s1: "By health condition", s2: "By eating style", s3: "Search by ingredients", s4: "Tips and resources", soon: "Soon",
+      s1: "By health area", s2: "By eating style", s3: "Search by ingredients", s4: "Tips and resources", soon: "Soon",
       resume: "Continue where you left off", start: "Start",
       homelang: "App language: you can switch at any time with the ES and EN buttons; your answers are kept.",
       step: "Step", of: "of", question: "Question", progress: "Progress",
@@ -330,7 +330,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       getBtn: "Get my recipes", getNeed: "To continue, please answer:",
       resT: "Your answers are complete", resP: "Recipe proposals are not active yet. They will appear only once the health rules are documented with official sources and the validator is running. Until then, no recipe is shown.",
       resBack: "Review my answers",
-      lbl: { cond: "Health conditions", meds: "Medications", alerg: "Allergies", dieta: "Eating style", evita: "Prefers to avoid", cocina: "Cuisine", tiempo: "Time", porc: "Servings", ingr: "Ingredients at home" },
+      lbl: { cond: "Health areas", meds: "Medications", alerg: "Allergies", dieta: "Eating style", evita: "Prefers to avoid", cocina: "Cuisine", tiempo: "Time", porc: "Servings", ingr: "Ingredients at home" },
       min: "min", porcs: function (n) { return n + (n === 1 ? " serving" : " servings"); }, mins: function (n) { return n + " min"; },
       sep: ", "
     }
@@ -339,13 +339,18 @@ h2.title { font-size: 28px; line-height: 1.15; }
   /* ---------- Contenido del cuestionario ---------- */
   var TILES = ["peach", "rose", "gold", "sage", "sky", "lav"];
   var COND = [
-    ["cardiovascular", T("Cardiovascular", "Cardiovascular")], ["digestiva", T("Digestiva", "Digestive")],
-    ["embarazo", T("Embarazo", "Pregnancy")], ["endocrina", T("Endocrina", "Endocrine")],
-    ["genetica", T("Genética", "Genetic")], ["hematologica", T("Hematológica", "Blood-related")],
-    ["hepatica", T("Hepática", "Liver")], ["inmunologica", T("Inmunológica", "Immune")],
-    ["metabolica", T("Metabólica", "Metabolic")], ["musculoesqueletica", T("Musculoesquelética", "Musculoskeletal")],
-    ["neurologica", T("Neurológica", "Neurological")], ["renal", T("Renal", "Kidney")]
-  ].map(function (c) { return { id: c[0], img: "condicion-" + c[0], label: c[1] }; });
+    ["cardiovascular", T("Cardiología", "Cardiology")],
+    ["endocrina", T("Endocrinología y metabolismo", "Endocrinology and metabolism")],
+    ["digestiva", T("Gastroenterología", "Gastroenterology")],
+    ["hepatica", T("Hepatología (hígado)", "Hepatology (liver)")],
+    ["renal", T("Nefrología (riñón)", "Nephrology (kidney)")],
+    ["hematologica", T("Hematología", "Hematology")],
+    ["ginecologia", T("Ginecología y obstetricia", "Gynecology and obstetrics")],
+    ["neurologica", T("Neurología", "Neurology")],
+    ["reumatologia", T("Reumatología e inmunología", "Rheumatology and immunology"), "condicion-inmunologica"],
+    ["ortopedia", T("Ortopedia y huesos", "Orthopedics and bones"), "condicion-musculoesqueletica"],
+    ["genetica", T("Genética", "Genetics")]
+  ].map(function (c) { return { id: c[0], img: c[2] || "condicion-" + (c[0] === "ginecologia" ? "ginecologia" : c[0]), label: c[1] }; });
   var ALERG = [
     ["mariscos", "alergia-mariscos", T("Mariscos", "Shellfish")], ["huevo", "alergia-huevo", T("Huevo", "Egg")],
     ["mani", "alergia-mani", T("Maní", "Peanuts")], ["nueces", "alergia-nueces-arbol", T("Nueces de árbol", "Tree nuts")],
@@ -378,8 +383,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
   var Q = {
     cond: { phase: 0, required: true,
-      title: T("¿Qué condiciones de salud desea que se tengan en cuenta?", "Which health conditions should we take into account?"),
-      lead: T("Elija todas las que correspondan. Si no tiene ninguna, elija «Ninguna».", "Select all that apply. If you have none, choose “None”.") },
+      title: T("¿Qué áreas de la salud desea que se tengan en cuenta?", "Which areas of health should we take into account?"),
+      lead: T("Elija las que correspondan. Debajo de cada área hay ejemplos de enfermedades comunes. Si no tiene ninguna, elija «Ninguna».", "Select all that apply. Under each area you will see examples of common conditions. If you have none, choose “None”.") },
     meds: { phase: 0, required: true,
       title: T("¿Toma medicamentos de forma regular?", "Do you take medications regularly?"),
       lead: T("Algunos medicamentos pueden afectar qué alimentos convienen. Consulte siempre a su profesional de salud.", "Some medications can affect which foods are suitable. Always check with your health professional.") },
@@ -413,7 +418,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   /* ---------- Textos de las secciones nuevas ---------- */
   var X = {
     es: {
-      entry: { porcond: "Empiece por su condición de salud; después le preguntaremos lo demás.", porestilo: "Empiece por su tipo de alimentación; después le preguntaremos lo demás.", poringr: "Empiece por los ingredientes que tiene en casa; después le preguntaremos lo demás." },
+      entry: { porcond: "Empiece por su área de salud; después le preguntaremos lo demás.", porestilo: "Empiece por su tipo de alimentación; después le preguntaremos lo demás.", poringr: "Empiece por los ingredientes que tiene en casa; después le preguntaremos lo demás." },
       cont: "Continuar", needSel: "Elija al menos una opción para continuar.",
       getPlan: "Armar mi menú", modeHoy: "Obtendrá recetas para su comida de hoy.", modePlan: "Obtendrá un menú de siete días con lista de compras.",
       tipsT: "Consejos y recursos", tipsP: "Ideas sencillas para comer mejor todos los días.",
@@ -442,7 +447,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       }
     },
     en: {
-      entry: { porcond: "Start with your health condition; we will ask the rest afterwards.", porestilo: "Start with your eating style; we will ask the rest afterwards.", poringr: "Start with the ingredients you have at home; we will ask the rest afterwards." },
+      entry: { porcond: "Start with your health area; we will ask the rest afterwards.", porestilo: "Start with your eating style; we will ask the rest afterwards.", poringr: "Start with the ingredients you have at home; we will ask the rest afterwards." },
       cont: "Continue", needSel: "Choose at least one option to continue.",
       getPlan: "Build my menu", modeHoy: "You will get recipes for your meal today.", modePlan: "You will get a seven-day menu with a shopping list.",
       tipsT: "Tips and resources", tipsP: "Simple ideas to eat better every day.",
@@ -476,7 +481,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   /* ---------- Estado y guardado ---------- */
   function fresh() {
     return { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es",
-      a: { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], mode: "hoy" } };
+      a: { cond: [], condOtra: "", emb: null, meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], mode: "hoy" } };
   }
   var S = fresh(), storeOk = true, confirming = false;
   function load() {
@@ -495,6 +500,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
             }
           }
           if (f.a.mode !== "plan") f.a.mode = "hoy";
+          /* Cambio de lista de áreas de salud: se pasan las respuestas guardadas a las áreas nuevas. */
+          var MIG = { embarazo: "ginecologia", metabolica: "endocrina", inmunologica: "reumatologia", musculoesqueletica: "reumatologia" };
+          if (has(f.a.cond, "embarazo") && f.a.emb !== "si" && f.a.emb !== "no") f.a.emb = "si";
+          f.a.cond = f.a.cond.map(function (z) { return MIG[z] || z; }).filter(function (z, k, arr) { return arr.indexOf(z) === k; });
+          if (f.a.emb !== "si" && f.a.emb !== "no") f.a.emb = null;
           f.a.alerg = f.a.alerg.map(function (x) { return x === "crustaceos" ? "mariscos" : x; });
         }
         S = f;
@@ -525,7 +535,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function answered(id) {
     var a = S.a;
     switch (id) {
-      case "cond": return a.cond.length > 0 && (!has(a.cond, "otra") || a.condOtra.trim() !== "");
+      case "cond": return a.cond.length > 0 && (!has(a.cond, "otra") || a.condOtra.trim() !== "") && (!has(a.cond, "ginecologia") || a.emb === "si" || a.emb === "no");
       case "meds": return a.meds === "no" || a.meds === "si";
       case "alerg": return a.alerg.length > 0 && (!has(a.alerg, "otra") || a.alergOtra.trim() !== "");
       case "dieta": return !!a.dieta;
@@ -565,8 +575,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
       h += '<div class="opts" role="group" aria-labelledby="qt">' + COND.map(function (c, i) {
         return optBtn({ act: "cond", id: c.id, img: c.img, i: i, label: L(c.label), sub: condSub(c.id), on: has(a.cond, c.id) });
       }).join("") + '</div><div class="chips">' + chipBtn("cond", "none", x.none, has(a.cond, "none")) + chipBtn("cond", "otra", x.other + ": " + (S.lang === "es" ? "escribirla" : "type it in"), has(a.cond, "otra")) + '</div>';
-      if (has(a.cond, "otra")) h += textField("condOtra", S.lang === "es" ? "Escriba la condición" : "Type the condition", a.condOtra);
-      h += '<p class="hint">' + (S.lang === "es" ? "Las condiciones orientan las propuestas hacia una alimentación general adecuada; embarazo, además, excluye alimentos de riesgo. No reemplazan la indicación de su profesional de salud." : "Conditions steer the ideas toward generally suitable eating; pregnancy also excludes risky foods. They do not replace your health professional's guidance.") + '</p>';
+      if (has(a.cond, "ginecologia")) h += '<p class="lead" id="embq" style="margin-top:18px"><strong>' + (S.lang === "es" ? "¿Está embarazada actualmente?" : "Are you currently pregnant?") + '</strong></p><div class="opts" role="radiogroup" aria-labelledby="embq">' +
+        optBtn({ act: "emb", id: "si", img: "condicion-embarazo", i: 0, label: S.lang === "es" ? "Sí, estoy embarazada" : "Yes, I am pregnant", sub: S.lang === "es" ? "Se excluyen alimentos de riesgo" : "Risky foods are excluded", on: a.emb === "si", radio: 1 }) +
+        optBtn({ act: "emb", id: "no", label: S.lang === "es" ? "No" : "No", on: a.emb === "no", radio: 1 }) + '</div>';
+      if (has(a.cond, "otra")) h += textField("condOtra", S.lang === "es" ? "Escriba el área o la condición" : "Type the area or condition", a.condOtra);
+      h += '<p class="hint">' + (S.lang === "es" ? "Las áreas de salud orientan las propuestas hacia una alimentación general adecuada; el embarazo, además, excluye alimentos de riesgo. No reemplazan la indicación de su profesional de salud." : "Health areas steer the ideas toward generally suitable eating; pregnancy also excludes risky foods. They do not replace your health professional's guidance.") + '</p>';
     } else if (id === "meds") {
       h += '<div class="opts" role="radiogroup" aria-labelledby="qt">' +
         optBtn({ act: "meds", id: "no", label: S.lang === "es" ? "No tomo medicamentos" : "I don't take medications", on: a.meds === "no", radio: 1 }) +
@@ -783,21 +796,21 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   /* Texto bajo cada condición: enfermedades más comunes de esa categoría (solo informativo; las reglas de la página se describen en el párrafo inferior). */
   var COND_ENF = {
-    cardiovascular: ["Hipertensión arterial, enfermedad coronaria, insuficiencia cardíaca, arritmias cardíacas, enfermedad cerebrovascular, colesterol alto", "High blood pressure, coronary artery disease, heart failure, heart rhythm disorders, cerebrovascular disease, high cholesterol"],
-    digestiva: ["Enfermedad por reflujo gastroesofágico (ERGE), gastritis, síndrome del intestino irritable, enfermedad ulcerosa péptica, enfermedad inflamatoria intestinal (Crohn y colitis ulcerosa)", "Gastroesophageal reflux disease (GERD), gastritis, irritable bowel syndrome, peptic ulcer disease, inflammatory bowel disease (Crohn's and ulcerative colitis)"],
-    embarazo: ["Embarazo, diabetes gestacional, preeclampsia, anemia del embarazo, náuseas y vómitos del embarazo", "Pregnancy, gestational diabetes, preeclampsia, anemia in pregnancy, nausea and vomiting of pregnancy"],
-    endocrina: ["Diabetes tipo 1, diabetes tipo 2, prediabetes, hipotiroidismo, hipertiroidismo", "Type 1 diabetes, type 2 diabetes, prediabetes, hypothyroidism, hyperthyroidism"],
-    genetica: ["Fenilcetonuria, fibrosis quística, hemocromatosis, síndrome de Down, hipercolesterolemia familiar", "Phenylketonuria, cystic fibrosis, hemochromatosis, Down syndrome, familial hypercholesterolemia"],
-    hematologica: ["Anemia por falta de hierro, anemia por falta de vitamina B12 o folato, talasemia, anemia de células falciformes, hemofilia", "Iron-deficiency anemia, vitamin B12 or folate deficiency anemia, thalassemia, sickle cell anemia, hemophilia"],
-    hepatica: ["Hígado graso, hepatitis viral, hepatitis alcohólica, cirrosis", "Fatty liver, viral hepatitis, alcoholic hepatitis, cirrhosis"],
-    inmunologica: ["Lupus, artritis reumatoide, enfermedad celíaca, síndrome de Sjögren, inmunodeficiencias", "Lupus, rheumatoid arthritis, celiac disease, Sjögren's syndrome, immunodeficiencies"],
-    metabolica: ["Obesidad y sobrepeso, síndrome metabólico, resistencia a la insulina, triglicéridos altos", "Obesity and overweight, metabolic syndrome, insulin resistance, high triglycerides"],
-    musculoesqueletica: ["Gota, osteoporosis, artrosis, fibromialgia, sarcopenia", "Gout, osteoporosis, osteoarthritis, fibromyalgia, sarcopenia"],
-    neurologica: ["Epilepsia, migraña, enfermedad de Parkinson, enfermedad de Alzheimer, esclerosis múltiple", "Epilepsy, migraine, Parkinson's disease, Alzheimer's disease, multiple sclerosis"],
-    renal: ["Enfermedad renal crónica, insuficiencia renal, cálculos renales, síndrome nefrótico, diálisis", "Chronic kidney disease, kidney failure, kidney stones, nephrotic syndrome, dialysis"]
+    cardiovascular: ["Hipertensión arterial, enfermedad coronaria, insuficiencia cardíaca, arritmias cardíacas, colesterol y triglicéridos altos", "High blood pressure, coronary artery disease, heart failure, heart rhythm disorders, high cholesterol and triglycerides"],
+    endocrina: ["Diabetes tipo 1, diabetes tipo 2, prediabetes, hipotiroidismo, hipertiroidismo, obesidad y sobrepeso, síndrome metabólico", "Type 1 diabetes, type 2 diabetes, prediabetes, hypothyroidism, hyperthyroidism, obesity and overweight, metabolic syndrome"],
+    digestiva: ["Reflujo (ERGE), gastritis, síndrome del intestino irritable, úlcera péptica, enfermedad de Crohn, colitis ulcerosa, enfermedad celíaca", "Reflux (GERD), gastritis, irritable bowel syndrome, peptic ulcer, Crohn's disease, ulcerative colitis, celiac disease"],
+    hepatica: ["Hígado graso, hepatitis viral, cirrosis", "Fatty liver, viral hepatitis, cirrhosis"],
+    renal: ["Enfermedad renal crónica, cálculos renales, síndrome nefrótico, diálisis", "Chronic kidney disease, kidney stones, nephrotic syndrome, dialysis"],
+    hematologica: ["Anemia por falta de hierro, anemia por falta de B12 o folato, talasemia, anemia de células falciformes, hemofilia", "Iron-deficiency anemia, vitamin B12 or folate deficiency anemia, thalassemia, sickle cell anemia, hemophilia"],
+    ginecologia: ["Embarazo, diabetes gestacional, preeclampsia, síndrome de ovario poliquístico, endometriosis, menopausia", "Pregnancy, gestational diabetes, preeclampsia, polycystic ovary syndrome, endometriosis, menopause"],
+    neurologica: ["Enfermedad cerebrovascular (derrame cerebral), epilepsia, migraña, Parkinson, Alzheimer, esclerosis múltiple", "Cerebrovascular disease (stroke), epilepsy, migraine, Parkinson's disease, Alzheimer's disease, multiple sclerosis"],
+    reumatologia: ["Gota, artritis reumatoide, lupus, síndrome de Sjögren, fibromialgia, inmunodeficiencias", "Gout, rheumatoid arthritis, lupus, Sjögren's syndrome, fibromyalgia, immunodeficiencies"],
+    ortopedia: ["Osteoporosis, artrosis, sarcopenia", "Osteoporosis, osteoarthritis, sarcopenia"],
+    genetica: ["Fenilcetonuria, fibrosis quística, hemocromatosis, síndrome de Down, galactosemia", "Phenylketonuria, cystic fibrosis, hemochromatosis, Down syndrome, galactosemia"]
   };
   function condSub(id) { var e = COND_ENF[id]; return e ? e[S.lang === "es" ? 0 : 1] : ""; }
-  function condIds() { return S.a.cond.filter(function (x) { return x !== "none" && x !== "otra"; }); }
+  /* Áreas elegidas, como las usan las reglas: Ginecología y obstetricia solo activa las reglas de embarazo si la persona responde que está embarazada. */
+  function condIds() { return S.a.cond.filter(function (x) { return x !== "none" && x !== "otra"; }).map(function (x) { return x === "ginecologia" && S.a.emb === "si" ? "embarazo" : x; }); }
   /* Medicamentos: se reconocen por nombre en el texto libre; solo sirven para mostrar avisos (el único bloqueo es la toronja con estatinas). */
   var MEDS_RE = [
     ["warfarina", /warfarin|coumadin|sintrom|acenocumarol|anticoagulante/],
@@ -818,14 +831,13 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function condNotice() { var a = S.a; return (a.cond.length > 0 && !(a.cond.length === 1 && a.cond[0] === "none")) || a.meds === "si"; }
   var SALUD_PREF = {
     cardiovascular: ["poca sal, pocas grasas saturadas, sin frituras y sin bebidas azucaradas", "low in salt and saturated fat, no fried foods and no sugary drinks"],
-    endocrina: ["sin bebidas azucaradas ni dulces, pocas harinas refinadas, sin frituras, con verduras sin almidón y granos integrales", "no sugary drinks or sweets, few refined flours, no fried foods, with non-starchy vegetables and whole grains"],
-    metabolica: ["frutas, verduras y granos integrales, sin bebidas azucaradas, pocas grasas saturadas", "fruit, vegetables and whole grains, no sugary drinks, little saturated fat"],
+    endocrina: ["sin bebidas azucaradas ni dulces, pocas harinas refinadas, sin frituras, pocas grasas saturadas, con verduras sin almidón, frutas y granos integrales", "no sugary drinks or sweets, few refined flours, no fried foods, little saturated fat, with non-starchy vegetables, fruit and whole grains"],
     hepatica: ["frutas, verduras y granos integrales, sin bebidas azucaradas y sin alcohol", "fruit, vegetables and whole grains, no sugary drinks and no alcohol"],
     renal: ["poca sal, sin alimentos procesados, sin sal sustituta con potasio y sin frituras (no indique cantidades de potasio ni de proteína)", "low in salt, no processed foods, no potassium salt substitutes and no fried foods (do not state potassium or protein amounts)"],
     digestiva: ["sin comidas muy grasosas, fritas ni picantes", "no very fatty, fried or spicy foods"],
     embarazo: ["alimentos bien cocidos, solo lácteos pasteurizados, sin pescado ni mariscos crudos, sin huevo crudo o poco cocido y sin pescado con alto contenido de mercurio", "well-cooked foods, pasteurized dairy only, no raw fish or shellfish, no raw or runny eggs and no high-mercury fish"],
     hematologica: ["fuentes de hierro junto con una fuente de vitamina C, sin café ni té en la comida", "iron sources together with a vitamin C source, no coffee or tea with the meal"],
-    musculoesqueletica: ["frutas, verduras, granos integrales y legumbres, pocas vísceras, carnes rojas y mariscos, sin cerveza ni bebidas azucaradas", "fruit, vegetables, whole grains and legumes, little organ meat, red meat and shellfish, no beer or sugary drinks"]
+    reumatologia: ["frutas, verduras, granos integrales y legumbres, pocas vísceras, carnes rojas y mariscos, sin cerveza ni bebidas azucaradas", "fruit, vegetables, whole grains and legumes, little organ meat, red meat and shellfish, no beer or sugary drinks"]
   };
   function saludPrompt(P, es) {
     var out = [], i = es ? 0 : 1;
@@ -840,8 +852,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
   var SALUD = {
     es: {
       emb: "Embarazo: estas propuestas excluyen pescado, mariscos, carne y huevo crudos o poco cocidos, productos sin pasteurizar y pescados con alto contenido de mercurio. Confirme con su profesional de salud.",
-      ori: "Sus condiciones de salud solo orientan las propuestas hacia una alimentación general adecuada. No son una indicación personal ni reemplazan a su profesional de salud.",
-      sin: "Para las categorías inmunológica, neurológica o genética no hay una regla alimentaria general segura: pida a su profesional las indicaciones propias. Las alergias y el tipo de alimentación que registró se siguen aplicando.",
+      ori: "Las áreas de salud elegidas solo orientan las propuestas hacia una alimentación general adecuada. No son una indicación personal ni reemplazan a su profesional de salud.",
+      sin: "Para algunas de las áreas elegidas no hay una regla alimentaria general segura: pida a su profesional las indicaciones propias. Las alergias y el tipo de alimentación que registró se siguen aplicando.",
       otra: "Indicó otra condición de salud: la aplicación no tiene reglas para ella. Consulte a su profesional de salud.",
       medsGen: "Esta aplicación no calcula dosis ni sugiere cambiar medicamentos. Los avisos sobre medicamentos son orientativos y deben confirmarse con su farmacéutico o médico.",
       medsNone: "Indicó que toma medicamentos, pero no se reconoció ninguno con aviso en esta aplicación. Consulte a su farmacéutico o médico si alguno interactúa con alimentos.",
@@ -860,8 +872,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     },
     en: {
       emb: "Pregnancy: these ideas exclude raw or undercooked fish, shellfish, meat and eggs, unpasteurized products and high-mercury fish. Please confirm with your health professional.",
-      ori: "Your health conditions only steer the ideas toward generally suitable eating. They are not personal advice and do not replace your health professional.",
-      sin: "For immune, neurological or genetic categories there is no safe general food rule: ask your professional for your own guidance. The allergies and eating style you entered still apply.",
+      ori: "The health areas you chose only steer the ideas toward generally suitable eating. They are not personal advice and do not replace your health professional.",
+      sin: "For some of the areas you chose there is no safe general food rule: ask your professional for your own guidance. The allergies and eating style you entered still apply.",
       otra: "You entered another health condition: the app has no rules for it. Please check with your health professional.",
       medsGen: "This app does not calculate doses or suggest changing medications. Medication notices are general guidance and must be confirmed with your pharmacist or doctor.",
       medsNone: "You said you take medications, but none with a notice was recognized in this app. Ask your pharmacist or doctor whether any interacts with food.",
@@ -882,10 +894,10 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function avisoSalud() {
     if (!condNotice()) return "";
     var t = SALUD[S.lang], a = S.a, c = condIds(), out = [];
-    var CON_REGLA = ["cardiovascular", "digestiva", "endocrina", "hematologica", "hepatica", "metabolica", "musculoesqueletica", "renal"];
+    var CON_REGLA = ["cardiovascular", "digestiva", "endocrina", "hematologica", "hepatica", "reumatologia", "renal"];
     if (c.indexOf("embarazo") > -1) out.push(t.emb);
     if (c.some(function (x) { return CON_REGLA.indexOf(x) > -1; })) out.push(t.ori);
-    if (c.some(function (x) { return ["inmunologica", "neurologica", "genetica"].indexOf(x) > -1; })) out.push(t.sin);
+    if (c.some(function (x) { return ["neurologica", "genetica", "ortopedia", "ginecologia"].indexOf(x) > -1; })) out.push(t.sin);
     if (has(a.cond, "otra")) out.push(t.otra);
     if (a.meds === "si") {
       var m = medsClases();
@@ -1368,7 +1380,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var keepFocus = id;
     if (act === "meds") a.meds = id;
     else if (act === "dieta") a.dieta = (a.dieta === id ? null : id);
-    else if (act === "cond") toggleExcl(a.cond, id);
+    else if (act === "cond") { toggleExcl(a.cond, id); if (!has(a.cond, "ginecologia")) a.emb = null; }
+    else if (act === "emb") a.emb = id;
     else if (act === "alerg") toggleExcl(a.alerg, id);
     else if (act === "evita") toggleMulti(a.evita, id);
     else if (act === "cocina") toggleMulti(a.cocina, id);
