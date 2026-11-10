@@ -387,6 +387,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     ["gluten", "dieta-sin-gluten", T("Gluten", "Gluten")], ["lactosa", "dieta-sin-lactosa", T("Lactosa", "Lactose")],
     ["lacteos", "tipo-alimentacion-sin-lacteos", T("Lácteos", "Dairy")]
   ].map(function (c) { return { id: c[0], img: c[1], label: c[2] }; });
+  /* «Como de todo»: opción exclusiva de la pregunta «¿Hay algo que prefiera evitar?». No es un alimento: no se envía a las reglas ni a Gemini. */
+  var EVITA_TODO = { es: "Como de todo", en: "I eat everything" };
   var COCINA = [
     ["costarricense", T("Costarricense", "Costa Rican")], ["mexicana", T("Mexicana", "Mexican")], ["china", T("China", "Chinese")],
     ["india", T("India", "Indian")], ["italiana", T("Italiana", "Italian")], ["japonesa", T("Japonesa", "Japanese")],
@@ -620,7 +622,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
     } else if (id === "evita") {
       h += '<div class="opts" role="group" aria-labelledby="qt">' + EVITA.map(function (c, i) {
         return optBtn({ act: "evita", id: c.id, img: c.img, i: i, label: L(c.label), on: has(a.evita, c.id) });
-      }).join("") + '</div>' + textField("evitaOtra", S.lang === "es" ? "Otro alimento a evitar (opcional)" : "Another food to avoid (optional)", a.evitaOtra);
+      }).join("") + '</div><div class="chips" style="margin-top:14px">' + chipBtn("evita", "todo", EVITA_TODO[S.lang], has(a.evita, "todo")) + '</div>' +
+        textField("evitaOtra", S.lang === "es" ? "Otro alimento a evitar (opcional)" : "Another food to avoid (optional)", a.evitaOtra);
     } else if (id === "cocina") {
       h += '<div class="cuis" role="group" aria-labelledby="qt">' + COCINA.map(function (c) {
         var on = has(a.cocina, c.id);
@@ -720,7 +723,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       case "meds": return a.meds === "no" ? (S.lang === "es" ? "No toma medicamentos" : "Takes no medications") : a.meds === "si" ? (S.lang === "es" ? "Sí toma medicamentos" : "Takes medications") + (a.medsTxt.trim() ? ": " + a.medsTxt.trim() : "") : "";
       case "alerg": if (has(a.alerg, "none")) return x.none; v = labelsOf(ALERG, a.alerg, a.alergOtra.trim()); return v.join(x.sep);
       case "dieta": var d = DIETA.filter(function (c) { return c.id === a.dieta; })[0]; return d ? L(d.label) : "";
-      case "evita": v = labelsOf(EVITA, a.evita, ""); if (a.evitaOtra.trim()) v.push(a.evitaOtra.trim()); return v.join(x.sep);
+      case "evita": if (has(a.evita, "todo")) return EVITA_TODO[S.lang]; v = labelsOf(EVITA, a.evita, ""); if (a.evitaOtra.trim()) v.push(a.evitaOtra.trim()); return v.join(x.sep);
       case "cocina": v = a.cocina.map(function (id) { var f = COCINA.filter(function (c) { return c.id === id; })[0]; return f ? L(f.label) : x.other; }); return v.join(x.sep);
       case "tiempo": v = []; if (a.tiempo) v.push(x.mins(a.tiempo)); if (a.porc) v.push(x.porcs(a.porc)); return v.join(" · ");
       case "ingr": v = a.ingr.map(function (id) { if (id.indexOf("c:") === 0) return id.slice(2); var f = INGR.filter(function (c) { return c.id === id; })[0]; return f ? L(f.label) : ""; }).filter(Boolean); return v.join(x.sep);
@@ -814,7 +817,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var a = S.a, libres = [];
     if (has(a.alerg, "otra")) libres = libres.concat(splitLibres(a.alergOtra));
     libres = libres.concat(splitLibres(a.evitaOtra));
-    return { lang: S.lang, alergias: a.alerg.filter(function (x) { return x !== "none" && x !== "otra"; }), evitar: a.evita.slice(), dieta: a.dieta || null, libres: libres, condiciones: condIds(), medicamentos: medsClases() };
+    return { lang: S.lang, alergias: a.alerg.filter(function (x) { return x !== "none" && x !== "otra"; }), evitar: a.evita.filter(function (x) { return x !== "todo"; }), dieta: a.dieta || null, libres: libres, condiciones: condIds(), medicamentos: medsClases() };
   }
   /* Texto bajo cada condición: enfermedades más comunes de esa categoría (solo informativo; las reglas de la página se describen en el párrafo inferior). */
   var COND_ENF = {
@@ -1413,7 +1416,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
     else if (act === "dieta") a.dieta = (a.dieta === id ? null : id);
     else if (act === "cond") toggleExcl(a.cond, id);
     else if (act === "alerg") toggleExcl(a.alerg, id);
-    else if (act === "evita") toggleMulti(a.evita, id);
+    else if (act === "evita") {
+      /* «Como de todo» excluye al resto (y borra el texto libre); elegir cualquier otro lo quita. */
+      if (id === "todo") { if (has(a.evita, "todo")) a.evita = []; else { a.evita = ["todo"]; a.evitaOtra = ""; } }
+      else { var td = a.evita.indexOf("todo"); if (td > -1) a.evita.splice(td, 1); toggleMulti(a.evita, id); }
+    }
     else if (act === "cocina") toggleMulti(a.cocina, id);
     else if (act === "tiempo") a.tiempo = (a.tiempo === +id ? null : +id);
     else if (act === "porc") a.porc = (a.porc === +id ? null : +id);
@@ -1433,7 +1440,12 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   document.addEventListener("input", function (e) {
     var k = e.target.getAttribute && e.target.getAttribute("data-text"); if (!k) return;
-    S.a[k] = e.target.value; save(); refreshStepState();
+    S.a[k] = e.target.value;
+    if (k === "evitaOtra" && e.target.value.trim() && has(S.a.evita, "todo")) { /* escribir un alimento a evitar quita «Como de todo» */
+      S.a.evita.splice(S.a.evita.indexOf("todo"), 1);
+      var ct = document.querySelector('[data-act="evita"][data-id="todo"]'); if (ct) ct.setAttribute("aria-pressed", "false");
+    }
+    save(); refreshStepState();
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && e.target.id === "f-ingNew") { e.preventDefault(); addIngredient(); }
