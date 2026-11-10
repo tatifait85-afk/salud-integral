@@ -781,13 +781,22 @@ h2.title { font-size: 28px; line-height: 1.15; }
     libres = libres.concat(splitLibres(a.evitaOtra));
     return { lang: S.lang, alergias: a.alerg.filter(function (x) { return x !== "none" && x !== "otra"; }), evitar: a.evita.slice(), dieta: a.dieta || null, libres: libres, condiciones: condIds(), medicamentos: medsClases() };
   }
-  /* Texto bajo cada condición: lo que la página hace con ella (ver docs/plato-condiciones-salud-medicamentos.md). */
-  function condSub(id) {
-    var es = S.lang === "es";
-    if (id === "embarazo") return es ? "Excluye alimentos de riesgo" : "Excludes risky foods";
-    if (["inmunologica", "neurologica", "genetica"].indexOf(id) > -1) return es ? "Solo aviso" : "Notice only";
-    return es ? "Orienta las propuestas" : "Guides the ideas";
-  }
+  /* Texto bajo cada condición: enfermedades más comunes de esa categoría (solo informativo; las reglas de la página se describen en el párrafo inferior). */
+  var COND_ENF = {
+    cardiovascular: ["Hipertensión arterial, enfermedad coronaria, insuficiencia cardíaca, arritmias cardíacas, enfermedad cerebrovascular, colesterol alto", "High blood pressure, coronary artery disease, heart failure, heart rhythm disorders, cerebrovascular disease, high cholesterol"],
+    digestiva: ["Enfermedad por reflujo gastroesofágico (ERGE), gastritis, síndrome del intestino irritable, enfermedad ulcerosa péptica, enfermedad inflamatoria intestinal (Crohn y colitis ulcerosa)", "Gastroesophageal reflux disease (GERD), gastritis, irritable bowel syndrome, peptic ulcer disease, inflammatory bowel disease (Crohn's and ulcerative colitis)"],
+    embarazo: ["Embarazo, diabetes gestacional, preeclampsia, anemia del embarazo, náuseas y vómitos del embarazo", "Pregnancy, gestational diabetes, preeclampsia, anemia in pregnancy, nausea and vomiting of pregnancy"],
+    endocrina: ["Diabetes tipo 1, diabetes tipo 2, prediabetes, hipotiroidismo, hipertiroidismo", "Type 1 diabetes, type 2 diabetes, prediabetes, hypothyroidism, hyperthyroidism"],
+    genetica: ["Fenilcetonuria, fibrosis quística, hemocromatosis, síndrome de Down, hipercolesterolemia familiar", "Phenylketonuria, cystic fibrosis, hemochromatosis, Down syndrome, familial hypercholesterolemia"],
+    hematologica: ["Anemia por falta de hierro, anemia por falta de vitamina B12 o folato, talasemia, anemia de células falciformes, hemofilia", "Iron-deficiency anemia, vitamin B12 or folate deficiency anemia, thalassemia, sickle cell anemia, hemophilia"],
+    hepatica: ["Hígado graso, hepatitis viral, hepatitis alcohólica, cirrosis", "Fatty liver, viral hepatitis, alcoholic hepatitis, cirrhosis"],
+    inmunologica: ["Lupus, artritis reumatoide, enfermedad celíaca, síndrome de Sjögren, inmunodeficiencias", "Lupus, rheumatoid arthritis, celiac disease, Sjögren's syndrome, immunodeficiencies"],
+    metabolica: ["Obesidad y sobrepeso, síndrome metabólico, resistencia a la insulina, triglicéridos altos", "Obesity and overweight, metabolic syndrome, insulin resistance, high triglycerides"],
+    musculoesqueletica: ["Gota, osteoporosis, artrosis, fibromialgia, sarcopenia", "Gout, osteoporosis, osteoarthritis, fibromyalgia, sarcopenia"],
+    neurologica: ["Epilepsia, migraña, enfermedad de Parkinson, enfermedad de Alzheimer, esclerosis múltiple", "Epilepsy, migraine, Parkinson's disease, Alzheimer's disease, multiple sclerosis"],
+    renal: ["Enfermedad renal crónica, insuficiencia renal, cálculos renales, síndrome nefrótico, diálisis", "Chronic kidney disease, kidney failure, kidney stones, nephrotic syndrome, dialysis"]
+  };
+  function condSub(id) { var e = COND_ENF[id]; return e ? e[S.lang === "es" ? 0 : 1] : ""; }
   function condIds() { return S.a.cond.filter(function (x) { return x !== "none" && x !== "otra"; }); }
   /* Medicamentos: se reconocen por nombre en el texto libre; solo sirven para mostrar avisos (el único bloqueo es la toronja con estatinas). */
   var MEDS_RE = [
