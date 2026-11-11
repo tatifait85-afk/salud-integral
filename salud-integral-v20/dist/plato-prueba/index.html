@@ -166,6 +166,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .mydata .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .mydata .btn { min-height: 48px; font-size: 15px; padding-inline: 10px; }
 .btn-del { background: #fff; color: var(--terra-d); border: 2px solid var(--terra-d); font-weight: 600; }
+.perfiles { display: grid; gap: 8px; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 14px; }
+.perfiles .field { margin: 0; }
 .profilechip { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 10px 14px; }
 .profilechip span { flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
 .profilechip a { font-weight: 600; color: var(--forest); min-height: 44px; display: inline-flex; align-items: center; }
@@ -467,7 +469,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
     ["gn-pku", T("Fenilcetonuria (sin alimentos altos en proteína)", "Phenylketonuria (no high-protein foods)")],
     ["gn-hemocromatosis", T("Hemocromatosis (sin mariscos crudos)", "Hemochromatosis (no raw shellfish)")]
   ].map(function (c) { return { id: c[0], label: c[1] }; });
-  var EVITA_ALL = EVITA.concat(EVITA_DIG, EVITA_GEN);
+  /* Oncología: MedlinePlus dirige estas precauciones a quien está en tratamiento (defensas bajas). Solo se muestra y se aplica si marcó Oncología. */
+  var EVITA_ONC = [
+    ["on-tratamiento", T("Estoy en tratamiento contra el cáncer (sin crudos, sin pasteurizar ni quesos blandos)", "I am in cancer treatment (no raw foods, unpasteurized foods or soft cheeses)")]
+  ].map(function (c) { return { id: c[0], label: c[1] }; });
+  var EVITA_ALL = EVITA.concat(EVITA_DIG, EVITA_GEN, EVITA_ONC);
   var COCINA = [
     ["costarricense", T("Costarricense", "Costa Rican")], ["mexicana", T("Mexicana", "Mexican")], ["china", T("China", "Chinese")],
     ["india", T("India", "Indian")], ["italiana", T("Italiana", "Italian")], ["japonesa", T("Japonesa", "Japanese")],
@@ -580,11 +586,37 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function XT() { return X[S.lang]; }
 
   /* ---------- Estado y guardado ---------- */
+  function freshA() {
+    return { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], comida: null, mode: "hoy" };
+  }
+  var MAXPERF = 5;
   function fresh() {
-    return { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es",
-      a: { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], comida: null, mode: "hoy" } };
+    var f = { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es", a: freshA(), perfiles: [], cur: 0 };
+    f.perfiles = [{ n: "", a: f.a }];
+    return f;
   }
   var S = fresh(), storeOk = true, confirming = false;
+  /* Limpia las respuestas de un perfil guardado (tipos, largos y migración de áreas de salud antiguas). */
+  function limpiarA(oa) {
+    var fa = freshA();
+    if (oa && typeof oa === "object") {
+      for (var k in fa) {
+        var d = fa[k], v = oa[k];
+        if (Array.isArray(d)) { if (Array.isArray(v)) fa[k] = v.filter(function (z) { return typeof z === "string"; }).slice(0, 60); }
+        else if (typeof d === "string") { if (typeof v === "string") fa[k] = v.slice(0, 300); }
+        else if (typeof v === "string" || typeof v === "number") fa[k] = v;
+      }
+      if (fa.mode !== "plan") fa.mode = "hoy";
+      /* Ids antiguos: metabolica → endocrina, inmunologica → inmunologia, musculoesqueletica → ortopedia.
+         «Ginecología y obstetricia» con la respuesta «sí, estoy embarazada» (oa.emb === "si") pasa a Embarazo; sin ese «sí» queda en Ginecología.
+         El id «embarazo» antiguo sigue siendo Embarazo. */
+      var MIG = { metabolica: "endocrina", inmunologica: "inmunologia", musculoesqueletica: "ortopedia" };
+      var embAntes = oa.emb === "si";
+      fa.cond = fa.cond.map(function (z) { return z === "ginecologia" && embAntes ? "embarazo" : (MIG[z] || z); }).filter(function (z, k2, arr) { return arr.indexOf(z) === k2; });
+      fa.alerg = fa.alerg.map(function (x) { return x === "crustaceos" ? "mariscos" : x; });
+    }
+    return fa;
+  }
   function load() {
     try {
       var raw = localStorage.getItem(KEY);
@@ -592,29 +624,16 @@ h2.title { font-size: 28px; line-height: 1.15; }
         var o = JSON.parse(raw), f = fresh();
         if (o && typeof o === "object") {
           if (o.lang === "es" || o.lang === "en") f.lang = o.lang;
-          if (o.a && typeof o.a === "object") {
-            for (var k in f.a) {
-              var d = f.a[k], v = o.a[k];
-              if (Array.isArray(d)) { if (Array.isArray(v)) f.a[k] = v.filter(function (z) { return typeof z === "string"; }).slice(0, 60); }
-              else if (typeof d === "string") { if (typeof v === "string") f.a[k] = v.slice(0, 300); }
-              else if (typeof v === "string" || typeof v === "number") f.a[k] = v;
-            }
-          }
-          if (f.a.mode !== "plan") f.a.mode = "hoy";
-          /* Cambio de lista de áreas de salud: se pasan las respuestas guardadas a las áreas nuevas. */
-          /* Ids antiguos: metabolica → endocrina, inmunologica → inmunologia, musculoesqueletica → ortopedia.
-             «Ginecología y obstetricia» con la respuesta «sí, estoy embarazada» (o.a.emb === "si") pasa a Embarazo; sin ese «sí» queda en Ginecología.
-             El id «embarazo» antiguo sigue siendo Embarazo. */
-          var MIG = { metabolica: "endocrina", inmunologica: "inmunologia", musculoesqueletica: "ortopedia" };
-          var embAntes = o.a && o.a.emb === "si";
-          f.a.cond = f.a.cond.map(function (z) { return z === "ginecologia" && embAntes ? "embarazo" : (MIG[z] || z); }).filter(function (z, k, arr) { return arr.indexOf(z) === k; });
-          f.a.alerg = f.a.alerg.map(function (x) { return x === "crustaceos" ? "mariscos" : x; });
+          /* Versión anterior: un solo perfil en «a». Ahora hay hasta 5 perfiles. */
+          var lista = Array.isArray(o.perfiles) && o.perfiles.length ? o.perfiles.slice(0, MAXPERF) : [{ n: "", a: o.a }];
+          f.perfiles = lista.map(function (pf) { return { n: pf && typeof pf.n === "string" ? pf.n.slice(0, 24) : "", a: limpiarA(pf && pf.a) }; });
+          f.cur = typeof o.cur === "number" && o.cur >= 0 && o.cur < f.perfiles.length ? Math.floor(o.cur) : 0;
+          f.a = f.perfiles[f.cur].a;
         }
         S = f;
       }
     } catch (e) { storeOk = false; }
   }
-  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { if (storeOk) { storeOk = false; renderNotice(); } } }
   function hasAny() {
     var a = S.a;
@@ -750,7 +769,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     } else if (id === "evita") {
       h += '<div class="opts" role="group" aria-labelledby="qt">' + EVITA.map(function (c, i) {
         return optBtn({ act: "evita", id: c.id, img: c.img, i: i, label: L(c.label), on: has(a.evita, c.id) });
-      }).join("") + '</div>' + (has(a.cond, "digestiva") ? '<h3 class="subq">' + (S.lang === "es" ? "Área digestiva: ¿qué le cae mal?" : "Digestive area: what does not agree with you?") + '</h3><p class="hint">' + (S.lang === "es" ? "Elija solo lo que le afecte: los desencadenantes cambian de persona a persona. Si le indicaron una dieta baja en FODMAP, márquela." : "Choose only what affects you: triggers differ from person to person. If you were advised a low FODMAP diet, select it.") + '</p><div class="chips">' + EVITA_DIG.map(function (c) { return chipBtn("evita", c.id, L(c.label), has(a.evita, c.id)); }).join("") + '</div>' : "") + (has(a.cond, "genetica") ? '<h3 class="subq">' + (S.lang === "es" ? "Genética: ¿cuál le aplica?" : "Genetics: which one applies to you?") + '</h3><p class="hint">' + (S.lang === "es" ? "Elija solo la que su médico le diagnosticó. La cantidad exacta de cada alimento la define su profesional de salud." : "Choose only the one your doctor diagnosed. Your health professional sets the exact amounts.") + '</p><div class="chips">' + EVITA_GEN.map(function (c) { return chipBtn("evita", c.id, L(c.label), has(a.evita, c.id)); }).join("") + '</div>' : "") + '<div class="chips" style="margin-top:14px">' + chipBtn("evita", "todo", EVITA_TODO[S.lang], has(a.evita, "todo")) + '</div>' +
+      }).join("") + '</div>' + (has(a.cond, "digestiva") ? '<h3 class="subq">' + (S.lang === "es" ? "Área digestiva: ¿qué le cae mal?" : "Digestive area: what does not agree with you?") + '</h3><p class="hint">' + (S.lang === "es" ? "Elija solo lo que le afecte: los desencadenantes cambian de persona a persona. Si le indicaron una dieta baja en FODMAP, márquela." : "Choose only what affects you: triggers differ from person to person. If you were advised a low FODMAP diet, select it.") + '</p><div class="chips">' + EVITA_DIG.map(function (c) { return chipBtn("evita", c.id, L(c.label), has(a.evita, c.id)); }).join("") + '</div>' : "") + (has(a.cond, "genetica") ? '<h3 class="subq">' + (S.lang === "es" ? "Genética: ¿cuál le aplica?" : "Genetics: which one applies to you?") + '</h3><p class="hint">' + (S.lang === "es" ? "Elija solo la que su médico le diagnosticó. La cantidad exacta de cada alimento la define su profesional de salud." : "Choose only the one your doctor diagnosed. Your health professional sets the exact amounts.") + '</p><div class="chips">' + EVITA_GEN.map(function (c) { return chipBtn("evita", c.id, L(c.label), has(a.evita, c.id)); }).join("") + '</div>' : "") + (has(a.cond, "oncologia") ? '<h3 class="subq">' + (S.lang === "es" ? "Oncología: ¿está en tratamiento?" : "Oncology: are you in treatment?") + '</h3><p class="hint">' + (S.lang === "es" ? "Márquelo solo si recibe tratamiento ahora (defensas bajas). Así se evitan alimentos crudos, sin pasteurizar y quesos blandos o azules. Si no está en tratamiento, déjelo sin marcar." : "Select it only if you are receiving treatment now (weak immune system). It avoids raw and unpasteurized foods and soft or blue cheeses. If you are not in treatment, leave it unselected.") + '</p><div class="chips">' + EVITA_ONC.map(function (c) { return chipBtn("evita", c.id, L(c.label), has(a.evita, c.id)); }).join("") + '</div>' : "") + '<div class="chips" style="margin-top:14px">' + chipBtn("evita", "todo", EVITA_TODO[S.lang], has(a.evita, "todo")) + '</div>' +
         textField("evitaOtra", S.lang === "es" ? "Otro alimento a evitar (opcional)" : "Another food to avoid (optional)", a.evitaOtra);
     } else if (id === "cocina") {
       h += '<div class="cuis" role="group" aria-labelledby="qt">' + COCINA.map(function (c) {
@@ -789,8 +808,20 @@ h2.title { font-size: 28px; line-height: 1.15; }
       wide("c-lav", "calendario.svg", x.c2, x.c2p, "plan") +
       small("c-mint", "condiciones-salud.svg", x.s1, "porcond") + small("c-gold", "alimentacion.svg", x.s2, "porestilo") +
       small("c-rose", "icono-ingredientes-disponibles.webp", x.s3, "poringr") + small("c-sky", "icono-consejos-recursos.webp", x.s4, "consejos") + '</div>' +
-      perfilChip() +
+      perfilesHtml() + perfilChip() +
       '<p class="homelang">' + esc(x.homelang) + '</p>' + (hasAny() ? clearBtn() : "");
+  }
+  function perfNombre(i) { var n = (S.perfiles[i].n || "").trim(); return n || (S.lang === "es" ? "Perfil " : "Profile ") + (i + 1); }
+  function perfilesHtml() {
+    var es = S.lang === "es", n = S.perfiles.length;
+    var chips = S.perfiles.map(function (pf, i) { return chipBtn("pf", String(i), perfNombre(i), i === S.cur); }).join("") +
+      (n < MAXPERF ? chipBtn("pfnew", "x", (es ? "+ Añadir perfil" : "+ Add profile"), false) : "");
+    var del = "";
+    if (n > 1) del = confirming === "pfdel"
+      ? '<div class="confirm" role="alertdialog" aria-labelledby="cq"><p id="cq">' + (es ? "¿Quitar «" : "Remove “") + esc(perfNombre(S.cur)) + (es ? "» y todas sus respuestas? No se puede deshacer." : "” and all its answers? This cannot be undone.") + '</p><div class="row"><button type="button" class="btn btn-ghost" data-act="clearno">' + esc(u().clearNo) + '</button><button type="button" class="btn btn-danger" data-act="pfdelyes">' + (es ? "Sí, quitar" : "Yes, remove") + '</button></div></div>'
+      : '<button type="button" class="textbtn" data-act="pfdel">' + (es ? "Quitar este perfil" : "Remove this profile") + '</button>';
+    return '<div class="perfiles"><h3 class="subq">' + (es ? "Perfiles (hasta " + MAXPERF + ")" : "Profiles (up to " + MAXPERF + ")") + '</h3><p class="hint">' + (es ? "Cada perfil guarda sus propias enfermedades, medicamentos y alergias. Elija quién va a usar la aplicación." : "Each profile keeps its own health conditions, medications and allergies. Choose who is using the app.") + '</p><div class="chips">' + chips + '</div>' +
+      textField("perfN", es ? "Nombre de este perfil (opcional)" : "Name of this profile (optional)", S.perfiles[S.cur].n || "") + del + '</div>';
   }
   function perfilChip() {
     var a = S.a;
@@ -885,7 +916,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var warn = "";
     if (miss.length) warn = '<p class="need">' + esc(x.getNeed) + ' ' + miss.map(function (id) { return '<a href="#' + id + '">' + esc(x.lbl[id]) + '</a>'; }).join(x.sep) + '.</p>';
     return stepsHtml(x.ph.length - 1).replace(/<ol class="steps">/, '<ol class="steps">') +
-      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p><p class="hint">' + esc(S.a.mode === "plan" ? XT().modePlan : XT().modeHoy) + '</p></div>' + (S.a.mode === "plan" ? "" : '<div class="meal-q" role="group" aria-labelledby="mq"><h3 id="mq" class="subq">' + (S.lang === "es" ? "¿Para qué comida?" : "Which meal is it for?") + '</h3><div class="chips">' + [["desayuno", "Desayuno", "Breakfast"], ["almuerzo", "Almuerzo", "Lunch"], ["cena", "Cena", "Dinner"]].map(function (m) { return chipBtn("comida", m[0], S.lang === "es" ? m[1] : m[2], S.a.comida === m[0]); }).join("") + '</div></div>') + '<ul class="sum">' + rows + '</ul>' + warn +
+      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p><p class="hint">' + esc(S.a.mode === "plan" ? XT().modePlan : XT().modeHoy) + '</p></div>' + perfilesHtml() + (S.a.mode === "plan" ? "" : '<div class="meal-q" role="group" aria-labelledby="mq"><h3 id="mq" class="subq">' + (S.lang === "es" ? "¿Para qué comida?" : "Which meal is it for?") + '</h3><div class="chips">' + [["desayuno", "Desayuno", "Breakfast"], ["almuerzo", "Almuerzo", "Lunch"], ["cena", "Cena", "Dinner"]].map(function (m) { return chipBtn("comida", m[0], S.lang === "es" ? m[1] : m[2], S.a.comida === m[0]); }).join("") + '</div></div>') + '<ul class="sum">' + rows + '</ul>' + warn +
       '<div class="nav stack"><a class="btn btn-primary" href="#' + (S.a.mode === "plan" ? "plan" : "resultados") + '" data-act="get"' + (miss.length ? ' aria-disabled="true"' : "") + '>' + esc(S.a.mode === "plan" ? XT().getPlan : x.getBtn) + ' ' + ARROW + '</a>' +
       '<a class="btn btn-ghost" href="#' + ORDER[ORDER.length - 1] + '">' + esc(x.back) + '</a></div>' +
       '<div class="linkrow"><span></span>' + clearBtn() + '</div>';
@@ -960,7 +991,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function rs() { return RS[S.lang]; }
 
   function splitLibres(t) { return String(t || "").split(/[,;\n]| y | and /i).map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 6); }
-  function evitaActiva(a) { var dig = has(a.cond, "digestiva"), gen = has(a.cond, "genetica"); return a.evita.filter(function (x) { return (x.indexOf("dg-") !== 0 || dig) && (x.indexOf("gn-") !== 0 || gen); }); }
+  function evitaActiva(a) { var dig = has(a.cond, "digestiva"), gen = has(a.cond, "genetica"), onc = has(a.cond, "oncologia"); return a.evita.filter(function (x) { return (x.indexOf("dg-") !== 0 || dig) && (x.indexOf("gn-") !== 0 || gen) && (x.indexOf("on-") !== 0 || onc); }); }
   function perfil() {
     var a = S.a, libres = [];
     if (has(a.alerg, "otra")) libres = libres.concat(splitLibres(a.alergOtra));
@@ -1553,8 +1584,12 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (act === "clear") { confirming = "all"; render(false); var c = $("#cq"); if (c) c.scrollIntoView({ block: "center" }); return; }
     if (act === "clearhoy") { confirming = "hoy"; render(false); var c2 = $("#cq"); if (c2) c2.scrollIntoView({ block: "center" }); return; }
     if (act === "clearhoyyes") { S.a.tiempo = null; S.a.porc = null; S.a.ingr = []; S.a.comida = null; confirming = false; save(); render(false); return; }
+    if (act === "pf") { var ix = parseInt(id, 10); if (ix >= 0 && ix < S.perfiles.length) { S.cur = ix; S.a = S.perfiles[ix].a; confirming = false; save(); render(false); } return; }
+    if (act === "pfnew") { if (S.perfiles.length < MAXPERF) { var np = { n: "", a: freshA() }; S.perfiles.push(np); S.cur = S.perfiles.length - 1; S.a = np.a; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; } return; }
+    if (act === "pfdel") { confirming = "pfdel"; render(false); var c3 = $("#cq"); if (c3) c3.scrollIntoView({ block: "center" }); return; }
+    if (act === "pfdelyes") { if (S.perfiles.length > 1) { S.perfiles.splice(S.cur, 1); S.cur = 0; S.a = S.perfiles[0].a; } confirming = false; save(); render(false); return; }
     if (act === "clearno") { confirming = false; render(false); return; }
-    if (act === "clearyes") { var lang = S.lang; S = fresh(); S.lang = lang; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; return; }
+    if (act === "clearyes") { S.a = freshA(); S.perfiles[S.cur].a = S.a; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; return; }
     if (act === "ingadd") { addIngredient(); return; }
     if (act === "icat") { ING_UI.cat = id; ING_UI.q = ""; render(false); var cb = document.querySelector('[data-act="icat"][data-id="' + id + '"]'); if (cb) cb.focus({ preventScroll: true }); return; }
     if (act === "cancelar") { if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} } RES.n++; RES.sig = ""; return; }
@@ -1594,6 +1629,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   document.addEventListener("input", function (e) {
     if (e.target.id === "f-ingQ") { ING_UI.q = e.target.value; var L2 = $("#ing-list"); if (L2) L2.innerHTML = ingListHtml(); return; }
     var k = e.target.getAttribute && e.target.getAttribute("data-text"); if (!k) return;
+    if (k === "perfN") { S.perfiles[S.cur].n = e.target.value.slice(0, 24); save(); return; }
     S.a[k] = e.target.value;
     if (k === "evitaOtra" && e.target.value.trim() && has(S.a.evita, "todo")) { /* escribir un alimento a evitar quita «Como de todo» */
       S.a.evita.splice(S.a.evita.indexOf("todo"), 1);

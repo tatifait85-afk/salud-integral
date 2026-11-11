@@ -24,6 +24,7 @@ const ETIQUETAS = {
   miel:      ["miel", "honey"],
   // Embarazo (reglas firmes de seguridad): frases específicas, para no marcar una ensalada de tomate crudo.
   crudo:     ["pescado crudo", "pescados crudos", "mariscos crudos", "marisco crudo", "carne cruda", "carnes crudas", "huevo crudo", "huevos crudos", "huevo poco cocido", "huevos poco cocidos", "yema cruda", "brotes crudos", "brotes de alfalfa", "alfalfa", "sushi", "sashimi", "ceviche", "carpaccio", "tartar de", "steak tartare", "atun sellado", "atun rosado", "raw fish", "raw egg", "raw eggs", "raw shellfish", "raw oysters", "undercooked egg", "undercooked eggs", "runny egg", "seared tuna", "raw sprouts"],
+  queso_blando: ["brie", "camembert", "roquefort", "stilton", "gorgonzola", "queso azul", "queso blanco", "queso fresco", "cotija", "blue cheese", "fresh cheese", "queso blanco fresco"],
   sin_pasteurizar: ["sin pasteurizar", "no pasteurizado", "no pasteurizada", "leche cruda", "queso crudo", "unpasteurized", "unpasteurised", "raw milk", "raw cheese"],
   alto_mercurio: ["tiburon", "pez espada", "marlin", "caballa rey", "caballa real", "blanquillo", "reloj anaranjado", "atun rojo", "atun ojo grande", "shark", "swordfish", "king mackerel", "tilefish", "bigeye tuna", "orange roughy", "bluefin tuna"],
   // Medicamentos: toronja (estatinas).
@@ -73,6 +74,7 @@ const GRUPOS = {
     "dg-picante": ["picante"], "dg-alcohol": ["alcohol"], "dg-grasas": ["frito", "grasoso", "embutido"],
     "gn-galactosemia": ["leche"],   // MedlinePlus: sin leche ni productos con leche, de por vida
     "gn-pku": ["carne", "ave", "embutido", "pescado", "crustaceo", "molusco", "huevo", "leche", "mani", "nueces", "soya", "legumbre", "aspartamo"],   // NICHD: alimentos altos en proteína y aspartamo; la cantidad la define el profesional
+    "on-tratamiento": ["crudo", "sin_pasteurizar", "queso_blando"],   // MedlinePlus: durante el tratamiento, sin crudos, sin pasteurizar ni quesos blandos o azules
     "gn-hemocromatosis": ["crudo", "suplemento_hierro"],   // NIDDK: sin mariscos crudos ni suplementos de hierro o vitamina C
     "dg-fodmap": ["fodmap", "miel", "leche", "trigo"],   // dieta baja en FODMAP indicada por el médico (lácteos con lactosa, trigo, miel, cebolla, ajo…)
   },
