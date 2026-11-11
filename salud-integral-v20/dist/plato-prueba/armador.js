@@ -281,9 +281,90 @@
     });
   }
 
+
+  /* ---------- Lista de compras agrupada por categoría y con medidas de compra ---------- */
+  var CATS = [
+    ["verduras", "Frutas y verduras", "Fruits and vegetables"], ["carnes", "Carnes y pescados", "Meat and fish"],
+    ["lacteos", "Lácteos y huevos", "Dairy and eggs"], ["granos", "Granos, pastas y panes", "Grains, pasta and bread"],
+    ["legumbres", "Legumbres y proteína vegetal", "Legumbres and plant protein"], ["despensa", "Despensa y condimentos", "Pantry and seasonings"],
+    ["otros", "Otros", "Other"]
+  ];
+  var REGLAS_CAT = [
+    ["despensa", /\b(mantequilla de mani|peanut butter|leche de coco|coconut milk|leche de almendra|almond milk|aceite|oil|sal|salt|pimienta|pepper|vinagre|vinegar|salsa|sauce|ketchup|mayonesa|mayonnaise|mostaza|mustard|azucar|sugar|miel|honey|canela|cinnamon|comino|cumin|paprika|curry|curcuma|turmeric|laurel|bay leaf|vainilla|vanilla|caldo|broth|stock|especia|spice|polvo de hornear|baking|levadura|yeast|chia|linaza|flax|semillas|seeds|nueces|nuez|walnut|almendra|almond|mani|peanut|cacao|cocoa|chocolate|tahini|aceituna|olive|alcaparra|caper|pepinillo|pickle|oregano|nuez moscada|nutmeg|jengibre en polvo|miso|wasabi|nori|fecula|cornstarch|gelatina|jarabe|syrup|atole)(?:s|es)?\b/],
+    ["carnes", /\b(pollo|chicken|pechuga|breast|muslo|thigh|res|beef|carne|meat|cerdo|pork|chuleta|pork chop|lomo|loin|tocino|bacon|jamon|ham|salchicha|sausage|pavo|turkey|higado|liver|atun|tuna|sardina|salmon|pescado|fish|filete|fillet|camaron|shrimp|calamar|squid|mejillon|mussel|costilla|rib)/],
+    ["lacteos", /\b(leche|milk|queso|cheese|yogur|yogurt|mantequilla|butter|crema|cream|natilla|huevo|egg|kefir|ricotta)/],
+    ["legumbres", /\b(frijol|bean|lenteja|lentil|garbanzo|chickpea|arveja|peas?\b|edamame|soya|soy|tofu|tempeh|seitan)/],
+    ["granos", /\b(arroz|rice|pasta|fideo|noodle|espagueti|spaghetti|macarron|penne|lasana|lasagna|pan|bread|tortilla|avena|oat|harina|flour|quinoa|cebada|barley|cuscus|couscous|cereal|bagel|bun|masa|semola|udon)(?:s|es)?\b/],
+    ["verduras", /./]
+  ];
+  var HIERBAS = /\b(cilantro|culantro|perejil|parsley|albahaca|basil|hierbabuena|menta|mint|cebollino|chive|romero|rosemary|tomillo|thyme|eneldo|dill|salvia|sage)/;
+  var RE_PREP = /\s+(?:(?:finamente |bien )?(?:picad|rallad|cortad|machacad|cocid|lavad|pelad|desmenuzad|escurrid|enjuagad|sazonad)[oa]s?\b|en (?:cubos|cubitos|rodajas|rebanadas|trozos|tiras|juliana|gajos|mitades|hojas|floretes|ramitas|ramitos|conserva)\b)[^,]*$/i;
+  var RE_PREP_EN = /\b(?:finely |roughly )?(?:chopped|diced|sliced|grated|minced|cooked|crushed|drained|rinsed|toasted|peeled|shredded|cubed|fresh)\s+/gi;
+  function categoriaDe(txt) {
+    var t = norm(txt).replace(/\bpara\b.*$/, "");
+    for (var i = 0; i < REGLAS_CAT.length; i++) if (REGLAS_CAT[i][1].test(t)) return REGLAS_CAT[i][0];
+    return "otros";
+  }
+  /* Convierte medidas de cocina en medidas de compra: hierbas en manojos, dientes de ajo en cabezas, y sin cantidad para condimentos medidos en cucharadas. */
+  function medidaDeCompra(txt, cat, lang) {
+    var es = lang !== "en", z = txt.replace(/\s*\(.*?\)/g, "").replace(es ? RE_PREP : /,.*$/, "").replace(es ? /$^/ : RE_PREP_EN, "").replace(/\s+/g, " ").trim();
+    var m = RE_QTY.exec(z), q = m ? parseNum(m[1]) : null;
+    var rest = m ? z.slice(m[1].length).replace(/^\s+/, "") : z;
+    var mu = m && RE_VOL.exec(rest); var unit = mu ? mu[1].toLowerCase().replace(/s$/, "") : "";
+    var nombre = mu ? rest.slice(mu[0].length).replace(/^\s*(de\s+|of\s+)?/, "") : rest;
+    var nn = norm(nombre);
+    if (HIERBAS.test(nn) && (unit || q == null)) {
+      var cdas = q == null ? 4 : (unit === "taza" || unit === "cup" ? q * 16 : unit === "cdta" || unit === "tsp" ? q / 3 : q);
+      var n = Math.max(1, Math.ceil(cdas / 10));
+      return es ? n + (n === 1 ? " manojo de " : " manojos de ") + nombre.replace(/\s+(fresc[oa]s?|picad[oa]s?)$/, "") : n + (n === 1 ? " bunch of " : " bunches of ") + nombre;
+    }
+    var md = /^(?:de\s+)?(dientes?|cloves?)\s+(?:de\s+|of\s+)?ajo|^(dientes?|cloves?)\b/.exec(rest);
+    if (m && /^(dientes?|cloves?)\b/i.test(rest) && /\b(ajo|garlic)\b/.test(nn)) {
+      var d = Math.max(1, Math.ceil(q / 10)); return es ? d + (d === 1 ? " cabeza de ajo" : " cabezas de ajo") : d + (d === 1 ? " head of garlic" : " heads of garlic");
+    }
+    if (cat === "despensa" && (q == null || /^(cda|cdta|tbsp|tsp|pizca|pinch)$/.test(unit) || /^pizca|^pinch/.test(rest))) {
+      var nom = nombre.replace(/^(pizca|pinch)\s+(de\s+|of\s+)?/i, "").replace(/\s+al gusto$|\s+to taste$/i, "");
+      return nom.charAt(0).toUpperCase() + nom.slice(1);
+    }
+    var out = z.replace(/\s+al gusto$|\s+to taste$/i, "");
+    return out.charAt(0).toUpperCase() + out.slice(1);
+  }
+  /* lista: textos ya sumados (compras). Devuelve [{id, titulo, items:[texto]}] sin grupos vacíos, con los textos ordenados. */
+  var RE_ADJ = /\s+(?:maduro|madura|pequeñ[oa]|mediano|mediana|grande|congelad[oa]|crujiente|firme|small|medium|large|ripe|frozen)s?\b/gi;
+  function unirItems(items, lang) {
+    var mapa = {}, orden = [], singular = function (w) { return w.length > 3 && /s$/.test(w) ? (/(ones|ores|nes)$/.test(w) ? w.slice(0, -2) : w.slice(0, -1)) : w; };
+    items.forEach(function (t) {
+      var z = t.replace(/^(\d+\/\d+)\s+de\s+(taza|tazas)\b/, "$1 $2").replace(RE_ADJ, "");
+      var m = RE_QTY.exec(z); if (!m) { if (!mapa[norm(z)]) { mapa[norm(z)] = { txt: z, q: null }; orden.push(norm(z)); } return; }
+      var rest = z.slice(m[1].length).replace(/^\s+/, ""), mu = RE_VOL.exec(rest) || RE_PESO.exec(rest) || RE_PESO_GRANDE.exec(rest);
+      var unit = mu ? mu[1].toLowerCase().replace(/s$/, "") : "", nombre = (mu ? rest.slice(mu[0].length) : rest).replace(/^\s*(de\s+|of\s+)?/, "");
+      var k = unit + "|" + norm(nombre).split(" ").map(singular).join(" ");
+      if (!mapa[k]) { mapa[k] = { q: 0, unit: mu ? mu[1] : "", nombre: nombre, plural: nombre }; orden.push(k); }
+      mapa[k].q += parseNum(m[1]); if (nombre.length > mapa[k].plural.length) mapa[k].plural = nombre;
+    });
+    return orden.map(function (k) {
+      var e = mapa[k]; if (e.q == null || e.unit === undefined) return e.txt;
+      var n = e.q, u = e.unit, nom = n > 1 ? e.plural : e.nombre;
+      if (n > 1) nom = nom.replace(/^cabeza\b/, "cabezas").replace(/^manojo\b/, "manojos").replace(/^head\b/, "heads").replace(/^bunch\b/, "bunches");
+      if (u && /^(tazas?|cdas?|cdtas?|cups?)$/i.test(u)) u = u.replace(/s$/i, "") + (n > 1 && lang !== "en" ? "s" : "") ;
+      var cant = /^g|^kg|^ml|^l$/i.test(e.unit) ? String(Math.round(n * 10) / 10).replace(".", ",") : fmtCuartos(n);
+      return cant + " " + (u ? u + " " + (lang === "en" ? "" : "de ") : "") + nom;
+    });
+  }
+  function agruparCompras(lista, lang) {
+    var g = {}; CATS.forEach(function (c) { g[c[0]] = []; });
+    lista.forEach(function (t) {
+      if (/^\s*(?:[\d\/.,\s]+)?(?:tazas?|cups?|litros?|l)?\s*(?:de\s+)?(agua|water)(?:\s+(?:caliente|fria|fría|tibia|hirviendo|hot|cold|warm|boiling))?\s*$/i.test(t)) return;
+      var cat = categoriaDe(t), txt = medidaDeCompra(t, cat, lang);
+      g[cat].push(txt);
+    });
+    return CATS.map(function (c) { return { id: c[0], titulo: lang === "en" ? c[2] : c[1], items: unirItems(g[c[0]], lang).sort(function (a, b) { return norm(a).replace(/^[\d\s\/.,]+/, "").localeCompare(norm(b).replace(/^[\d\s\/.,]+/, "")); }) }; }).filter(function (x) { return x.items.length; });
+  }
+
+
   var api = {
     escalarIng: escalarIng, escalarPaso: escalarPaso, textosOk: textosOk, platoConVariantesOk: platoConVariantesOk,
-    entradas: entradas, propuestas: propuestas, plan: plan, compras: compras, COMIDAS: COMIDAS, norm: norm
+    entradas: entradas, propuestas: propuestas, plan: plan, compras: compras, agruparCompras: agruparCompras, COMIDAS: COMIDAS, norm: norm
   };
   if (typeof module !== "undefined") module.exports = api; else root.MPI_ARMADOR = api;
 })(typeof window !== "undefined" ? window : this);

@@ -81,6 +81,7 @@ Fuentes consultadas:
   - Cardiología: bebidas azucaradas, dulces y alcohol (14 platos fuera).
   - Hepatología: bebidas azucaradas y alcohol (1 plato fuera).
   - Nefrología: sal sustituta con potasio, embutidos y frituras (1 plato fuera).
+  - Genética: la persona elige su enfermedad (galactosemia, fenilcetonuria o hemocromatosis) y solo se bloquea lo que su fuente oficial manda evitar; ver `plato-investigacion-areas-restantes.md`.
   - Reumatología (incluye gota): vísceras (ningún plato del catálogo las lleva).
   - El kéfir de agua cuenta como bebida azucarada (se prepara con azúcar y agua); en el catálogo de ingredientes está en «Alternativas vegetales», no en lácteos.
   - El jugo de limón o de lima usado como condimento no cuenta como jugo.

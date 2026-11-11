@@ -105,6 +105,13 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .opt .ic img { width: 48px; height: 48px; mix-blend-mode: multiply; }
 .opt .lbl { font-weight: 500; font-size: 17px; line-height: 1.15; display: grid; gap: 2px; }
 .opt .sub { font-size: 12.5px; font-weight: 500; color: var(--amber-t); }
+.optw { display: grid; }
+.optw .more, .optw .subx { display: none; }
+@media (max-width: 600px) {
+  .optw .opt .sub { display: none; }
+  .optw .more { display: block; justify-self: start; background: none; border: 0; padding: 6px 14px 2px; font: inherit; font-size: 14px; color: var(--forest); text-decoration: underline; cursor: pointer; min-height: 32px; }
+  .optw.open .subx { display: block; margin: 0; padding: 2px 14px 6px; font-size: 13.5px; color: var(--amber-t); }
+}
 .tick { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--forest); display: grid; place-items: center; background: var(--cream); color: transparent; font-size: 13px; font-weight: 700; }
 .opt.radio .tick { border-radius: 999px; }
 .opt[aria-pressed="true"] { border: 2.5px solid var(--forest); background: var(--mint); padding: 6.5px 12.5px 6.5px 8.5px; }
@@ -132,6 +139,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .field textarea { min-height: 84px; resize: vertical; }
 .addrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .hint { font-size: 14.5px; color: var(--ink-soft); }
+.shop-groups { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.shop-g h4 { margin: 0 0 6px; font-family: var(--serif, inherit); font-size: 18px; color: var(--forest); }
 .subq { font-family: var(--serif, inherit); font-size: 20px; margin: 22px 0 6px; }
 .warn { font-size: 14.5px; color: var(--amber-t); background: #FFF4DC; border: 1.5px solid #C98A1B; border-radius: var(--r-sm); padding: 8px 12px; }
 .need { font-size: 14.5px; color: var(--terra-d); font-weight: 500; }
@@ -202,6 +211,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .ing-card[aria-pressed="true"] .tick { display: grid; }
 .ing-empty { margin: 0; padding: 14px; color: var(--ink-soft); }
 .ing-sel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+@media (max-width: 899px) { .ing-sel { position: sticky; top: 0; z-index: 5; background: var(--cream); padding: 8px 10px; margin: 8px 0; border: 1.5px solid var(--line); border-radius: var(--r-md); max-height: 112px; overflow-y: auto; box-shadow: 0 4px 10px rgba(0,0,0,.06); } }
 .ing-sel .cnt { font-weight: 500; color: var(--forest); margin-right: 4px; }
 .ing-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: 999px; background: var(--mint); border: 1.5px solid var(--forest); font: inherit; font-size: 15px; cursor: pointer; color: var(--forest); }
 @media (min-width: 900px) {
@@ -440,7 +450,13 @@ h2.title { font-size: 28px; line-height: 1.15; }
     ["dg-alcohol", T("Alcohol", "Alcohol")], ["dg-grasas", T("Comidas grasosas y fritas", "Fatty and fried foods")],
     ["dg-fodmap", T("Dieta baja en FODMAP (indicada por su médico)", "Low FODMAP diet (advised by your doctor)")]
   ].map(function (c) { return { id: c[0], label: c[1] }; });
-  var EVITA_ALL = EVITA.concat(EVITA_DIG);
+  /* Genética: tres enfermedades con reglas alimentarias firmes (NIH). Solo se muestran y se aplican si marcó Genética. */
+  var EVITA_GEN = [
+    ["gn-galactosemia", T("Galactosemia (sin leche ni lácteos)", "Galactosemia (no milk or dairy)")],
+    ["gn-pku", T("Fenilcetonuria (sin alimentos altos en proteína)", "Phenylketonuria (no high-protein foods)")],
+    ["gn-hemocromatosis", T("Hemocromatosis (sin mariscos crudos)", "Hemochromatosis (no raw shellfish)")]
+  ].map(function (c) { return { id: c[0], label: c[1] }; });
+  var EVITA_ALL = EVITA.concat(EVITA_DIG, EVITA_GEN);
   var COCINA = [
     ["costarricense", T("Costarricense", "Costa Rican")], ["mexicana", T("Mexicana", "Mexican")], ["china", T("China", "Chinese")],
     ["india", T("India", "Indian")], ["italiana", T("Italiana", "Italian")], ["japonesa", T("Japonesa", "Japanese")],
@@ -554,7 +570,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   /* ---------- Estado y guardado ---------- */
   function fresh() {
     return { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es",
-      a: { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], mode: "hoy" } };
+      a: { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], comida: null, mode: "hoy" } };
   }
   var S = fresh(), storeOk = true, confirming = false;
   function load() {
@@ -631,8 +647,12 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function optBtn(o) {
     var cls = "opt" + (o.radio ? " radio" : "") + (o.img ? "" : " noimg");
     var ic = o.img ? '<span class="ic t-' + TILES[o.i % TILES.length] + '"><img src="img/' + o.img + '.webp" width="48" height="48" alt=""></span>' : "";
-    return '<button type="button" class="' + cls + '" data-act="' + o.act + '" data-id="' + esc(o.id) + '" aria-pressed="' + (o.on ? "true" : "false") + '">' + ic +
+    var btn = '<button type="button" class="' + cls + '" data-act="' + o.act + '" data-id="' + esc(o.id) + '" aria-pressed="' + (o.on ? "true" : "false") + '">' + ic +
       '<span class="lbl"><span>' + esc(o.label) + '</span>' + (o.sub ? '<span class="sub">' + esc(o.sub) + '</span>' : "") + '</span><span class="tick" aria-hidden="true">✓</span></button>';
+    /* En el teléfono, los ejemplos de enfermedades se pliegan: «Ver ejemplos» los muestra (en pantallas grandes se ven siempre). */
+    if (!o.sub) return btn;
+    var es = S.lang === "es";
+    return '<div class="optw">' + btn + '<button type="button" class="more" data-act="more" aria-expanded="false" data-ver="' + (es ? "Ver ejemplos" : "Show examples") + '" data-ocultar="' + (es ? "Ocultar ejemplos" : "Hide examples") + '">' + (es ? "Ver ejemplos" : "Show examples") + '</button><p class="subx">' + esc(o.sub) + '</p></div>';
   }
   function chipBtn(act, id, label, on) {
     return '<button type="button" class="chip" data-act="' + act + '" data-id="' + esc(id) + '" aria-pressed="' + (on ? "true" : "false") + '">' + esc(label) + '</button>';
@@ -682,9 +702,10 @@ h2.title { font-size: 28px; line-height: 1.15; }
       ING.cats.map(function (ct) { var n = cnt(ct.id); return '<button type="button" class="ing-cat" data-act="icat" data-id="' + ct.id + '" aria-pressed="' + (ING_UI.cat === ct.id) + '">' + ingCatImg(ct.id) + '<span>' + esc(es ? ct.es : ct.en) + '</span>' + (n ? '<span class="n" aria-label="' + n + '">' + n + '</span>' : "") + '</button>'; }).join("");
     return '<div class="ing"><div class="ing-search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>' +
       '<input id="f-ingQ" type="search" autocomplete="off" aria-label="' + esc(es ? "Buscar ingrediente" : "Search ingredient") + '" placeholder="' + esc(es ? "Buscar ingrediente…" : "Search ingredient…") + '" value="' + esc(ING_UI.q) + '"></div>' +
+      '<div class="ing-sel" id="ing-sel" aria-live="polite">' + ingSelHtml() + '</div>' +
       '<div class="ing-main"><nav class="ing-cats" aria-label="' + esc(es ? "Categorías" : "Categories") + '">' + cats + '</nav><div class="ing-list" id="ing-list">' + ingListHtml() + '</div></div>' +
       '<div class="field"><label for="f-ingNew">' + esc(es ? "Agregar otro ingrediente" : "Add another ingredient") + '</label><div class="addrow"><input id="f-ingNew" type="text" maxlength="40" autocomplete="off"><button type="button" class="btn btn-ghost" data-act="ingadd">' + esc(es ? "Agregar" : "Add") + '</button></div></div>' +
-      '<div class="ing-sel" id="ing-sel" aria-live="polite">' + ingSelHtml() + '</div></div>';
+      '</div>';
   }
 
   function qBody(id) {
@@ -716,7 +737,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     } else if (id === "evita") {
       h += '<div class="opts" role="group" aria-labelledby="qt">' + EVITA.map(function (c, i) {
         return optBtn({ act: "evita", id: c.id, img: c.img, i: i, label: L(c.label), on: has(a.evita, c.id) });
-      }).join("") + '</div>' + (has(a.cond, "digestiva") ? '<h3 class="subq">' + (S.lang === "es" ? "Área digestiva: ¿qué le cae mal?" : "Digestive area: what does not agree with you?") + '</h3><p class="hint">' + (S.lang === "es" ? "Elija solo lo que le afecte: los desencadenantes cambian de persona a persona. Si le indicaron una dieta baja en FODMAP, márquela." : "Choose only what affects you: triggers differ from person to person. If you were advised a low FODMAP diet, select it.") + '</p><div class="chips">' + EVITA_DIG.map(function (c) { return chipBtn("evita", c.id, L(c.label), has(a.evita, c.id)); }).join("") + '</div>' : "") + '<div class="chips" style="margin-top:14px">' + chipBtn("evita", "todo", EVITA_TODO[S.lang], has(a.evita, "todo")) + '</div>' +
+      }).join("") + '</div>' + (has(a.cond, "digestiva") ? '<h3 class="subq">' + (S.lang === "es" ? "Área digestiva: ¿qué le cae mal?" : "Digestive area: what does not agree with you?") + '</h3><p class="hint">' + (S.lang === "es" ? "Elija solo lo que le afecte: los desencadenantes cambian de persona a persona. Si le indicaron una dieta baja en FODMAP, márquela." : "Choose only what affects you: triggers differ from person to person. If you were advised a low FODMAP diet, select it.") + '</p><div class="chips">' + EVITA_DIG.map(function (c) { return chipBtn("evita", c.id, L(c.label), has(a.evita, c.id)); }).join("") + '</div>' : "") + (has(a.cond, "genetica") ? '<h3 class="subq">' + (S.lang === "es" ? "Genética: ¿cuál le aplica?" : "Genetics: which one applies to you?") + '</h3><p class="hint">' + (S.lang === "es" ? "Elija solo la que su médico le diagnosticó. La cantidad exacta de cada alimento la define su profesional de salud." : "Choose only the one your doctor diagnosed. Your health professional sets the exact amounts.") + '</p><div class="chips">' + EVITA_GEN.map(function (c) { return chipBtn("evita", c.id, L(c.label), has(a.evita, c.id)); }).join("") + '</div>' : "") + '<div class="chips" style="margin-top:14px">' + chipBtn("evita", "todo", EVITA_TODO[S.lang], has(a.evita, "todo")) + '</div>' +
         textField("evitaOtra", S.lang === "es" ? "Otro alimento a evitar (opcional)" : "Another food to avoid (optional)", a.evitaOtra);
     } else if (id === "cocina") {
       h += '<div class="cuis" role="group" aria-labelledby="qt">' + COCINA.map(function (c) {
@@ -831,7 +852,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var warn = "";
     if (miss.length) warn = '<p class="need">' + esc(x.getNeed) + ' ' + miss.map(function (id) { return '<a href="#' + id + '">' + esc(x.lbl[id]) + '</a>'; }).join(x.sep) + '.</p>';
     return stepsHtml(x.ph.length - 1).replace(/<ol class="steps">/, '<ol class="steps">') +
-      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p><p class="hint">' + esc(S.a.mode === "plan" ? XT().modePlan : XT().modeHoy) + '</p></div><ul class="sum">' + rows + '</ul>' + warn +
+      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p><p class="hint">' + esc(S.a.mode === "plan" ? XT().modePlan : XT().modeHoy) + '</p></div>' + (S.a.mode === "plan" ? "" : '<div class="meal-q" role="group" aria-labelledby="mq"><h3 id="mq" class="subq">' + (S.lang === "es" ? "¿Para qué comida?" : "Which meal is it for?") + '</h3><div class="chips">' + [["desayuno", "Desayuno", "Breakfast"], ["almuerzo", "Almuerzo", "Lunch"], ["cena", "Cena", "Dinner"]].map(function (m) { return chipBtn("comida", m[0], S.lang === "es" ? m[1] : m[2], S.a.comida === m[0]); }).join("") + '</div></div>') + '<ul class="sum">' + rows + '</ul>' + warn +
       '<div class="nav stack"><a class="btn btn-primary" href="#' + (S.a.mode === "plan" ? "plan" : "resultados") + '" data-act="get"' + (miss.length ? ' aria-disabled="true"' : "") + '>' + esc(S.a.mode === "plan" ? XT().getPlan : x.getBtn) + ' ' + ARROW + '</a>' +
       '<a class="btn btn-ghost" href="#' + ORDER[ORDER.length - 1] + '">' + esc(x.back) + '</a></div>' +
       '<div class="linkrow"><span></span>' + clearBtn() + '</div>';
@@ -906,7 +927,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function rs() { return RS[S.lang]; }
 
   function splitLibres(t) { return String(t || "").split(/[,;\n]| y | and /i).map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 6); }
-  function evitaActiva(a) { var dig = has(a.cond, "digestiva"); return a.evita.filter(function (x) { return dig || x.indexOf("dg-") !== 0; }); }
+  function evitaActiva(a) { var dig = has(a.cond, "digestiva"), gen = has(a.cond, "genetica"); return a.evita.filter(function (x) { return (x.indexOf("dg-") !== 0 || dig) && (x.indexOf("gn-") !== 0 || gen); }); }
   function perfil() {
     var a = S.a, libres = [];
     if (has(a.alerg, "otra")) libres = libres.concat(splitLibres(a.alergOtra));
@@ -915,24 +936,24 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   /* Texto bajo cada condición: enfermedades más comunes de esa categoría (solo informativo; las reglas de la página se describen en el párrafo inferior). */
   var COND_ENF = {
-    cardiovascular: ["Presión alta, colesterol alto, triglicéridos altos, angina o infarto, corazón débil (insuficiencia cardíaca), latidos irregulares", "High blood pressure, high cholesterol, high triglycerides, angina or heart attack, weak heart (heart failure), irregular heartbeat"],
-    endocrina: ["Diabetes, prediabetes, tiroides lenta, tiroides acelerada, sobrepeso y obesidad, azúcar baja", "Diabetes, prediabetes, underactive thyroid, overactive thyroid, overweight and obesity, low blood sugar"],
-    digestiva: ["Reflujo, gastritis, colon irritable, úlcera de estómago, enfermedad de Crohn y colitis, celiaquía, estreñimiento, piedras en la vesícula, diverticulitis, dificultad para tragar", "Reflux, gastritis, irritable bowel, stomach ulcer, Crohn's disease and colitis, celiac disease, constipation, gallstones, diverticulitis, trouble swallowing"],
+    cardiovascular: ["Presión alta, colesterol alto, triglicéridos altos, infarto, insuficiencia cardíaca", "High blood pressure, high cholesterol, high triglycerides, heart attack, heart failure"],
+    endocrina: ["Diabetes, prediabetes, tiroides lenta, tiroides acelerada, obesidad", "Diabetes, prediabetes, underactive thyroid, overactive thyroid, obesity"],
+    digestiva: ["Reflujo, gastritis, colon irritable, celiaquía, estreñimiento", "Reflux, gastritis, irritable bowel, celiac disease, constipation"],
     hepatica: ["Hígado graso, hepatitis, cirrosis", "Fatty liver, hepatitis, cirrhosis"],
-    renal: ["Enfermedad de los riñones (insuficiencia renal), diálisis, inflamación de los riñones", "Kidney disease (kidney failure), dialysis, kidney inflammation"],
-    urologia: ["Piedras en el riñón, infecciones urinarias frecuentes, próstata agrandada, pérdida involuntaria de orina, problemas de erección", "Kidney stones, frequent urinary infections, enlarged prostate, urine leakage, erection problems"],
-    neumologia: ["Asma, EPOC (bronquitis crónica o enfisema), apnea del sueño", "Asthma, COPD (chronic bronchitis or emphysema), sleep apnea"],
-    hematologica: ["Anemia por falta de hierro, anemia por falta de vitamina B12 o ácido fólico, anemias hereditarias (talasemia, células falciformes), problemas de coagulación (hemofilia)", "Iron-deficiency anemia, anemia from lack of vitamin B12 or folic acid, inherited anemias (thalassemia, sickle cell), clotting problems (hemophilia)"],
-    oncologia: ["Cáncer de mama, de próstata, de colon, de pulmón, de piel, y cáncer de la sangre (leucemia y linfoma)", "Breast, prostate, colon, lung and skin cancer, and blood cancer (leukemia and lymphoma)"],
-    neurologica: ["Derrame cerebral, epilepsia, migraña, Parkinson, Alzheimer y otras demencias, esclerosis múltiple", "Stroke, epilepsy, migraine, Parkinson's, Alzheimer's and other dementias, multiple sclerosis"],
-    mental: ["Depresión, ansiedad, trastorno bipolar, déficit de atención (TDAH), autismo, trastornos de la conducta alimentaria (anorexia, bulimia, atracones)", "Depression, anxiety, bipolar disorder, attention deficit (ADHD), autism, eating disorders (anorexia, bulimia, binge eating)"],
-    reumatologia: ["Gota, artritis reumatoide, lupus, fibromialgia, ojos y boca secos (síndrome de Sjögren)", "Gout, rheumatoid arthritis, lupus, fibromyalgia, dry eyes and mouth (Sjögren's syndrome)"],
-    inmunologia: ["Defensas bajas, alergias respiratorias, ronchas crónicas (urticaria)", "Weak immune system, respiratory allergies, chronic hives (urticaria)"],
-    ortopedia: ["Osteoporosis, artrosis (desgaste de las articulaciones), pérdida de masa muscular, recuperación de fracturas, dolor de espalda crónico", "Osteoporosis, osteoarthritis (joint wear), muscle loss, fracture recovery, chronic back pain"],
-    genetica: ["Fenilcetonuria, fibrosis quística, hemocromatosis (exceso de hierro hereditario), síndrome de Down, galactosemia", "Phenylketonuria, cystic fibrosis, hemochromatosis (inherited iron overload), Down syndrome, galactosemia"],
+    renal: ["Insuficiencia renal, diálisis, inflamación de los riñones", "Kidney failure, dialysis, kidney inflammation"],
+    urologia: ["Piedras en el riñón, infecciones urinarias, próstata agrandada, pérdida de orina, problemas de erección", "Kidney stones, urinary infections, enlarged prostate, urine leakage, erection problems"],
+    neumologia: ["Asma, EPOC, apnea del sueño", "Asthma, COPD, sleep apnea"],
+    hematologica: ["Anemia por falta de hierro, anemia por falta de vitamina B12, anemia por falta de ácido fólico, hemofilia", "Iron-deficiency anemia, vitamin B12 anemia, folic acid anemia, hemophilia"],
+    oncologia: ["Cáncer de mama, de próstata, de colon, de pulmón, de piel", "Breast, prostate, colon, lung and skin cancer"],
+    neurologica: ["Derrame cerebral, epilepsia, migraña, Parkinson, Alzheimer", "Stroke, epilepsy, migraine, Parkinson's, Alzheimer's"],
+    mental: ["Depresión, ansiedad, trastorno bipolar, déficit de atención, trastornos de la conducta alimentaria", "Depression, anxiety, bipolar disorder, attention deficit, eating disorders"],
+    reumatologia: ["Gota, artritis reumatoide, lupus, fibromialgia, síndrome de Sjögren", "Gout, rheumatoid arthritis, lupus, fibromyalgia, Sjögren's syndrome"],
+    inmunologia: ["Defensas bajas, alergias respiratorias, urticaria", "Weak immune system, respiratory allergies, hives"],
+    ortopedia: ["Osteoporosis, artrosis, pérdida de masa muscular, fracturas, dolor de espalda crónico", "Osteoporosis, osteoarthritis, muscle loss, fractures, chronic back pain"],
+    genetica: ["Fenilcetonuria, fibrosis quística, hemocromatosis, síndrome de Down, galactosemia", "Phenylketonuria, cystic fibrosis, hemochromatosis, Down syndrome, galactosemia"],
     dermatologia: ["Acné, psoriasis, rosácea, eczema", "Acne, psoriasis, rosacea, eczema"],
-    ginecologia: ["Ovario poliquístico, endometriosis, miomas, quistes en los ovarios, menstruación dolorosa o muy abundante, bolitas en el seno (enfermedad fibroquística)", "Polycystic ovaries, endometriosis, fibroids, ovarian cysts, painful or very heavy periods, breast lumps (fibrocystic disease)"],
-    embarazo: ["Embarazo, diabetes del embarazo, presión alta del embarazo (preeclampsia), náuseas y vómitos, lactancia", "Pregnancy, diabetes in pregnancy, high blood pressure in pregnancy (preeclampsia), nausea and vomiting, breastfeeding"],
+    ginecologia: ["Ovario poliquístico, endometriosis, miomas, quistes en los ovarios, menstruación dolorosa", "Polycystic ovaries, endometriosis, fibroids, ovarian cysts, painful periods"],
+    embarazo: ["Embarazo, diabetes del embarazo, preeclampsia, náuseas y vómitos, lactancia", "Pregnancy, diabetes in pregnancy, preeclampsia, nausea and vomiting, breastfeeding"],
     menopausia: ["Menopausia, bochornos, problemas para dormir, cambios de ánimo, menopausia temprana", "Menopause, hot flashes, trouble sleeping, mood changes, early menopause"]
   };
   function condSub(id) { var e = COND_ENF[id]; return e ? e[S.lang === "es" ? 0 : 1] : ""; }
@@ -1068,7 +1089,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   function opcionesLocal(P, R, excluir) {
     return { PLATOS: PLATOS, rec: REC, P: P, R: R, platoOk: function (d) { return platoLocalOk(d, P, R); },
-      a: { cocina: S.a.cocina, tiempo: S.a.tiempo, porc: S.a.porc }, ingrClaves: ingrClaves(), excluir: excluir || [], comida: null };
+      a: { cocina: S.a.cocina, tiempo: S.a.tiempo, porc: S.a.porc }, ingrClaves: ingrClaves(), excluir: excluir || [], comida: S.a.comida || null };
   }
 
   function armarPrompt(P, cands) {
@@ -1085,7 +1106,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       var ingr = a.ingr.slice(0, 15).map(function (v) { if (v.indexOf("c:") === 0) return limpio(v.slice(2), 30); var f = INGR.filter(function (c) { return c.id === v; })[0]; return f ? L(f.label) : ""; }).filter(Boolean);
       var cocinas = pref.map(function (c) { var f = COCINA.filter(function (x) { return x.id === c; })[0]; return f ? L(f.label) : ""; }).filter(Boolean);
       if (es) {
-        texto = "Proponga 2 recetas distintas para una comida de hoy. Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]}. " +
+        texto = "Proponga 2 recetas distintas para " + (S.a.comida ? "el " + S.a.comida + " de hoy" : "una comida de hoy") + ". Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]}. " +
           "En \"plato\" use SOLO un id de esta lista y mantenga ese plato como base. Cada elemento de la lista tiene el formato id (tiempo aproximado en minutos): en \"plato\" escriba SOLO el id, sin el tiempo. El tiempo máximo es solo una indicación: prefiera platos cuyo tiempo indicado no lo supere (si ninguno cabe, el más corto). Lista: " + lista.join(", ") + ". " +
           (al.length ? "Alergias (excluya por completo el alimento y todos sus derivados): " + al.join(", ") + ". " : "") +
           (ev.length ? "Evitar: " + ev.join(", ") + ". " : "") + (libres.length ? "Evitar también: " + libres.join(", ") + ". " : "") +
@@ -1094,7 +1115,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
           (ingr.length ? "Ingredientes disponibles (priorícelos): " + ingr.join(", ") + ". " : "") + saludPrompt(P, true) +
           "Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema». No afirme que una receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves por receta.";
       } else {
-        texto = "Suggest 2 different recipes for a meal today. Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]}. " +
+        texto = "Suggest 2 different recipes for " + (S.a.comida ? "today's " + ({ desayuno: "breakfast", almuerzo: "lunch", cena: "dinner" }[S.a.comida]) : "a meal today") + ". Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]}. " +
           "For \"plato\" use ONLY an id from this list and keep that dish as the base. Each item in the list has the format id (approximate time in minutes): in \"plato\" write ONLY the id, without the time. The maximum time is only a guideline: prefer dishes whose listed time does not exceed it (if none fits, the shortest). List: " + lista.join(", ") + ". " +
           (al.length ? "Allergies (exclude the food and all its derivatives entirely): " + al.join(", ") + ". " : "") +
           (ev.length ? "Avoid: " + ev.join(", ") + ". " : "") + (libres.length ? "Also avoid: " + libres.join(", ") + ". " : "") +
@@ -1428,12 +1449,15 @@ h2.title { font-size: 28px; line-height: 1.15; }
         '<button type="button" class="btn btn-ghost sm" data-act="prec" data-id="' + key + '" aria-expanded="' + (open ? "true" : "false") + '">' + esc(txt) + '</button>' + det + '</div>';
     };
     var dias = PLAN.dias.map(function (d, i) { return '<li class="day"><h3>' + esc(p.day(i + 1)) + '</h3>' + comida(i, "d", d.d, p.breakfast) + comida(i, "a", d.a, p.lunch) + comida(i, "c", d.c, p.dinner) + '</li>'; }).join("");
-    var lista = PLAN.compras.map(function (c, i) { return '<li><label><input type="checkbox" data-act="chk" data-id="' + i + '"' + (PLAN.checked[i] ? " checked" : "") + '><span>' + esc(c) + '</span></label></li>'; }).join("");
+    var idx = 0;
+    var lista = ARM.agruparCompras(PLAN.compras, S.lang).map(function (g) {
+      return '<li class="shop-g"><h4>' + esc(g.titulo) + '</h4><ul class="checklist">' + g.items.map(function (c) { var i = idx++; return '<li><label><input type="checkbox" data-act="chk" data-id="' + i + '"' + (PLAN.checked[i] ? " checked" : "") + '><span>' + esc(c) + '</span></label></li>'; }).join("") + '</ul></li>';
+    }).join("");
     var avisos = [r.avGen]; if (has(S.a.alerg, "sulfitos")) avisos.push(MPI.AVISOS[S.lang].sulfitos); if (has(S.a.evita, "gluten")) avisos.push(MPI.AVISOS[S.lang].gluten);
     if (perfil().libres.length) avisos.push(MPI.AVISOS[S.lang].libre);
     return h + '<section class="results"><div><h2 class="title" id="vt" tabindex="-1">' + esc(p.title) + '</h2><p class="lead">' + esc(p.lead) + '</p></div>' +
             avisoSalud() +
-      '<ul class="days">' + dias + '</ul><section class="shop"><h3>' + esc(p.shopT) + '</h3><p class="hint">' + esc(p.shopP) + '</p><ul class="checklist">' + lista + '</ul></section>' +
+      '<ul class="days">' + dias + '</ul><section class="shop"><h3>' + esc(p.shopT) + '</h3><p class="hint">' + esc(p.shopP) + '</p><ul class="shop-groups">' + lista + '</ul></section>' +
       '<p class="hint">' + esc(r.photoNote) + '</p>' + avisos.map(function (t) { return '<p class="hint">' + esc(t) + '</p>'; }).join("") +
       '<div class="actions"><button type="button" class="btn btn-primary" data-act="otroplan">' + esc(p.another) + '</button><a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div></section>';
   }
@@ -1483,6 +1507,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var el = e.target.closest("[data-act]"); if (!el) return;
     var act = el.getAttribute("data-act"), id = el.getAttribute("data-id"), a = S.a;
     if (act === "noop") { e.preventDefault(); return; }
+    if (act === "more") { var w = el.closest(".optw"), ab = w.classList.toggle("open"); el.setAttribute("aria-expanded", ab ? "true" : "false"); el.textContent = el.getAttribute(ab ? "data-ocultar" : "data-ver"); return; }
     if (act === "modo") { a.mode = id === "plan" ? "plan" : "hoy"; save(); return; }
     if (act === "entrar") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); return; } a.mode = "hoy"; save(); return; }
     if (act === "chk") { PLAN.checked[id] = !!el.checked; return; }
@@ -1514,6 +1539,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       else { var td = a.evita.indexOf("todo"); if (td > -1) a.evita.splice(td, 1); toggleMulti(a.evita, id); }
     }
     else if (act === "cocina") toggleMulti(a.cocina, id);
+    else if (act === "comida") a.comida = (a.comida === id ? null : id);
     else if (act === "tiempo") a.tiempo = (a.tiempo === +id ? null : +id);
     else if (act === "porc") a.porc = (a.porc === +id ? null : +id);
     else if (act === "ingr") toggleMulti(a.ingr, id);

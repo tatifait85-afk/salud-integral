@@ -43,6 +43,10 @@ const ETIQUETAS = {
   picante:   ["picante", "chile", "aji", "jalapeno", "cayena", "chili", "chilli", "spicy", "jalapeno", "cayenne"],
   grasoso:   ["tocino", "chicharron", "manteca", "bacon", "lard", "pork rinds"],
   fodmap:    ["cebolla", "ajo", "repollo", "hongo", "champinon", "manzana", "mango", "sorbitol", "xilitol", "manitol", "maltitol", "onion", "garlic", "cabbage", "mushroom", "apple", "sorbitol", "xylitol", "mannitol"],
+  // Genética (NIH, NICHD, MedlinePlus): PKU, galactosemia, hemocromatosis.
+  legumbre:  ["frijol", "lenteja", "garbanzo", "arveja", "guisante", "edamame", "tofu", "tempeh", "seitan", "bean", "lentil", "chickpea", "pea"],
+  aspartamo: ["aspartamo", "aspartame"],
+  suplemento_hierro: ["suplemento de hierro", "suplementos de hierro", "suplemento de vitamina c", "iron supplement", "vitamin c supplement"],
   sal_sustituta: ["sal sustituta", "sal sin sodio", "sustituto de sal", "salt substitute", "lite salt"],
   toronja:   ["toronja", "pomelo", "grapefruit"],
 };
@@ -67,6 +71,9 @@ const GRUPOS = {
     // Área digestiva: solo se aplican si la persona marcó Gastroenterología y eligió el desencadenante.
     "dg-citricos": ["citrico"], "dg-tomate": ["tomate"], "dg-cafe": ["cafe"], "dg-chocolate": ["chocolate"], "dg-menta": ["menta"],
     "dg-picante": ["picante"], "dg-alcohol": ["alcohol"], "dg-grasas": ["frito", "grasoso", "embutido"],
+    "gn-galactosemia": ["leche"],   // MedlinePlus: sin leche ni productos con leche, de por vida
+    "gn-pku": ["carne", "ave", "embutido", "pescado", "crustaceo", "molusco", "huevo", "leche", "mani", "nueces", "soya", "legumbre", "aspartamo"],   // NICHD: alimentos altos en proteína y aspartamo; la cantidad la define el profesional
+    "gn-hemocromatosis": ["crudo", "suplemento_hierro"],   // NIDDK: sin mariscos crudos ni suplementos de hierro o vitamina C
     "dg-fodmap": ["fodmap", "miel", "leche", "trigo"],   // dieta baja en FODMAP indicada por el médico (lácteos con lactosa, trigo, miel, cebolla, ajo…)
   },
   dieta: {               // qué NO se permite en cada tipo de alimentación
