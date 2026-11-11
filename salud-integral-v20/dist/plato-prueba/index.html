@@ -173,6 +173,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
 /* Resultados */
 .notice { font-size: 14.5px; color: var(--amber-t); background: #FFF4DC; border: 1.5px solid #C98A1B; border-radius: var(--r-sm); padding: 10px 12px; }
+.iab { margin-top: 12px; }
+.iab:focus { outline: none; }
 .badge-example { justify-self: start; font-size: 13px; font-weight: 600; color: var(--terra-d); background: var(--terra-bg); border-radius: 999px; padding: 2px 12px; }
 .recipes { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
 .recipe { display: grid; grid-template-columns: 112px minmax(0, 1fr); background: var(--cream); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; min-width: 0; }
@@ -279,6 +281,8 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
 <script src="reglas.js"></script>
 <script src="platos.js"></script>
+<script src="recetas.js"></script>
+<script src="armador.js"></script>
 <script>
 (function () {
   "use strict";
@@ -289,9 +293,9 @@ h2.title { font-size: 28px; line-height: 1.15; }
   var UI = {
     es: {
       logoAlt: "Mi Plato Inteligente", langLabel: "Idioma", privacyUrl: "https://saludintegral.site/privacidad/",
-      priv: "Sus respuestas se guardan solo en este dispositivo. Para preparar la propuesta, se envían a un servicio de inteligencia artificial.", privl: "Política de privacidad",
+      priv: "Sus respuestas se guardan solo en este dispositivo. Las propuestas se arman aquí mismo; solo si usted pulsa «Receta más personalizada (con IA)» se envían a un servicio de inteligencia artificial.", privl: "Política de privacidad",
       h1: "Coma más saludable, con facilidad.", h1p: "Recetas personalizadas según su salud, sus gustos y lo que tiene en casa.",
-      c1: "Resolver mi comida de hoy", c1p: "Reciba dos recetas personalizadas en minutos.",
+      c1: "Resolver mi comida de hoy", c1p: "Reciba recetas adaptadas a usted al instante.",
       c2: "Organizar mis siete días", c2p: "Obtenga un menú completo, recetas y lista de compras.",
       s1: "Por área de salud", s2: "Por tipo de alimentación", s3: "Buscar por ingredientes", s4: "Consejos y recursos", soon: "Pronto",
       resume: "Continuar donde quedó", start: "Empezar",
@@ -315,9 +319,9 @@ h2.title { font-size: 28px; line-height: 1.15; }
     },
     en: {
       logoAlt: "My Smart Plate", langLabel: "Language", privacyUrl: "https://saludintegral.site/en/privacy/",
-      priv: "Your answers are saved only on this device. To prepare your proposal, they are sent to an artificial intelligence service.", privl: "Privacy policy",
+      priv: "Your answers are saved only on this device. Suggestions are built right here; only if you press “More personalized recipe (with AI)” are they sent to an artificial intelligence service.", privl: "Privacy policy",
       h1: "Eat healthier, with ease.", h1p: "Personalized recipes based on your health, your tastes and what you have at home.",
-      c1: "Find my meal for today", c1p: "Get two personalized recipes in minutes.",
+      c1: "Find my meal for today", c1p: "Get recipes adapted to you instantly.",
       c2: "Plan my seven days", c2p: "Get a complete menu, recipes and a shopping list.",
       s1: "By health area", s2: "By eating style", s3: "Search by ingredients", s4: "Tips and resources", soon: "Soon",
       resume: "Continue where you left off", start: "Start",
@@ -751,7 +755,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   var API = "https://api.saludintegral.site";
   var LIVE = /(^|\.)saludintegral\.site$/.test(location.hostname) || window.__MPI_LIVE === true;
   var RES = null;
-  function resetRes(sig) { return { sig: sig, state: "idle", recetas: [], reserva: [], vistos: [], code: null, retryAt: 0, simulated: !LIVE, n: 0, ctrl: null, cancelled: false }; }
+  function resetRes(sig) { return { sig: sig, state: "idle", recetas: [], reserva: [], vistos: [], code: null, retryAt: 0, simulated: false, n: 0, ctrl: null, cancelled: false, ia: {}, open: {} }; }
   RES = resetRes("");
 
   var RS = {
@@ -762,6 +766,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       min: function (n) { return n + " min"; }, srv: function (n) { return n + (n === 1 ? " porción" : " porciones"); },
       photoNote: "Las fotos son ilustrativas del plato.", more: "Ver otras propuestas", edit: "Cambiar mis respuestas", retry: "Intentar de nuevo", wait: function (n) { return "Intentar de nuevo (" + n + " s)"; },
       example: "Datos de ejemplo: esta vista previa no se conecta con Gemini",
+      ia: "Receta más personalizada (con IA)", iaNote: "Al pulsar, sus respuestas se envían a un servicio de inteligencia artificial.", iaWait: "Preparando la receta con IA…", iaErr: "La IA no respondió en este momento. Puede seguir con la receta que ya ve.", iaTag: "Receta preparada con IA a partir de este plato. Revísela antes de cocinarla.",
       errT: "No se pudieron mostrar propuestas",
       err: {
         network: "No hay conexión con el servicio. Revise su conexión a internet e intente de nuevo.",
@@ -789,6 +794,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       min: function (n) { return n + " min"; }, srv: function (n) { return n + (n === 1 ? " serving" : " servings"); },
       photoNote: "Photos are illustrative of the dish.", more: "See other ideas", edit: "Change my answers", retry: "Try again", wait: function (n) { return "Try again (" + n + " s)"; },
       example: "Sample data: this preview does not connect to Gemini",
+      ia: "More personalized recipe (with AI)", iaNote: "When you press it, your answers are sent to an artificial intelligence service.", iaWait: "Preparing the recipe with AI…", iaErr: "The AI did not respond right now. You can keep the recipe you already see.", iaTag: "Recipe prepared with AI from this dish. Please review it before cooking.",
       errT: "We could not show suggestions",
       err: {
         network: "Could not reach the service. Check your internet connection and try again.",
@@ -960,6 +966,25 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function barajar(arr) { var a = arr.slice(), i, j, t; for (i = a.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function limpio(t, n) { return String(t).replace(/[\r\n{}\[\]"\\]/g, " ").replace(/\s+/g, " ").trim().slice(0, n); }
 
+  /* ---------- Armador propio (sin IA): elige platos con el filtro actual y usa recetas.js ---------- */
+  var ARM = window.MPI_ARMADOR, REC = window.MPI_RECETAS;
+  var INGR_CLAVES = { pollo: ["pollo", "chicken"], huevos: ["huevo", "egg"], arroz: ["arroz", "rice"], frijoles: ["frijol", "bean"], tomate: ["tomate", "tomato"], cebolla: ["cebolla", "onion"], papa: ["papa", "potato"], zanahoria: ["zanahoria", "carrot"], platano: ["platano", "plantain"], atun: ["atun", "tuna"], pasta: ["pasta", "fideo", "espagueti", "spaghetti", "macarron"], brocoli: ["brocoli", "broccoli"] };
+  function ingrClaves() {
+    return S.a.ingr.slice(0, 15).map(function (v) {
+      if (v.indexOf("c:") === 0) { var t = ARM.norm(v.slice(2)).replace(/\s+/g, " ").trim(); if (t.length < 3) return []; return [t, t.replace(/(es|s)$/, "")]; }
+      return INGR_CLAVES[v] || [];
+    }).filter(function (x) { return x.length; });
+  }
+  /* Los platos con variantes (el casado: res, pollo o pescado) se aceptan si alguna variante cumple el perfil. */
+  function platoLocalOk(d, P, R) {
+    var v = ARM.platoConVariantesOk(REC, d[0], P, R);
+    return v === null ? platoOk(d, P, R) : v;
+  }
+  function opcionesLocal(P, R, excluir) {
+    return { PLATOS: PLATOS, rec: REC, P: P, R: R, platoOk: function (d) { return platoLocalOk(d, P, R); },
+      a: { cocina: S.a.cocina, tiempo: S.a.tiempo, porc: S.a.porc }, ingrClaves: ingrClaves(), excluir: excluir || [], comida: null };
+  }
+
   function armarPrompt(P, cands) {
     var a = S.a, es = S.lang === "es", pref = a.cocina.filter(function (c) { return c !== "otra"; });
     var pre = barajar(cands.filter(function (d) { return d[1].some(function (c) { return pref.indexOf(c) > -1; }); }));
@@ -1077,42 +1102,52 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function actualizar() { if (route() === "resultados") render(true); }
   function mostrar() {
     var tomar = RES.reserva.splice(0, 3);
-    RES.recetas = tomar; tomar.forEach(function (r) { RES.vistos.push(r.plato); });
-    RES.state = "ok"; actualizar();
+    RES.recetas = tomar; RES.open = {}; tomar.forEach(function (r) { RES.vistos.push(r.plato); });
+    RES.state = "ok";
   }
-  /* Fallas pasajeras del servicio: se reintenta una vez sola antes de mostrar el error. */
-  function reintentable(code) { return ["upstream_error", "incomplete", "invalid_response"].indexOf(code) > -1; }
-  function fallo(code, retry) {
-    RES.state = "error"; RES.code = code; RES.retryAt = code === "rate_limited" ? Date.now() + (retry || 60) * 1000 : 0; actualizar();
+  function fallo(code) { RES.state = "error"; RES.code = code; RES.retryAt = 0; }
+  /* Arma las propuestas en el propio dispositivo; si ya se vieron todas, vuelve a empezar. */
+  function generar(nuevo) {
+    RES.n++; RES.code = null; RES.recetas = [];
+    if (nuevo) { RES.vistos = []; RES.reserva = []; RES.ia = {}; }
+    var P = perfil(), R = MPI.reglasDelPerfil(P);
+    if (!RES.reserva.length) {
+      RES.reserva = ARM.propuestas(opcionesLocal(P, R, RES.vistos));
+      if (!RES.reserva.length && RES.vistos.length) { RES.vistos = []; RES.ia = {}; RES.reserva = ARM.propuestas(opcionesLocal(P, R, [])); }
+    }
+    if (!RES.reserva.length) { fallo("few"); return; }
+    mostrar();
   }
-  function intento(k, token) {
-    var P = perfil(), cands = candidatos(P, RES.vistos);
-    if (!cands.length) { fallo("few"); return; }
-    llamar(armarPrompt(P, cands)).then(function (r) {
-      if (token !== RES.n) return;
-      if (!r.ok) { if (k < 2 && reintentable(r.code)) { intento(2, token); return; } if (r.code !== "cancel") fallo(r.code, r.retry); return; }
-      var validas = filtrar(r.data, P, cands);
-      if (validas.length) { RES.reserva = validas; mostrar(); }
-      else if (k < 2) intento(2, token);
-      else fallo("noneValid");
-    });
-  }
-  function lanzar(nuevo) {
-    if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} }
-    RES.n++; RES.state = "loading"; RES.code = null; RES.recetas = [];
-    if (nuevo) { RES.vistos = []; RES.reserva = []; }
-    var tk = RES.n; intento(1, tk);
-  }
+  function lanzar(nuevo) { generar(nuevo); actualizar(); }
   function asegurarResultados() {
     if (missingCritical().length) return;
     var sig = JSON.stringify([S.lang, S.a]);
-    if (RES.sig !== sig) {
-      if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} }
-      var n = RES.n + 1; RES = resetRes(sig); RES.n = n - 1;
-      setTimeout(function () { lanzar(true); }, 0);
-      RES.state = "loading";
-    }
+    if (RES.sig !== sig) { var n = RES.n; RES = resetRes(sig); RES.n = n; generar(true); }
   }
+  /* Botón opcional: pide a la IA una versión más personalizada de un plato. Nunca reintenta solo y, si falla, la receta propia sigue igual. */
+  function pedirIA(store, key, plato, titulo, hecho) {
+    var cur = store[key]; if (cur && cur.state === "loading") return;
+    var P = perfil(), mine = store[key] = { state: "loading" }, holder = { ctrl: null };
+    llamar(armarPromptUna(P, plato, titulo), holder, recetaSample({ plato: plato, titulo: titulo })).then(function (r) {
+      if (store[key] !== mine) return;
+      var got = null;
+      if (r.ok) {
+        var ids = {}; ids[plato] = 1; var R = MPI.reglasDelPerfil(P);
+        (r.data && Array.isArray(r.data.recetas) ? r.data.recetas : []).forEach(function (x) { if (x && typeof x === "object") x.plato = idPlato(x.plato); if (!got && x && x.plato === plato) got = recetaValida(x, P, R, ids); });
+      }
+      store[key] = got ? { state: "ok", r: got } : { state: "error" };
+      hecho(key);
+    });
+    hecho(key);
+  }
+  function iaBlock(act, key, store) {
+    var r = rs(), s = store[key], id = 'iab-' + act + '-' + esc(key);
+    if (s && s.state === "loading") return '<div class="iab" id="' + id + '" tabindex="-1" role="status"><p class="hint">' + esc(r.iaWait) + '</p></div>';
+    if (s && s.state === "ok") return '<div class="iab" id="' + id + '" tabindex="-1"><p class="hint">' + esc(r.iaTag) + '</p></div>';
+    return '<div class="iab" id="' + id + '" tabindex="-1">' + (s && s.state === "error" ? '<p class="need" role="alert">' + esc(r.iaErr) + '</p>' : "") +
+      '<button type="button" class="btn btn-ghost sm" data-act="' + act + '" data-id="' + esc(key) + '">' + esc(r.ia) + '</button><p class="hint">' + esc(r.iaNote) + '</p></div>';
+  }
+  function tras(act, key) { render(false); var e = document.getElementById("iab-" + act + "-" + key); if (e) e.focus({ preventScroll: true }); }
   var slowTimer = null, waitTimer = null;
   function viewResultados() {
     if (missingCritical().length) { setTimeout(function () { location.hash = "#resumen"; }, 0); return ""; }
@@ -1135,19 +1170,19 @@ h2.title { font-size: 28px; line-height: 1.15; }
         '<div class="nav stack"><button type="button" class="btn btn-primary" id="retrybtn" data-act="retry"' + (left > 0 ? ' aria-disabled="true"' : "") + '>' + esc(left > 0 ? r.wait(left) : r.retry) + '</button>' +
         '<a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div>';
     }
-    var cards = RES.recetas.map(function (c, i) {
+    var cards = RES.recetas.map(function (c0, i) {
+      var ia = RES.ia[c0.plato], c = ia && ia.state === "ok" ? ia.r : c0, abierto = !!RES.open[i];
       var meta = [c.tiempo ? r.min(c.tiempo) : "", c.porciones ? r.srv(c.porciones) : ""].filter(Boolean).join(" · ");
       return '<li class="recipe"><button type="button" class="photo" data-act="rtoggle" data-id="' + i + '" aria-label="' + esc(r.see + ": " + c.titulo) + '"><img src="img/platos/' + esc(c.plato) + '.webp" width="112" height="148" alt=""></button>' +
         '<div class="body"><h3>' + esc(c.titulo) + '</h3>' + (meta ? '<p class="meta">' + esc(meta) + '</p>' : "") +
         '<span class="pill"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>' + esc(r.fits) + '</span>' +
-        '<button type="button" class="see" data-act="rtoggle" data-id="' + i + '" aria-expanded="false" aria-controls="det' + i + '">' + esc(r.see) + '</button></div>' +
-        '<div class="det" id="det' + i + '" hidden><h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol>' + pieSalud() + '</div></li>';
+        '<button type="button" class="see" data-act="rtoggle" data-id="' + i + '" aria-expanded="' + abierto + '" aria-controls="det' + i + '">' + esc(abierto ? r.hide : r.see) + '</button></div>' +
+        '<div class="det" id="det' + i + '"' + (abierto ? "" : " hidden") + '><h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol>' + iaBlock("iares", c0.plato, RES.ia) + pieSalud() + '</div></li>';
     }).join("");
     var avisos = [r.avGen]; if (has(S.a.alerg, "sulfitos")) avisos.push(MPI.AVISOS[S.lang].sulfitos); if (has(S.a.evita, "gluten")) avisos.push(MPI.AVISOS[S.lang].gluten);
     if (perfil().libres.length) avisos.push(MPI.AVISOS[S.lang].libre);
     return h + '<section class="results"><div><h2 class="title" id="vt" tabindex="-1">' + esc(r.title) + '</h2><p class="lead">' + esc(r.leadN(RES.recetas.length)) + '</p></div>' +
-      (RES.simulated ? '<span class="badge-example">' + esc(r.example) + '</span>' : "") +
-      avisoSalud() +
+            avisoSalud() +
       '<ul class="recipes">' + cards + '</ul><p class="hint">' + esc(r.photoNote) + '</p>' +
       avisos.map(function (t) { return '<p class="hint">' + esc(t) + '</p>'; }).join("") +
       '<div class="actions"><button type="button" class="btn btn-primary" data-act="mas">' + esc(r.more) + '</button><a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div></section>';
@@ -1156,7 +1191,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
   /* ---------- Menú de siete días ---------- */
   var PLAN = null;
-  function resetPlan(sig) { return { sig: sig, state: "idle", dias: [], compras: [], checked: {}, rec: {}, open: {}, code: null, retryAt: 0, n: 0, ctrl: null, simulated: !LIVE }; }
+  function resetPlan(sig) { return { sig: sig, state: "idle", dias: [], compras: [], checked: {}, rec: {}, open: {}, code: null, retryAt: 0, n: 0, ctrl: null, simulated: false, ia: {} }; }
   PLAN = resetPlan("");
 
   function restr(P, es) {
@@ -1253,54 +1288,27 @@ h2.title { font-size: 28px; line-height: 1.15; }
     }
     return { dias: dias, compras: cp.map(function (z) { return z.trim(); }) };
   }
-  function fallaPlan(code, retry) {
-    PLAN.state = "error"; PLAN.code = code; PLAN.retryAt = code === "rate_limited" ? Date.now() + (retry || 60) * 1000 : 0;
-    if (route() === "plan") render(true);
+  function fallaPlan(code) { PLAN.state = "error"; PLAN.code = code; PLAN.retryAt = 0; }
+  /* Arma el menú de siete días en el propio dispositivo, con las cantidades ajustadas a las porciones. */
+  function generarPlan() {
+    var P = perfil(), R = MPI.reglasDelPerfil(P), dias = ARM.plan(opcionesLocal(P, R, []));
+    PLAN.n++; PLAN.code = null; PLAN.checked = {}; PLAN.open = {}; PLAN.ia = {};
+    if (!dias) { fallaPlan("few"); return; }
+    PLAN.dias = dias.map(function (x) { return { d: x.d.r, a: x.a.r, c: x.c.r }; });
+    var todas = []; PLAN.dias.forEach(function (x) { todas.push(x.d, x.a, x.c); });
+    PLAN.compras = ARM.compras(todas, S.lang);
+    PLAN.state = "ok";
   }
-  function intentoPlan(k, token) {
-    var P = perfil(), L = listasPlan(candidatos(P, []));
-    if (L.d.todos.length < 2 || L.a.todos.length < 3 || L.c.todos.length < 3) { fallaPlan("few"); return; }
-    llamar(armarPromptPlan(P, L), PLAN, planSample(L)).then(function (r) {
-      if (token !== PLAN.n) return;
-      if (!r.ok) { if (k < 2 && reintentable(r.code)) { intentoPlan(2, token); return; } if (r.code !== "cancel") fallaPlan(r.code, r.retry); return; }
-      var v = planValido(r.data, P, L);
-      if (v) { PLAN.dias = v.dias; PLAN.compras = v.compras; PLAN.checked = {}; PLAN.rec = {}; PLAN.open = {}; PLAN.state = "ok"; if (route() === "plan") render(true); }
-      else if (k < 2) intentoPlan(2, token);
-      else fallaPlan("noneValid");
-    });
-  }
-  function lanzarPlan() {
-    if (PLAN.ctrl) { try { PLAN.ctrl.abort(); } catch (e) {} }
-    PLAN.n++; PLAN.state = "loading"; PLAN.code = null;
-    var tk = PLAN.n; intentoPlan(1, tk);
-  }
+  function lanzarPlan() { generarPlan(); if (route() === "plan") render(true); }
   function asegurarPlan() {
     if (missingCritical().length) return;
     var sig = JSON.stringify([S.lang, S.a]);
-    if (PLAN.sig !== sig) {
-      if (PLAN.ctrl) { try { PLAN.ctrl.abort(); } catch (e) {} }
-      var n = PLAN.n + 1; PLAN = resetPlan(sig); PLAN.n = n - 1;
-      setTimeout(lanzarPlan, 0);
-      PLAN.state = "loading";
-    }
+    if (PLAN.sig !== sig) { var n = PLAN.n; PLAN = resetPlan(sig); PLAN.n = n; generarPlan(); }
   }
   function verReceta(key) {
-    var i = parseInt(key, 10), kind = key.slice(-1), d = PLAN.dias[i]; if (!d) return;
-    var m = kind === "d" ? d.d : kind === "a" ? d.a : d.c, rec = PLAN.rec[key];
-    if (rec && rec.state === "loading") return;
-    if (rec && rec.state === "ok") { PLAN.open[key] = !PLAN.open[key]; }
-    else {
-      var P = perfil(), tk = PLAN.n, holder = { ctrl: null };
-      PLAN.rec[key] = { state: "loading" }; PLAN.open[key] = true;
-      llamar(armarPromptUna(P, m.plato, m.titulo), holder, recetaSample(m)).then(function (r) {
-        if (tk !== PLAN.n) return;
-        var got = null;
-        if (r.ok) { var ids = {}; ids[m.plato] = 1; var R = MPI.reglasDelPerfil(P); (r.data && Array.isArray(r.data.recetas) ? r.data.recetas : []).forEach(function (x) { if (x && typeof x === "object") x.plato = idPlato(x.plato); if (!got && x && x.plato === m.plato) got = recetaValida(x, P, R, ids); }); }
-        PLAN.rec[key] = got ? { state: "ok", r: got } : { state: "error" };
-        if (route() === "plan") { render(false); var b = document.querySelector('[data-act="prec"][data-id="' + key + '"]'); if (b) b.focus({ preventScroll: true }); }
-      });
-    }
-    render(false); var b2 = document.querySelector('[data-act="prec"][data-id="' + key + '"]'); if (b2) b2.focus({ preventScroll: true });
+    var i = parseInt(key, 10), d = PLAN.dias[i]; if (!d) return;
+    PLAN.open[key] = !PLAN.open[key];
+    render(false); var b = document.querySelector('[data-act="prec"][data-id="' + key + '"]'); if (b) b.focus({ preventScroll: true });
   }
   function viewPlan() {
     if (missingCritical().length) { setTimeout(function () { location.hash = "#resumen"; }, 0); return ""; }
@@ -1324,16 +1332,12 @@ h2.title { font-size: 28px; line-height: 1.15; }
         '<a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div>';
     }
     var comida = function (i, k, m, label) {
-      var key = i + k, rec = PLAN.rec[key], open = !!PLAN.open[key] && !!rec, det = "";
+      var key = i + k, open = !!PLAN.open[key], det = "";
       if (open) {
-        if (rec.state === "loading") det = '<div class="mdet" role="status">' + esc(p.recLoad) + '</div>';
-        else if (rec.state === "error") det = '<div class="mdet"><p class="need">' + esc(p.recErr) + '</p></div>';
-        else {
-          var c = rec.r, meta = [c.tiempo ? r.min(c.tiempo) : "", c.porciones ? r.srv(c.porciones) : ""].filter(Boolean).join(" · ");
-          det = '<div class="mdet">' + (meta ? '<p class="meta">' + esc(meta) + '</p>' : "") + '<h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol>' + pieSalud() + '</div>';
-        }
+        var ia = PLAN.ia[key], c = ia && ia.state === "ok" ? ia.r : m, meta = [c.tiempo ? r.min(c.tiempo) : "", c.porciones ? r.srv(c.porciones) : ""].filter(Boolean).join(" · ");
+        det = '<div class="mdet">' + (meta ? '<p class="meta">' + esc(meta) + '</p>' : "") + '<h4>' + esc(r.ing) + '</h4><ul>' + c.ingredientes.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ul><h4>' + esc(r.steps) + '</h4><ol>' + c.pasos.map(function (z) { return "<li>" + esc(z) + "</li>"; }).join("") + '</ol>' + iaBlock("iaplan", key, PLAN.ia) + pieSalud() + '</div>';
       }
-      var txt = rec && rec.state === "ok" && open ? r.hide : r.see;
+      var txt = open ? r.hide : r.see;
       return '<div class="meal"><img src="img/platos/' + esc(m.plato) + '.webp" width="64" height="64" alt=""><div class="mt"><span class="ml">' + esc(label) + '</span><span class="mn">' + esc(m.titulo) + '</span></div>' +
         '<button type="button" class="btn btn-ghost sm" data-act="prec" data-id="' + key + '" aria-expanded="' + (open ? "true" : "false") + '">' + esc(txt) + '</button>' + det + '</div>';
     };
@@ -1342,8 +1346,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var avisos = [r.avGen]; if (has(S.a.alerg, "sulfitos")) avisos.push(MPI.AVISOS[S.lang].sulfitos); if (has(S.a.evita, "gluten")) avisos.push(MPI.AVISOS[S.lang].gluten);
     if (perfil().libres.length) avisos.push(MPI.AVISOS[S.lang].libre);
     return h + '<section class="results"><div><h2 class="title" id="vt" tabindex="-1">' + esc(p.title) + '</h2><p class="lead">' + esc(p.lead) + '</p></div>' +
-      (PLAN.simulated ? '<span class="badge-example">' + esc(r.example) + '</span>' : "") +
-      avisoSalud() +
+            avisoSalud() +
       '<ul class="days">' + dias + '</ul><section class="shop"><h3>' + esc(p.shopT) + '</h3><p class="hint">' + esc(p.shopP) + '</p><ul class="checklist">' + lista + '</ul></section>' +
       '<p class="hint">' + esc(r.photoNote) + '</p>' + avisos.map(function (t) { return '<p class="hint">' + esc(t) + '</p>'; }).join("") +
       '<div class="actions"><button type="button" class="btn btn-primary" data-act="otroplan">' + esc(p.another) + '</button><a class="btn btn-ghost" href="#resumen">' + esc(r.edit) + '</a></div></section>';
@@ -1409,8 +1412,10 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (act === "ingadd") { addIngredient(); return; }
     if (act === "cancelar") { if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} } RES.n++; RES.sig = ""; return; }
     if (act === "retry") { if (el.getAttribute("aria-disabled") === "true") return; lanzar(false); render(true); return; }
-    if (act === "mas") { if (RES.reserva.length) { mostrar(); } else { lanzar(false); render(true); } return; }
-    if (act === "rtoggle") { var li = el.closest(".recipe"), det = $(".det", li), btn = $(".see", li), op = det.hidden; det.hidden = !op; btn.setAttribute("aria-expanded", String(op)); btn.textContent = op ? rs().hide : rs().see; return; }
+    if (act === "mas") { if (RES.reserva.length) { mostrar(); actualizar(); } else { lanzar(false); render(true); } return; }
+    if (act === "iares") { pedirIA(RES.ia, id, id, (RES.recetas.filter(function (z) { return z.plato === id; })[0] || {}).titulo || tituloDeId(id), function (k) { tras("iares", k); }); return; }
+    if (act === "iaplan") { var mm = PLAN.dias[parseInt(id, 10)]; var mk = mm && mm[id.slice(-1)]; if (mk) pedirIA(PLAN.ia, id, mk.plato, mk.titulo, function (k) { tras("iaplan", k); }); return; }
+    if (act === "rtoggle") { var li = el.closest(".recipe"), det = $(".det", li), btn = $(".see", li), op = det.hidden; RES.open[id] = op; det.hidden = !op; btn.setAttribute("aria-expanded", String(op)); btn.textContent = op ? rs().hide : rs().see; return; }
     var keepFocus = id;
     if (act === "meds") a.meds = id;
     else if (act === "dieta") a.dieta = (a.dieta === id ? null : id);

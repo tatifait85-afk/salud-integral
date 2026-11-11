@@ -19,7 +19,7 @@ const PLATOS = [
   ["burrito-integral-desayuno", ["mexicana"], ["trigo", "huevo"], 20, ["desayuno"]],
   ["camarones-salteados-vegetales", ["china"], [], 25, ["almuerzo", "cena"]],
   ["camarones-vegetales-frescos", ["costarricense"], [], 20, ["almuerzo", "cena"]],
-  ["casado-costarricense", ["costarricense"], ["carne", "ave"], 60, ["almuerzo"]],
+  ["casado-costarricense", ["costarricense"], ["carne", "ave", "pescado"], 60, ["almuerzo"]],
   ["cazuela-vegetales-granos", ["mediterranea"], [], 50, ["almuerzo", "cena"]],
   ["ceviche-pescado", ["costarricense"], [], 30, ["almuerzo", "cena"]],
   ["crema-ayote-zanahoria", ["costarricense"], [], 35, ["almuerzo", "cena"]],
