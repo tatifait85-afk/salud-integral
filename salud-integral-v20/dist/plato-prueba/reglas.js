@@ -34,13 +34,24 @@ const ETIQUETAS = {
   alcohol:   ["vino tinto", "vino blanco", "vino de cocina", "copa de vino", "cerveza", "licor", "ron", "whisky", "vodka", "brandy", "tequila", "red wine", "white wine", "cooking wine", "beer", "liquor", "rum"],
   frito:     ["frito", "frita", "fritos", "fritas", "fritura", "freir", "fried", "deep fried", "deep-fried", "frying"],
   viscera:   ["higado", "rinon", "mollejas", "menudo", "visceras", "higado de res", "organ meat", "organ meats", "liver", "kidney", "sweetbreads", "offal"],
+  // Área digestiva (la persona elige sus desencadenantes; NIDDK: reflujo y colon irritable).
+  citrico:   ["limon", "lima", "naranja", "mandarina", "toronja", "pomelo", "citrico", "lemon", "lime", "orange", "tangerine", "grapefruit", "citrus"],
+  tomate:    ["tomate", "ketchup", "catsup", "tomato"],
+  cafe:      ["cafe", "espresso", "cafeina", "coffee", "caffeine"],
+  chocolate: ["chocolate", "cacao", "cocoa"],
+  menta:     ["menta", "hierbabuena", "yerbabuena", "peppermint", "spearmint", "mint"],
+  picante:   ["picante", "chile", "aji", "jalapeno", "cayena", "chili", "chilli", "spicy", "jalapeno", "cayenne"],
+  grasoso:   ["tocino", "chicharron", "manteca", "bacon", "lard", "pork rinds"],
+  fodmap:    ["cebolla", "ajo", "repollo", "hongo", "champinon", "manzana", "mango", "sorbitol", "xilitol", "manitol", "maltitol", "onion", "garlic", "cabbage", "mushroom", "apple", "sorbitol", "xylitol", "mannitol"],
   sal_sustituta: ["sal sustituta", "sal sin sodio", "sustituto de sal", "salt substitute", "lite salt"],
   toronja:   ["toronja", "pomelo", "grapefruit"],
 };
 
 /* 2) FRASES QUE ENGAÑAN: se eliminan o se reescriben ANTES de buscar (evitan falsos positivos y falsos negativos). */
-const FRASES_NEUTRAS = ["jugo de limon", "jugo de lima", "jugo de naranja agria", "jugo de un limon", "jugo de medio limon", "jugo de 1 limon", "jugo de 1/2 limon", "zumo de limon", "lemon juice", "lime juice", "juice of lemon", "juice of lime", "juice of 1 lemon", "juice of half a lemon", "stir-fried", "stir fried", "sofrito", "nuez moscada", "nutmeg", "mantequilla de cacao", "cocoa butter", "pasta de arroz", "fideos de arroz", "rice noodles", "harina de arroz", "harina de maiz", "harina de garbanzo", "pan de maiz", "tortilla de maiz", "corn tortilla", "sin gluten", "gluten free", "gluten-free", "crema de coco", "coconut cream", "leche de coco", "coconut milk", "mantequilla de coco", "pasta de tomate", "tomato paste"];
+const FRASES_NEUTRAS = ["chile dulce", "sweet chili", "ajo porro", "stir-fried", "stir fried", "sofrito", "nuez moscada", "nutmeg", "mantequilla de cacao", "cocoa butter", "pasta de arroz", "fideos de arroz", "rice noodles", "harina de arroz", "harina de maiz", "harina de garbanzo", "pan de maiz", "tortilla de maiz", "corn tortilla", "sin gluten", "gluten free", "gluten-free", "crema de coco", "coconut cream", "leche de coco", "coconut milk", "mantequilla de coco", "pasta de tomate", "tomato paste"];
 // "leche de almendra", "mantequilla de maní"…: se quita la primera palabra y queda el ingrediente real (almendra, maní).
+/* Jugo de limón o lima como condimento: no cuenta como «jugo» azucarado, pero sigue siendo cítrico. */
+const FRASES_JUGO_CITRICO = ["jugo de limon", "jugo de lima", "jugo de un limon", "jugo de medio limon", "jugo de 1 limon", "jugo de 1/2 limon", "jugo de naranja agria", "zumo de limon", "lemon juice", "lime juice", "juice of lemon", "juice of lime", "juice of 1 lemon", "juice of half a lemon"];
 const RE_FALSO_LACTEO = /\b(leche|mantequilla|crema|queso|yogur|yogurt|helado|milk|butter|cheese|cream)\s+(de|of)\s+(almendras?|mani|cacahuate|soya|soja|avena|arroz|anacardos?|marañon|maranon|nueces|nuez|sesamo|ajonjoli|almonds?|peanut|soy|oat|rice|cashews?|sesame)/g;
 
 /* 3) RESTRICCIONES: tres grupos independientes. Cada opción apunta a etiquetas. */
@@ -53,6 +64,10 @@ const GRUPOS = {
     gluten: ["trigo", "gluten_otros"],
     lactosa: ["leche"],  // salvo ingredientes marcados «sin lactosa» (ver detectar)
     lacteos: ["leche"],
+    // Área digestiva: solo se aplican si la persona marcó Gastroenterología y eligió el desencadenante.
+    "dg-citricos": ["citrico"], "dg-tomate": ["tomate"], "dg-cafe": ["cafe"], "dg-chocolate": ["chocolate"], "dg-menta": ["menta"],
+    "dg-picante": ["picante"], "dg-alcohol": ["alcohol"], "dg-grasas": ["frito", "grasoso", "embutido"],
+    "dg-fodmap": ["fodmap", "miel", "leche", "trigo"],   // dieta baja en FODMAP indicada por el médico (lácteos con lactosa, trigo, miel, cebolla, ajo…)
   },
   dieta: {               // qué NO se permite en cada tipo de alimentación
     omnivora: [],
@@ -101,6 +116,7 @@ function detectar(texto, lang) {
   let t = " " + norm(texto) + " ";
   const sinLactosa = /\b(sin lactosa|deslactosad[ao]s?|lactose[- ]free)\b/.test(t);
   t = t.replace(/\b(sin lactosa|deslactosad[ao]s?|lactose[- ]free)\b/g, " ");
+  FRASES_JUGO_CITRICO.forEach((f) => { t = t.split(norm(f)).join(" limon "); });
   FRASES_NEUTRAS.forEach((f) => { t = t.split(norm(f)).join(" "); });
   t = t.replace(RE_FALSO_LACTEO, "$3");
   if (lang === "en") t = t.replace(/\bpan\b/g, " "); // «pan» (español) no debe confundirse con «pan» (sartén) en inglés
@@ -116,7 +132,7 @@ function reglasDelPerfil(p) {
   return {
     alergia: new Set(pick("alergias", p.alergias)),
     evitar: new Set(pick("evitar", p.evitar)),
-    soloLactosa: (p.evitar || []).includes("lactosa") && !(p.evitar || []).includes("lacteos"),
+    soloLactosa: ((p.evitar || []).includes("lactosa") || (p.evitar || []).includes("dg-fodmap")) && !(p.evitar || []).includes("lacteos"),
     dieta: new Set(p.dieta ? GRUPOS.dieta[p.dieta] : []),
     salud: new Set([...pick("condicion", p.condiciones), ...pick("medicamento", p.medicamentos)]),
     vegetal: p.dieta === "vegetal",
