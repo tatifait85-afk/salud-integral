@@ -76,6 +76,15 @@ Fuentes consultadas:
 ## Aplicado en la página de prueba
 
 - Embarazo: se excluyen los platos e ingredientes crudos o poco cocidos, sin pasteurizar y de pescado con alto contenido de mercurio (en el catálogo quedan fuera el ceviche, el sushi y el atún sellado).
+- Reglas automáticas de la página (11/11/2026), calculadas por la propia página sin Gemini; solo bloquean lo que este documento manda evitar y que se puede reconocer en un ingrediente (sodio, grasas saturadas y cantidades no se pueden medir, así que no se bloquean):
+  - Endocrinología y metabolismo (diabetes, prediabetes, obesidad): bebidas azucaradas y jugos, dulces (azúcar, panela, miel, jarabes, mermelada), harinas refinadas (harina de trigo, pan blanco, pan molido) y frituras. Quedan fuera 23 de los 215 platos.
+  - Cardiología: bebidas azucaradas, dulces y alcohol (14 platos fuera).
+  - Hepatología: bebidas azucaradas y alcohol (1 plato fuera).
+  - Nefrología: sal sustituta con potasio, embutidos y frituras (1 plato fuera).
+  - Reumatología (incluye gota): vísceras (ningún plato del catálogo las lleva).
+  - El kéfir de agua cuenta como bebida azucarada (se prepara con azúcar y agua); en el catálogo de ingredientes está en «Alternativas vegetales», no en lácteos.
+  - El jugo de limón o de lima usado como condimento no cuenta como jugo.
+  - Sin bloqueo, con la razón en `plato-investigacion-reglas-pendientes.md`: Digestiva (reflujo y colon irritable), frituras en Cardiología, Hematológica, sodio y grasas saturadas.
 - Estatinas: se excluye la toronja (pomelo). Los demás medicamentos solo muestran avisos de horario o cantidad, sin ocultar platos.
 - Las demás condiciones agregan una línea de preferencia al pedido a Gemini y un aviso de orientación; inmunológica, neurológica y genética solo muestran aviso.
 - Cada receta lleva el pie «Orientación general; consulte a su profesional de salud.» cuando hay condiciones o medicamentos.

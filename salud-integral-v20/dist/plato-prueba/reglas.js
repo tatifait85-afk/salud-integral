@@ -27,11 +27,19 @@ const ETIQUETAS = {
   sin_pasteurizar: ["sin pasteurizar", "no pasteurizado", "no pasteurizada", "leche cruda", "queso crudo", "unpasteurized", "unpasteurised", "raw milk", "raw cheese"],
   alto_mercurio: ["tiburon", "pez espada", "marlin", "caballa rey", "caballa real", "blanquillo", "reloj anaranjado", "atun rojo", "atun ojo grande", "shark", "swordfish", "king mackerel", "tilefish", "bigeye tuna", "orange roughy", "bluefin tuna"],
   // Medicamentos: toronja (estatinas).
+  // Reglas de condiciones de salud (documento plato-condiciones-salud-medicamentos.md): solo lo que el documento manda evitar.
+  bebida_azucarada: ["jugo", "refresco", "gaseosa", "soda", "kefir de agua", "kefir de azucar", "tibicos", "juice", "soft drink", "water kefir", "sugar kefir"],
+  dulce:     ["azucar", "panela", "miel", "jarabe", "sirope", "melaza", "mermelada", "dulce de leche", "caramelo", "sugar", "syrup", "molasses", "jam", "honey", "caramel", "brown sugar"],
+  harina_refinada: ["harina de trigo", "harina blanca", "pan blanco", "pan molido", "pan rallado", "all-purpose flour", "white flour", "white bread", "breadcrumbs"],
+  alcohol:   ["vino tinto", "vino blanco", "vino de cocina", "copa de vino", "cerveza", "licor", "ron", "whisky", "vodka", "brandy", "tequila", "red wine", "white wine", "cooking wine", "beer", "liquor", "rum"],
+  frito:     ["frito", "frita", "fritos", "fritas", "fritura", "freir", "fried", "deep fried", "deep-fried", "frying"],
+  viscera:   ["higado", "rinon", "mollejas", "menudo", "visceras", "higado de res", "organ meat", "organ meats", "liver", "kidney", "sweetbreads", "offal"],
+  sal_sustituta: ["sal sustituta", "sal sin sodio", "sustituto de sal", "salt substitute", "lite salt"],
   toronja:   ["toronja", "pomelo", "grapefruit"],
 };
 
 /* 2) FRASES QUE ENGAÑAN: se eliminan o se reescriben ANTES de buscar (evitan falsos positivos y falsos negativos). */
-const FRASES_NEUTRAS = ["nuez moscada", "nutmeg", "mantequilla de cacao", "cocoa butter", "pasta de arroz", "fideos de arroz", "rice noodles", "harina de arroz", "harina de maiz", "harina de garbanzo", "pan de maiz", "tortilla de maiz", "corn tortilla", "sin gluten", "gluten free", "gluten-free", "crema de coco", "coconut cream", "leche de coco", "coconut milk", "mantequilla de coco", "pasta de tomate", "tomato paste"];
+const FRASES_NEUTRAS = ["jugo de limon", "jugo de lima", "jugo de naranja agria", "jugo de un limon", "jugo de medio limon", "jugo de 1 limon", "jugo de 1/2 limon", "zumo de limon", "lemon juice", "lime juice", "juice of lemon", "juice of lime", "juice of 1 lemon", "juice of half a lemon", "stir-fried", "stir fried", "sofrito", "nuez moscada", "nutmeg", "mantequilla de cacao", "cocoa butter", "pasta de arroz", "fideos de arroz", "rice noodles", "harina de arroz", "harina de maiz", "harina de garbanzo", "pan de maiz", "tortilla de maiz", "corn tortilla", "sin gluten", "gluten free", "gluten-free", "crema de coco", "coconut cream", "leche de coco", "coconut milk", "mantequilla de coco", "pasta de tomate", "tomato paste"];
 // "leche de almendra", "mantequilla de maní"…: se quita la primera palabra y queda el ingrediente real (almendra, maní).
 const RE_FALSO_LACTEO = /\b(leche|mantequilla|crema|queso|yogur|yogurt|helado|milk|butter|cheese|cream)\s+(de|of)\s+(almendras?|mani|cacahuate|soya|soja|avena|arroz|anacardos?|marañon|maranon|nueces|nuez|sesamo|ajonjoli|almonds?|peanut|soy|oat|rice|cashews?|sesame)/g;
 
@@ -55,6 +63,11 @@ const GRUPOS = {
   },
   condicion: {           // condiciones de salud con reglas firmes de seguridad (el resto solo orienta o avisa, ver index.html)
     embarazo: ["crudo", "sin_pasteurizar", "alto_mercurio"],
+    endocrina: ["bebida_azucarada", "dulce", "harina_refinada", "frito"],   // diabetes, prediabetes, obesidad
+    cardiovascular: ["bebida_azucarada", "dulce", "alcohol"],
+    hepatica: ["bebida_azucarada", "alcohol"],
+    renal: ["sal_sustituta", "embutido", "frito"],
+    reumatologia: ["viscera"],   // gota: la Clínica Mayo dice «no coma» vísceras
   },
   medicamento: {         // único bloqueo por medicamentos: toronja con estatinas (el resto son avisos de horario o cantidad)
     estatinas: ["toronja"],

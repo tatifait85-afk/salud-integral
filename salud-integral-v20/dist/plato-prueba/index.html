@@ -946,7 +946,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   function condNotice() { var a = S.a; return (a.cond.length > 0 && !(a.cond.length === 1 && a.cond[0] === "none")) || a.meds === "si"; }
   var SALUD_PREF = {
-    cardiovascular: ["poca sal, pocas grasas saturadas, sin frituras y sin bebidas azucaradas", "low in salt and saturated fat, no fried foods and no sugary drinks"],
+    cardiovascular: ["poca sal, pocas grasas saturadas, pocas frituras y sin bebidas azucaradas", "low in salt and saturated fat, few fried foods and no sugary drinks"],
     endocrina: ["sin bebidas azucaradas ni dulces, pocas harinas refinadas, sin frituras, pocas grasas saturadas, con verduras sin almidón, frutas y granos integrales", "no sugary drinks or sweets, few refined flours, no fried foods, little saturated fat, with non-starchy vegetables, fruit and whole grains"],
     hepatica: ["frutas, verduras y granos integrales, sin bebidas azucaradas y sin alcohol", "fruit, vegetables and whole grains, no sugary drinks and no alcohol"],
     renal: ["poca sal, sin alimentos procesados, sin sal sustituta con potasio y sin frituras (no indique cantidades de potasio ni de proteína)", "low in salt, no processed foods, no potassium salt substitutes and no fried foods (do not state potassium or protein amounts)"],
@@ -1013,14 +1013,12 @@ h2.title { font-size: 28px; line-height: 1.15; }
     var CON_REGLA = ["cardiovascular", "digestiva", "endocrina", "hematologica", "hepatica", "reumatologia", "renal"];
     if (c.indexOf("embarazo") > -1) out.push(t.emb);
     if (c.some(function (x) { return CON_REGLA.indexOf(x) > -1; })) out.push(t.ori);
-    /* Áreas que solo muestran aviso de orientación, sin reglas. */
-    if (c.some(function (x) { return ["urologia", "neumologia", "oncologia", "mental", "neurologica", "inmunologia", "ortopedia", "genetica", "dermatologia", "ginecologia", "menopausia"].indexOf(x) > -1; })) out.push(t.sin);
+    /* Aviso genérico de áreas sin regla: quitado a pedido (11-nov-2026). */
     if (has(a.cond, "otra")) out.push(t.otra);
     if (a.meds === "si") {
       var m = medsClases();
       m.forEach(function (k) { out.push(t.m[k]); });
-      if (!m.length) out.push(t.medsNone);
-      out.push(t.medsGen);
+      /* avisos genéricos (ninguno reconocido / no calcula dosis) quitados a pedido (11-nov-2026) */
     }
     return out.map(function (x) { return '<p class="notice">' + esc(x) + '</p>'; }).join("");
   }
