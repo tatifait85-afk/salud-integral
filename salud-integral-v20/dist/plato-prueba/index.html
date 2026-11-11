@@ -161,12 +161,23 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .confirm { display: grid; gap: 10px; background: var(--terra-bg); border: 1.5px solid var(--terra-d); border-radius: var(--r-md); padding: 14px; }
 .confirm .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .btn-danger { background: var(--terra-d); color: #fff; }
+.mydata { display: grid; gap: 10px; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 14px; width: 100%; }
+.mydata h3 { font-size: 17px; }
+.mydata .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.mydata .btn { min-height: 48px; font-size: 15px; padding-inline: 10px; }
+.btn-del { background: #fff; color: var(--terra-d); border: 2px solid var(--terra-d); font-weight: 600; }
+.profilechip { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 10px 14px; }
+.profilechip span { flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
+.profilechip a { font-weight: 600; color: var(--forest); min-height: 44px; display: inline-flex; align-items: center; }
+@media (max-width: 420px) { .mydata .row { grid-template-columns: minmax(0, 1fr); } }
 
 /* Resumen */
 .sum { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .sum li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 10px 14px; }
 .sum .k { font-size: 13.5px; color: var(--ink-soft); font-weight: 500; }
 .sum .v { font-weight: 500; overflow-wrap: anywhere; }
+.sum li.grp { display: block; background: none; border: 0; padding: 6px 0 0; grid-column: 1 / -1; }
+.sum li.grp .hint { margin-top: 4px; }
 .sum .v.miss { color: var(--terra-d); }
 .sum .txt { display: grid; gap: 1px; min-width: 0; }
 .sum a { color: var(--forest); font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; }
@@ -497,6 +508,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       lead: T("Toque los que tenga o escriba otros.", "Tap the ones you have or type others.") }
   };
   var ORDER = ["cond", "meds", "alerg", "dieta", "evita", "cocina", "tiempo", "ingr"];
+  var PERFIL_IDS = ["cond", "meds", "alerg", "dieta", "evita", "cocina"], HOY_IDS = ["tiempo", "ingr"];
   var ENT = {
     porcond: { q: "cond", next: "meds", ok: function () { return answered("cond"); } },
     porestilo: { q: "dieta", next: "cond", ok: function () { return !!S.a.dieta; } },
@@ -602,6 +614,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
       }
     } catch (e) { storeOk = false; }
   }
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { if (storeOk) { storeOk = false; renderNotice(); } } }
   function hasAny() {
     var a = S.a;
@@ -776,7 +789,17 @@ h2.title { font-size: 28px; line-height: 1.15; }
       wide("c-lav", "calendario.svg", x.c2, x.c2p, "plan") +
       small("c-mint", "condiciones-salud.svg", x.s1, "porcond") + small("c-gold", "alimentacion.svg", x.s2, "porestilo") +
       small("c-rose", "icono-ingredientes-disponibles.webp", x.s3, "poringr") + small("c-sky", "icono-consejos-recursos.webp", x.s4, "consejos") + '</div>' +
-      '<p class="homelang">' + esc(x.homelang) + '</p>';
+      perfilChip() +
+      '<p class="homelang">' + esc(x.homelang) + '</p>' + (hasAny() ? clearBtn() : "");
+  }
+  function perfilChip() {
+    var a = S.a;
+    if (!(a.cond.length || a.meds || a.alerg.length || a.dieta)) return "";
+    var es = S.lang === "es", bits = [];
+    if (a.cond.length) bits.push(summaryValue("cond"));
+    if (a.meds) bits.push(summaryValue("meds"));
+    if (a.alerg.length) bits.push(summaryValue("alerg"));
+    return '<div class="profilechip"><span><strong>' + (es ? "Perfil guardado:" : "Saved profile:") + '</strong> ' + esc(bits.join(" · ")) + '</span><a href="#resumen">' + (es ? "Ver o cambiar" : "View or change") + '</a></div>';
   }
 
   function viewEntrada(r) {
@@ -809,14 +832,19 @@ h2.title { font-size: 28px; line-height: 1.15; }
       '<div id="qbody" style="display:grid;gap:14px;grid-template-columns:minmax(0,1fr)">' + qBody(id) + '</div>' + note +
       '<div class="nav"><a class="btn btn-ghost" href="#' + prev + '">' + esc(x.back) + '</a>' +
       '<a class="btn btn-primary" id="nextbtn" href="#' + next + '" data-act="next" data-id="' + id + '"' + (canNext ? "" : ' aria-disabled="true" aria-describedby="need"') + '>' + esc(x.next) + ' ' + ARROW + '</a></div>' +
-      '<div class="linkrow">' + (q.required ? "<span></span>" : '<a class="textbtn" href="#' + next + '">' + esc(x.skip) + '</a>') + clearBtn() + '</div>';
+      '<div class="linkrow">' + (q.required ? "<span></span>" : '<a class="textbtn" href="#' + next + '">' + esc(x.skip) + '</a>') + '</div>';
     return h;
   }
   function clearBtn() {
+    var es = S.lang === "es";
     if (confirming) {
-      return '<div class="confirm" role="alertdialog" aria-labelledby="cq" style="flex-basis:100%"><p id="cq">' + esc(u().clearQ) + '</p><div class="row"><button type="button" class="btn btn-ghost" data-act="clearno">' + esc(u().clearNo) + '</button><button type="button" class="btn btn-danger" data-act="clearyes">' + esc(u().clearYes) + '</button></div></div>';
+      var hoy = confirming === "hoy";
+      var q = hoy ? (es ? "¿Borrar lo de hoy (tiempo, porciones e ingredientes)? Su perfil de salud se conserva." : "Clear today's answers (time, servings and ingredients)? Your health profile is kept.") : u().clearQ;
+      return '<div class="confirm" role="alertdialog" aria-labelledby="cq" style="flex-basis:100%"><p id="cq">' + esc(q) + '</p><div class="row"><button type="button" class="btn btn-ghost" data-act="clearno">' + esc(u().clearNo) + '</button><button type="button" class="btn btn-danger" data-act="' + (hoy ? "clearhoyyes" : "clearyes") + '">' + esc(u().clearYes) + '</button></div></div>';
     }
-    return '<button type="button" class="textbtn" data-act="clear">' + esc(u().clear) + '</button>';
+    return '<div class="mydata"><h3>' + (es ? "Mis datos guardados" : "My saved data") + '</h3><div class="row">' +
+      '<button type="button" class="btn btn-del" data-act="clearhoy">' + (es ? "Borrar solo lo de hoy" : "Clear only today's") + '</button>' +
+      '<button type="button" class="btn btn-del" data-act="clear">' + (es ? "Borrar todo mi perfil" : "Clear my whole profile") + '</button></div></div>';
   }
 
   function labelsOf(list, ids, extra) {
@@ -844,11 +872,16 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   function viewResumen() {
     var x = u(), miss = missingCritical();
-    var rows = ORDER.map(function (id) {
+    var es = S.lang === "es";
+    var rowOf = function (id) {
       var val = summaryValue(id), crit = Q[id].required, m = !answered(id);
       var shown = m ? (crit ? x.missing : x.unanswered) : val;
       return '<li><span class="txt"><span class="k">' + esc(x.lbl[id === "porc" ? "porc" : id]) + '</span><span class="v' + (m && crit ? " miss" : "") + '">' + esc(shown) + '</span></span><a href="#' + id + '">' + esc(x.change) + '<span class="sr" style="position:absolute;left:-9999px"> — ' + esc(x.lbl[id]) + '</span></a></li>';
-    }).join("");
+    };
+    var rows = '<li class="grp"><h3 class="subq">' + (es ? "Mi perfil (se guarda en este dispositivo)" : "My profile (saved on this device)") + '</h3><p class="hint">' + (es ? "Sus enfermedades, medicamentos, alergias y alimentación quedan guardados. No tiene que escribirlos otra vez." : "Your health conditions, medications, allergies and diet stay saved. You do not need to enter them again.") + '</p></li>' +
+      PERFIL_IDS.map(rowOf).join("") +
+      '<li class="grp"><h3 class="subq">' + (es ? "Solo para hoy" : "Just for today") + '</h3></li>' +
+      HOY_IDS.map(rowOf).join("");
     var warn = "";
     if (miss.length) warn = '<p class="need">' + esc(x.getNeed) + ' ' + miss.map(function (id) { return '<a href="#' + id + '">' + esc(x.lbl[id]) + '</a>'; }).join(x.sep) + '.</p>';
     return stepsHtml(x.ph.length - 1).replace(/<ol class="steps">/, '<ol class="steps">') +
@@ -1517,7 +1550,9 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (act === "prec") { verReceta(id); return; }
     if (act === "next") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); var nd = $("#need") || document.createElement("p"); if (!nd.id) { nd.id = "need"; nd.className = "need"; nd.setAttribute("role", "alert"); nd.textContent = u().needAnswer; $("#nextbtn").parentNode.parentNode.insertBefore(nd, $("#nextbtn").parentNode); } var f = $("#view .opt, #view .chip, #view input"); if (f) f.focus(); } return; }
     if (act === "get") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); } return; }
-    if (act === "clear") { confirming = true; render(false); var c = $("#cq"); if (c) c.scrollIntoView({ block: "center" }); return; }
+    if (act === "clear") { confirming = "all"; render(false); var c = $("#cq"); if (c) c.scrollIntoView({ block: "center" }); return; }
+    if (act === "clearhoy") { confirming = "hoy"; render(false); var c2 = $("#cq"); if (c2) c2.scrollIntoView({ block: "center" }); return; }
+    if (act === "clearhoyyes") { S.a.tiempo = null; S.a.porc = null; S.a.ingr = []; S.a.comida = null; confirming = false; save(); render(false); return; }
     if (act === "clearno") { confirming = false; render(false); return; }
     if (act === "clearyes") { var lang = S.lang; S = fresh(); S.lang = lang; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; return; }
     if (act === "ingadd") { addIngredient(); return; }
