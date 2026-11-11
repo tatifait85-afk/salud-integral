@@ -175,6 +175,43 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .notice { font-size: 14.5px; color: var(--amber-t); background: #FFF4DC; border: 1.5px solid #C98A1B; border-radius: var(--r-sm); padding: 10px 12px; }
 .iab { margin-top: 12px; }
 .iab:focus { outline: none; }
+
+/* Ingredientes en casa: categorías, buscador y tarjetas con imagen */
+.ing { display: grid; gap: 14px; min-width: 0; }
+.ing-search { position: relative; }
+.ing-search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--forest); pointer-events: none; }
+.ing-search input { width: 100%; min-height: 48px; padding: 10px 14px 10px 44px; background: #fff; border: 1.5px solid var(--forest); border-radius: 999px; font: inherit; }
+.ing-main { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.ing-cats { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.ing-cat { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 999px; background: var(--cream); border: 1.5px solid var(--line); cursor: pointer; font: inherit; font-weight: 500; color: var(--forest); white-space: nowrap; }
+.ing-cat img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+.ing-cat[aria-pressed="true"] { background: var(--mint); border: 2.5px solid var(--forest); padding: 0 12.5px; }
+.ing-cat .n { font-size: 13px; background: var(--forest); color: var(--cream); border-radius: 999px; min-width: 20px; height: 20px; display: inline-grid; place-items: center; padding: 0 6px; }
+.ing-list { display: grid; gap: 14px; min-width: 0; }
+.ing-sec { background: rgba(251, 248, 241, .85); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 12px; display: grid; gap: 10px; }
+.ing-sec h3 { margin: 0; display: flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 20px; color: var(--forest); }
+.ing-sec h3 img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+.ing-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+.ing-card { position: relative; display: grid; grid-template-rows: auto auto; gap: 4px; justify-items: center; padding: 6px 6px 8px; background: var(--cream); border: 1.5px solid var(--line); border-radius: 14px; cursor: pointer; font: inherit; color: var(--forest); text-align: center; min-width: 0; }
+.ing-card .im { width: 100%; aspect-ratio: 1 / 1; border-radius: 10px; overflow: hidden; background: var(--mint); display: grid; place-items: center; }
+.ing-card .im img { width: 100%; height: 100%; object-fit: cover; }
+.ing-card .nm { font-size: 14.5px; font-weight: 500; line-height: 1.2; overflow-wrap: anywhere; }
+.ing-card .tick { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--forest); color: var(--cream); display: none; place-items: center; font-size: 14px; font-weight: 700; }
+.ing-card[aria-pressed="true"] { border: 2.5px solid var(--forest); background: var(--mint); padding: 4.5px 4.5px 6.5px; }
+.ing-card[aria-pressed="true"] .tick { display: grid; }
+.ing-empty { margin: 0; padding: 14px; color: var(--ink-soft); }
+.ing-sel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ing-sel .cnt { font-weight: 500; color: var(--forest); margin-right: 4px; }
+.ing-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: 999px; background: var(--mint); border: 1.5px solid var(--forest); font: inherit; font-size: 15px; cursor: pointer; color: var(--forest); }
+@media (min-width: 900px) {
+  .ing-main { grid-template-columns: 280px minmax(0, 1fr); align-items: start; }
+  .ing-cats { flex-direction: column; overflow: visible; background: rgba(251, 248, 241, .85); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 10px; position: sticky; top: 12px; }
+  .ing-cat { width: 100%; border: 0; background: transparent; border-radius: 12px; padding: 0 10px; gap: 8px; }
+  .ing-cat > span:not(.n) { overflow: hidden; text-overflow: ellipsis; }
+  .ing-cat[aria-pressed="true"] { background: var(--mint); border: 0; padding: 0 10px; }
+  .ing-cat .n { margin-left: auto; }
+  .ing-grid { grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); }
+}
 .badge-example { justify-self: start; font-size: 13px; font-weight: 600; color: var(--terra-d); background: var(--terra-bg); border-radius: 999px; padding: 2px 12px; }
 .recipes { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
 .recipe { display: grid; grid-template-columns: 112px minmax(0, 1fr); background: var(--cream); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; min-width: 0; }
@@ -281,6 +318,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
 <script src="reglas.js"></script>
 <script src="platos.js"></script>
+<script src="ingredientes.js"></script>
 <script src="recetas.js"></script>
 <script src="armador.js"></script>
 <script>
@@ -401,11 +439,10 @@ h2.title { font-size: 28px; line-height: 1.15; }
   ].map(function (c) { return { id: c[0], img: "cocina-" + c[0], label: c[1] }; });
   var TIEMPOS = [15, 30, 45, 60];
   var PORCIONES = [1, 2, 3, 4, 6];
-  var INGR = [
-    ["pollo", T("Pollo", "Chicken")], ["huevos", T("Huevos", "Eggs")], ["arroz", T("Arroz", "Rice")], ["frijoles", T("Frijoles", "Beans")],
-    ["tomate", T("Tomate", "Tomato")], ["cebolla", T("Cebolla", "Onion")], ["papa", T("Papa", "Potato")], ["zanahoria", T("Zanahoria", "Carrot")],
-    ["platano", T("Plátano", "Plantain")], ["atun", T("Atún", "Tuna")], ["pasta", T("Pasta", "Pasta")], ["brocoli", T("Brócoli", "Broccoli")]
-  ].map(function (c) { return { id: c[0], label: c[1] }; });
+  /* Biblioteca de ingredientes (ingredientes.js): 11 categorías, con imagen. */
+  var ING = window.MPI_ING;
+  var INGR = ING.items.map(function (c) { return { id: c.id, label: T(c.es, c.en) }; });
+  var ING_UI = { cat: "all", q: "" };
 
   var Q = {
     cond: { phase: 0, required: true,
@@ -597,6 +634,49 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
   function otherLabel(masc) { return masc ? u().otherM : u().other; }
 
+  /* ---------- Ingredientes en casa ---------- */
+  function ingNorm(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+  function ingCard(c) {
+    var on = has(S.a.ingr, c.id), name = S.lang === "es" ? c.es : c.en;
+    var im = c.img ? '<img src="img/ingredientes/' + c.img + '.webp" width="160" height="160" loading="lazy" alt="">'
+      : '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2F6B2A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c3-5 6-8 10-10"/></svg>';
+    return '<button type="button" class="ing-card" data-act="ingr" data-id="' + esc(c.id) + '" aria-pressed="' + (on ? "true" : "false") + '"><span class="im">' + im + '</span><span class="nm">' + esc(name) + '</span><span class="tick" aria-hidden="true">✓</span></button>';
+  }
+  function ingCatImg(cid) { var f = ING.items.filter(function (c) { return c.c === cid && c.img; })[0]; return f ? '<img src="img/ingredientes/' + f.img + '.webp" width="52" height="52" alt="">' : ""; }
+  function ingListHtml() {
+    var q = ingNorm(ING_UI.q).trim(), es = S.lang === "es", h = "";
+    if (q) {
+      var found = ING.items.filter(function (c) { return ingNorm(c.es).indexOf(q) > -1 || ingNorm(c.en).indexOf(q) > -1 || c.k.some(function (k) { return k.indexOf(q) > -1; }); });
+      if (!found.length) return '<p class="ing-empty" role="status">' + esc(es ? "No encontramos ese ingrediente. Puede agregarlo abajo con «Agregar otro ingrediente»." : "We could not find that ingredient. You can add it below with “Add another ingredient”.") + '</p>';
+      return '<section class="ing-sec"><div class="ing-grid">' + found.map(ingCard).join("") + '</div></section>';
+    }
+    ING.cats.forEach(function (ct) {
+      if (ING_UI.cat !== "all" && ING_UI.cat !== ct.id) return;
+      var items = ING.items.filter(function (c) { return c.c === ct.id; });
+      h += '<section class="ing-sec" aria-labelledby="ic-' + ct.id + '"><h3 id="ic-' + ct.id + '">' + ingCatImg(ct.id) + esc(es ? ct.es : ct.en) + '</h3><div class="ing-grid">' + items.map(ingCard).join("") + '</div></section>';
+    });
+    return h;
+  }
+  function ingSelHtml() {
+    var es = S.lang === "es", a = S.a.ingr;
+    return '<span class="cnt">' + esc((es ? "Ingredientes seleccionados: " : "Selected ingredients: ") + a.length) + '</span>' +
+      a.map(function (v) {
+        var f = ING.items.filter(function (c) { return c.id === v; })[0], nm = v.indexOf("c:") === 0 ? v.slice(2) : (f ? (es ? f.es : f.en) : v);
+        return '<button type="button" class="ing-chip" data-act="ingr" data-id="' + esc(v) + '" aria-label="' + esc((es ? "Quitar " : "Remove ") + nm) + '">' + esc(nm) + ' <span aria-hidden="true">✕</span></button>';
+      }).join("");
+  }
+  function ingUI() {
+    var es = S.lang === "es", a = S.a;
+    var cnt = function (cid) { return ING.items.filter(function (c) { return c.c === cid && has(a.ingr, c.id); }).length; };
+    var cats = '<button type="button" class="ing-cat" data-act="icat" data-id="all" aria-pressed="' + (ING_UI.cat === "all") + '">' + esc(es ? "Todos los ingredientes" : "All ingredients") + '</button>' +
+      ING.cats.map(function (ct) { var n = cnt(ct.id); return '<button type="button" class="ing-cat" data-act="icat" data-id="' + ct.id + '" aria-pressed="' + (ING_UI.cat === ct.id) + '">' + ingCatImg(ct.id) + '<span>' + esc(es ? ct.es : ct.en) + '</span>' + (n ? '<span class="n" aria-label="' + n + '">' + n + '</span>' : "") + '</button>'; }).join("");
+    return '<div class="ing"><div class="ing-search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>' +
+      '<input id="f-ingQ" type="search" autocomplete="off" aria-label="' + esc(es ? "Buscar ingrediente" : "Search ingredient") + '" placeholder="' + esc(es ? "Buscar ingrediente…" : "Search ingredient…") + '" value="' + esc(ING_UI.q) + '"></div>' +
+      '<div class="ing-main"><nav class="ing-cats" aria-label="' + esc(es ? "Categorías" : "Categories") + '">' + cats + '</nav><div class="ing-list" id="ing-list">' + ingListHtml() + '</div></div>' +
+      '<div class="field"><label for="f-ingNew">' + esc(es ? "Agregar otro ingrediente" : "Add another ingredient") + '</label><div class="addrow"><input id="f-ingNew" type="text" maxlength="40" autocomplete="off"><button type="button" class="btn btn-ghost" data-act="ingadd">' + esc(es ? "Agregar" : "Add") + '</button></div></div>' +
+      '<div class="ing-sel" id="ing-sel" aria-live="polite">' + ingSelHtml() + '</div></div>';
+  }
+
   function qBody(id) {
     var a = S.a, h = "", x = u();
     if (id === "cond") {
@@ -639,10 +719,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
         '<div class="field"><span id="pl" style="font-weight:500;color:var(--forest)">' + (S.lang === "es" ? "Porciones" : "Servings") + '</span><div class="chips" role="radiogroup" aria-labelledby="pl">' +
         PORCIONES.map(function (m) { return chipBtn("porc", String(m), String(m), a.porc === m); }).join("") + '</div></div>';
     } else if (id === "ingr") {
-      var custom = a.ingr.filter(function (v) { return v.indexOf("c:") === 0; });
-      h += '<div class="chips" role="group" aria-labelledby="qt">' + INGR.map(function (c) { return chipBtn("ingr", c.id, L(c.label), has(a.ingr, c.id)); }).join("") +
-        custom.map(function (v) { return chipBtn("ingr", v, v.slice(2), true); }).join("") + '</div>' +
-        '<div class="field"><label for="f-ingNew">' + (S.lang === "es" ? "Agregar otro ingrediente" : "Add another ingredient") + '</label><div class="addrow"><input id="f-ingNew" type="text" maxlength="40" autocomplete="off"><button type="button" class="btn btn-ghost" data-act="ingadd">' + (S.lang === "es" ? "Agregar" : "Add") + '</button></div></div>';
+      h += ingUI();
     }
     return h;
   }
@@ -968,11 +1045,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
   /* ---------- Armador propio (sin IA): elige platos con el filtro actual y usa recetas.js ---------- */
   var ARM = window.MPI_ARMADOR, REC = window.MPI_RECETAS;
-  var INGR_CLAVES = { pollo: ["pollo", "chicken"], huevos: ["huevo", "egg"], arroz: ["arroz", "rice"], frijoles: ["frijol", "bean"], tomate: ["tomate", "tomato"], cebolla: ["cebolla", "onion"], papa: ["papa", "potato"], zanahoria: ["zanahoria", "carrot"], platano: ["platano", "plantain"], atun: ["atun", "tuna"], pasta: ["pasta", "fideo", "espagueti", "spaghetti", "macarron"], brocoli: ["brocoli", "broccoli"] };
   function ingrClaves() {
-    return S.a.ingr.slice(0, 15).map(function (v) {
+    return S.a.ingr.slice(0, 40).map(function (v) {
       if (v.indexOf("c:") === 0) { var t = ARM.norm(v.slice(2)).replace(/\s+/g, " ").trim(); if (t.length < 3) return []; return [t, t.replace(/(es|s)$/, "")]; }
-      return INGR_CLAVES[v] || [];
+      var f = ING.items.filter(function (c) { return c.id === v; })[0];
+      return f ? f.k : [];
     }).filter(function (x) { return x.length; });
   }
   /* Los platos con variantes (el casado: res, pollo o pescado) se aceptan si alguna variante cumple el perfil. */
@@ -1410,6 +1487,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (act === "clearno") { confirming = false; render(false); return; }
     if (act === "clearyes") { var lang = S.lang; S = fresh(); S.lang = lang; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; return; }
     if (act === "ingadd") { addIngredient(); return; }
+    if (act === "icat") { ING_UI.cat = id; ING_UI.q = ""; render(false); var cb = document.querySelector('[data-act="icat"][data-id="' + id + '"]'); if (cb) cb.focus({ preventScroll: true }); return; }
     if (act === "cancelar") { if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} } RES.n++; RES.sig = ""; return; }
     if (act === "retry") { if (el.getAttribute("aria-disabled") === "true") return; lanzar(false); render(true); return; }
     if (act === "mas") { if (RES.reserva.length) { mostrar(); actualizar(); } else { lanzar(false); render(true); } return; }
@@ -1444,6 +1522,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     save(); render(false); var n = $("#f-ingNew"); if (n) n.focus({ preventScroll: true });
   }
   document.addEventListener("input", function (e) {
+    if (e.target.id === "f-ingQ") { ING_UI.q = e.target.value; var L2 = $("#ing-list"); if (L2) L2.innerHTML = ingListHtml(); return; }
     var k = e.target.getAttribute && e.target.getAttribute("data-text"); if (!k) return;
     S.a[k] = e.target.value;
     if (k === "evitaOtra" && e.target.value.trim() && has(S.a.evita, "todo")) { /* escribir un alimento a evitar quita «Como de todo» */
