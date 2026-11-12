@@ -354,6 +354,53 @@ h2.title { font-size: 28px; line-height: 1.15; }
   .rv-hero h2.title { font-size: 52px; }
 }
 
+/* Consejos y recursos */
+.cj { gap: 20px; }
+.cj-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); border-radius: var(--r-lg); overflow: hidden; background: var(--cream); }
+.cj-img { order: -1; width: 100%; height: 170px; object-fit: cover; object-position: 70% 60%; -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
+.cj-txt { padding: 4px 4px 8px; min-width: 0; }
+.cj-h { display: flex; align-items: center; gap: 10px; margin: 6px 0 0; }
+.cj-h img { width: 30px; height: 30px; flex: none; }
+.cj-arts { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.cj-art { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 8px; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); overflow: hidden; padding-bottom: 16px; box-shadow: 0 6px 18px -12px rgba(23, 58, 30, .35); min-width: 0; }
+.cj-ph { position: relative; display: block; aspect-ratio: 3 / 2; }
+.cj-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cj-lang { position: absolute; left: 12px; top: 12px; background: rgba(251, 248, 241, .94); color: var(--forest); font-size: 13.5px; font-weight: 600; padding: 4px 12px; border-radius: 999px; }
+.cj-cat { justify-self: start; margin: 0 14px; background: var(--mint); color: var(--forest); font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 999px; }
+.cj-art h4 { margin: 0 14px; font-family: var(--serif); font-size: 19px; line-height: 1.2; color: var(--forest); overflow-wrap: anywhere; }
+.cj-art p { margin: 0 14px; font-size: 15px; color: var(--ink-soft); }
+.cj-read { justify-self: center; min-height: 44px; padding-inline: 22px; margin-top: 4px; }
+.cj-tips .tip { grid-template-columns: 72px minmax(0, 1fr); column-gap: 14px; align-items: center; padding: 10px 14px 10px 10px; }
+.cj-tips .tip img { grid-row: 1 / span 2; width: 72px; height: 72px; object-fit: cover; border-radius: 12px; }
+.cj-tips .tip h3, .cj-tips .tip p { min-width: 0; overflow-wrap: anywhere; }
+.cj-use { background: linear-gradient(160deg, #F2F8E7 0%, #DCE8D2 100%); border: 1.5px solid var(--line); border-radius: var(--r-lg); padding: 16px; display: grid; gap: 12px; }
+.cj-use .subt { margin: 0; }
+.cj-uselist .tip { background: rgba(251, 248, 241, .8); }
+@media (min-width: 600px) {
+  .cj-arts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 700px) {
+  .cj-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; min-height: 230px; }
+  .cj-img { order: 0; position: absolute; right: 0; top: 0; width: 62%; height: 100%; object-position: 60% 55%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%); mask-image: linear-gradient(90deg, transparent, #000 30%); }
+  .cj-txt { position: relative; padding: 24px 0 24px 24px; }
+  .cj-hero h2.title { font-size: 40px; }
+  .tips.cj-tips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cj-tips .tip img { width: 88px; height: 88px; }
+  .cj-tips .tip { grid-template-columns: 88px minmax(0, 1fr); }
+  .tips.cj-uselist { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cj-use { padding: 20px 22px; }
+}
+@media (min-width: 1100px) {
+  .cj-hero { min-height: 280px; }
+  .cj-hero h2.title { font-size: 50px; }
+  .cj-arts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tips.cj-tips { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cj-tips .tip { grid-template-columns: 76px minmax(0, 1fr); align-items: start; }
+  .cj-tips .tip img { grid-row: 1; width: 76px; height: 76px; }
+  .cj-tips .tip h3 { align-self: center; font-size: 17px; }
+  .cj-tips .tip p { grid-column: 1 / -1; margin-top: 6px; }
+}
+
 .tips { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; grid-template-columns: minmax(0, 1fr); }
 .tip { background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 12px 14px; display: grid; gap: 4px; align-content: start; }
 .tip h3 { font-size: 18px; font-weight: 600; } .tip p { margin: 0; font-size: 15.5px; color: var(--ink-soft); }
@@ -398,6 +445,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
 .hcard { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; border-radius: 28px; box-shadow: var(--shadow); text-decoration: none; color: inherit; }
 .hcard.hp { background: linear-gradient(160deg, #FFF1DF 0%, #F9D2A4 100%); }
 .hcard.hl { background: linear-gradient(160deg, #F3EEFB 0%, #D8CAEF 100%); }
+.hcard.hl .ph img { object-position: 50% 30%; -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent); mask-image: linear-gradient(180deg, #000 80%, transparent); }
 .hcard .ph { position: relative; display: block; height: 170px; overflow: hidden; }
 .hcard .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent); mask-image: linear-gradient(180deg, #000 62%, transparent); }
 .hcard .tx { display: grid; gap: 6px; justify-items: center; text-align: center; padding: 4px 16px 18px; align-content: center; }
@@ -420,6 +468,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
   .hcard { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .hcard .ph { height: auto; min-height: 270px; }
   .hcard .ph img { -webkit-mask-image: linear-gradient(90deg, #000 62%, transparent); mask-image: linear-gradient(90deg, #000 62%, transparent); }
+  .hcard.hl .ph img { object-position: 50% 50%; -webkit-mask-image: linear-gradient(90deg, #000 84%, transparent); mask-image: linear-gradient(90deg, #000 84%, transparent); }
   .hcard .tx { padding: 18px 18px 18px 0; }
   .sgrid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
   .scard:last-child { grid-column: auto; } .scard .il { height: 90px; }
@@ -1085,10 +1134,28 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
   }
 
   function viewConsejos() {
-    var t = XT(), x = u();
-    var lst = function (a) { return '<ul class="tips">' + a.map(function (c) { return '<li class="tip"><h3>' + esc(c[0]) + '</h3><p>' + esc(c[1]) + '</p></li>'; }).join("") + '</ul>'; };
-    return '<section class="results"><div><h2 class="title" id="vt" tabindex="-1">' + esc(t.tipsT) + '</h2><p class="lead">' + esc(t.tipsP) + '</p></div>' + lst(t.tips) +
-      '<h3 class="subt">' + esc(t.useT) + '</h3>' + lst(t.use) + '<p class="hint">' + esc(t.tipsNote) + '</p>' +
+    var t = XT(), x = u(), es = S.lang === "es";
+    var B = "https://blog.saludintegral.site", E = "https://flowsomatic.blogspot.com";
+    var arts = [
+      ["es", "articulo-intestino-pancreas", B + "/2026/07/el-eje-intestino-pancreas-el-poder-de.html", "Salud digestiva y metabolismo", "El eje intestino-páncreas: el poder de la microbiota", "Descubra cómo la salud de su intestino influye en el páncreas, el metabolismo y su bienestar integral."],
+      ["es", "articulo-dieta-restrictiva", B + "/2026/07/por-que-tu-dieta-restrictiva-te.html", "Nutrición y alimentación consciente", "¿Por qué tu dieta restrictiva te mantiene inflamada?", "Conozca cómo las dietas muy restrictivas pueden afectar su metabolismo, sus hormonas y su relación con la comida."],
+      ["en", "articulo-peso-emociones", E + "/2026/10/the-weight-of-emotions-emotional.html", "Emotional Wellbeing", "The Weight of Emotions: Emotional Factors That Influence Weight Gain", "Explore how emotional factors can influence your eating patterns, metabolism and overall well-being."],
+      ["en", "articulo-restrictive-diet-eng", E + "/2026/10/why-is-your-restrictive-diet-keeping.html", "Nutrition & Mindful Eating", "Why Is Your Restrictive Diet Keeping You Inflamed?", "Learn why overly restrictive diets can backfire and what to do instead to reach a healthy, sustainable balance."]
+    ];
+    var tipImg = ["vegetales", "legumbres", "sal", "integrales", "planificacion", "etiquetas", "hidratacion", "sobras"];
+    var artHtml = '<ul class="cj-arts">' + arts.map(function (a) {
+      var ae = a[0] === "es";
+      return '<li class="cj-art" lang="' + a[0] + '"><span class="cj-ph"><img src="img/consejos/' + a[1] + '.webp" alt="" width="600" height="400" loading="lazy"><span class="cj-lang">' + (ae ? "Español" : "English") + '</span></span>' +
+        '<span class="cj-cat">' + esc(a[3]) + '</span><h4>' + esc(a[4]) + '</h4><p>' + esc(a[5]) + '</p>' +
+        '<a class="btn btn-primary cj-read" href="' + a[2] + '" target="_blank" rel="noopener">' + (ae ? "Leer artículo" : "Read article") + ' ' + ARROW + '<span class="sr" style="position:absolute;left:-9999px">' + (es ? " (se abre en otra pestaña)" : " (opens in a new tab)") + '</span></a></li>';
+    }).join("") + '</ul>';
+    var tipHtml = '<ul class="tips cj-tips">' + t.tips.map(function (c, i) { return '<li class="tip"><img src="img/consejos/tip-' + tipImg[i] + '.webp" alt="" width="240" height="240" loading="lazy"><h3>' + esc(c[0]) + '</h3><p>' + esc(c[1]) + '</p></li>'; }).join("") + '</ul>';
+    var useHtml = '<ul class="tips cj-uselist">' + t.use.map(function (c) { return '<li class="tip"><h3>' + esc(c[0]) + '</h3><p>' + esc(c[1]) + '</p></li>'; }).join("") + '</ul>';
+    return '<section class="results cj">' +
+      '<div class="cj-hero"><div class="cj-txt"><h2 class="title" id="vt" tabindex="-1">' + esc(t.tipsT) + '</h2><p class="lead">' + esc(t.tipsP) + '</p><svg class="rv-swash" viewBox="0 0 320 22" aria-hidden="true"><path d="M4 16C70 2 150 22 220 12c36-5 66-8 96-9" fill="none" stroke="#5F7318" stroke-width="3.5" stroke-linecap="round"/></svg></div><img class="cj-img" src="img/consejos/consejos-hero.webp" alt="" width="1200" height="675"></div>' +
+      '<h3 class="subt cj-h"><img src="img/icono-libro-hoja.svg" alt="" width="34" height="34" aria-hidden="true">' + (es ? "Explore nuestros artículos" : "Explore our articles") + '</h3>' + artHtml +
+      '<h3 class="subt cj-h"><img src="img/icono-ingredientes.svg" alt="" width="34" height="34" aria-hidden="true">' + (es ? "Consejos prácticos para el día a día" : "Practical tips for every day") + '</h3>' + tipHtml +
+      '<div class="cj-use"><h3 class="subt">' + esc(t.useT) + '</h3>' + useHtml + '</div><p class="hint">' + esc(t.tipsNote) + '</p>' +
       '<div class="actions"><a class="btn btn-primary" href="#cond" data-act="modo" data-id="hoy">' + esc(t.tipsGo) + ' ' + ARROW + '</a><a class="btn btn-ghost" href="#inicio">' + esc(x.back) + '</a></div></section>';
   }
 
