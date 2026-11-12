@@ -157,6 +157,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .btn-primary[aria-disabled="true"] { background: #B9BFA6; color: #4a4f3a; cursor: not-allowed; }
 .btn-ghost { background: #FCF9F2; border-color: var(--forest); color: var(--forest); }
 .linkrow { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; font-size: 14.5px; }
+.linkrow.skiptop { width: auto; margin: 4px 0 0; justify-content: flex-start; }
 .textbtn { background: none; border: 0; padding: 8px 4px; min-height: 44px; color: var(--forest); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .confirm { display: grid; gap: 10px; background: var(--terra-bg); border: 1.5px solid var(--terra-d); border-radius: var(--r-md); padding: 14px; }
 .confirm .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -289,6 +290,68 @@ h2.title { font-size: 28px; line-height: 1.15; }
   .linkrow { width: min(100%, 820px); margin-inline: auto; }
   .errbox, .loading { width: min(100%, 720px); margin-inline: auto; }
   .decor-tr { width: 380px; height: 254px; right: 0; } .decor-br { width: 400px; height: 268px; right: 0; } .decor-bl { width: 170px; height: 180px; }
+}
+
+/* Resumen: «Revise sus respuestas» */
+.rv-hero { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 12px; align-items: center; }
+.rv-swash { display: block; width: min(60%, 240px); height: auto; margin-top: 8px; }
+.rv-art { position: relative; aspect-ratio: 1; min-width: 0; }
+.rv-plate { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid var(--cream); box-shadow: var(--shadow); }
+.rv-side, .rv-leaf { display: none; }
+.sec-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--mint); flex: none; }
+.sec-ic img { width: 30px; height: 30px; }
+.perfiles { grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: start; position: relative; overflow: hidden; border-radius: var(--r-lg); box-shadow: var(--shadow); }
+.perfiles .pf-body { display: contents; }
+.perfiles .pf-body > * { grid-column: 1 / -1; min-width: 0; }
+.perfiles .pf-body > .subq { grid-column: 2; align-self: center; margin: 0; }
+.perfiles .chip { max-width: 100%; height: auto; padding-block: 8px; overflow-wrap: anywhere; text-align: left; }
+.perfiles .textbtn { justify-self: center; }
+.meal-q { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 10px 12px; align-items: center; }
+.meal-q .subq { margin: 0; }
+.mealopts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.mealopt { display: grid; justify-items: center; grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 10px 6px; min-height: 64px; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); cursor: pointer; font-family: var(--serif); font-weight: 600; font-size: 16px; color: var(--forest); box-shadow: 0 4px 12px -8px rgba(23, 58, 30, .3); min-width: 0; }
+.mealopt img { width: 56px; height: 56px; border-radius: 14px; object-fit: cover; }
+.mealopt span { overflow-wrap: anywhere; }
+.mealopt[aria-pressed="true"] { background: var(--mint); border: 2.5px solid var(--forest); padding: 9px 5px; }
+.mealopt[aria-pressed="true"] span::before { content: "✓ "; }
+.nav.navsum { position: static; grid-template-columns: minmax(0, 1fr); background: none; padding: 4px 0 0; margin-inline: 0; }
+@media (min-width: 700px) {
+  .rv-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 24px; }
+  .rv-art { aspect-ratio: 300 / 210; }
+  .rv-plate { inset: auto 0 0 auto; width: 70%; height: auto; aspect-ratio: 1; }
+  .rv-side { display: block; position: absolute; left: 0; bottom: -4%; width: 56%; height: auto; filter: drop-shadow(0 8px 10px rgba(23, 58, 30, .22)); }
+  .rv-leaf { display: block; position: absolute; right: -6%; top: -4%; width: 58%; height: auto; opacity: .55; }
+  .sec-ic { width: 64px; height: 64px; } .sec-ic img { width: 40px; height: 40px; }
+  .perfiles { grid-template-columns: 64px minmax(0, 1fr); gap: 18px; padding: 20px 22px; }
+  .perfiles .pf-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; }
+  .perfiles .pf-body > *, .perfiles .pf-body > .subq { grid-column: auto; }
+  .perfiles .pf-body > .subq { align-self: auto; margin: 6px 0 0; }
+  .meal-q { grid-template-columns: 64px minmax(0, 1fr); gap: 14px 18px; }
+  .mealopts { gap: 14px; }
+  .mealopt { grid-template-columns: 64px minmax(0, 1fr); justify-items: start; align-items: center; gap: 14px; padding: 8px 16px 8px 10px; font-size: 19px; text-align: left; }
+  .mealopt img { width: 64px; height: 64px; }
+  .mealopt[aria-pressed="true"] { padding: 7px 15px 7px 9px; }
+  .nav.navsum { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); width: min(100%, 860px); margin-inline: auto; gap: 16px; }
+  .rv-hero h2.title { font-size: 40px; }
+}
+@media (min-width: 700px) and (max-width: 899px) {
+  .mealopt { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: 8px; padding: 12px 8px; }
+  .mealopt[aria-pressed="true"] { padding: 11px 7px; }
+}
+@media (min-width: 1100px) {
+  .perfiles::after { content: ""; position: absolute; right: 10px; top: 8px; width: 130px; height: 138px; background: url(img/decor-rama.webp) center / contain no-repeat; opacity: .5; pointer-events: none; }
+  .perfiles .pf-body { padding-right: 130px; }
+  .meal-q { grid-template-columns: 64px auto minmax(0, 1fr); gap: 18px; }
+  .mealopts { grid-column: auto; }
+  .rv-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 400px); }
+  .rv-hero h2.title { font-size: 46px; }
+  .rv-art { aspect-ratio: 400 / 200; }
+  .rv-plate { width: 50%; }
+  .rv-side { width: 50%; left: 4%; }
+}
+@media (min-width: 1500px) {
+  .rv-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 500px); }
+  .rv-hero h2.title { font-size: 52px; }
 }
 
 .tips { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; grid-template-columns: minmax(0, 1fr); }
@@ -940,7 +1003,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
     return '<div class="hero hc"><h2 id="vt" tabindex="-1">' + esc(x.h1) + '</h2><p class="lead">' + esc(x.h1p) + '</p></div>' +
       '<div class="hgrid">' + big("hp", "inicio-sopa-garbanzos.webp", "icono-olla.svg", x.c1, x.c1p, "hoy") + big("hl", "inicio-meal-prep.webp", "calendario.svg", x.c2, x.c2p, "plan") + '</div>' +
       '<div class="sgrid">' +
-      small("sc-mint", "condiciones-salud.svg", x.s1, "nav-menta.webp", "porcond") + small("sc-gold", "alimentacion.svg", x.s2, "nav-tazon-garbanzos.webp", "porestilo") +
+      small("sc-mint", "condiciones-salud.svg", x.s1, "nav-area-salud.webp", "porcond") + small("sc-gold", "alimentacion.svg", x.s2, "nav-tazon-garbanzos.webp", "porestilo") +
       small("sc-rose", "icono-ingredientes.svg", x.s3, "nav-tomates-albahaca.webp", "poringr") + small("sc-sky", "icono-libro-hoja.svg", x.s4, "nav-libros-hojas.webp", "consejos") +
       small("sc-lav", "icono-personas.svg", tt("Mis perfiles", "My profiles"), "nav-ramas-perfiles.webp", "perfiles") + '</div>' +
       perfilChip() +
@@ -999,8 +1062,8 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
     if (n > 1) del = confirming === "pfdel"
       ? '<div class="confirm" role="alertdialog" aria-labelledby="cq"><p id="cq">' + (es ? "¿Quitar «" : "Remove “") + esc(perfNombre(S.cur)) + (es ? "» y todas sus respuestas? No se puede deshacer." : "” and all its answers? This cannot be undone.") + '</p><div class="row"><button type="button" class="btn btn-ghost" data-act="clearno">' + esc(u().clearNo) + '</button><button type="button" class="btn btn-danger" data-act="pfdelyes">' + (es ? "Sí, quitar" : "Yes, remove") + '</button></div></div>'
       : '<button type="button" class="textbtn" data-act="pfdel">' + (es ? "Quitar este perfil" : "Remove this profile") + '</button>';
-    return '<div class="perfiles"><h3 class="subq">' + (es ? "Perfiles (hasta " + MAXPERF + ")" : "Profiles (up to " + MAXPERF + ")") + '</h3><p class="hint">' + (es ? "Cada perfil guarda sus propias enfermedades, medicamentos y alergias. Elija quién va a usar la aplicación." : "Each profile keeps its own health conditions, medications and allergies. Choose who is using the app.") + '</p><div class="chips">' + chips + '</div>' +
-      textField("perfN", es ? "Nombre de este perfil (opcional)" : "Name of this profile (optional)", S.perfiles[S.cur].n || "") + del + '</div>';
+    return '<div class="perfiles"><span class="sec-ic" aria-hidden="true"><img src="img/icono-personas.svg" alt="" width="40" height="40"></span><div class="pf-body"><h3 class="subq">' + (es ? "Perfiles (hasta " + MAXPERF + ")" : "Profiles (up to " + MAXPERF + ")") + '</h3><p class="hint">' + (es ? "Cada perfil guarda sus propias enfermedades, medicamentos y alergias. Elija quién va a usar la aplicación." : "Each profile keeps its own health conditions, medications and allergies. Choose who is using the app.") + '</p><div class="chips">' + chips + '</div>' +
+      textField("perfN", es ? "Nombre de este perfil (opcional)" : "Name of this profile (optional)", S.perfiles[S.cur].n || "") + del + '</div></div>';
   }
   function perfilChip() {
     var a = S.a;
@@ -1035,19 +1098,21 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
     var prev = idx === 0 ? "inicio" : ORDER[idx - 1], next = idx === tot - 1 ? "resumen" : ORDER[idx + 1];
     var note = "";
     if (!canNext) note = '<p class="need" id="need">' + esc(needsText(id) ? x.needText : x.needAnswer) + '</p>';
+    var skipTop = id === "ingr";
+    var skipLink = q.required ? "" : '<a class="textbtn" href="#' + next + '">' + esc(x.skip) + '</a>';
     var h = '<div><span class="stepcount">' + esc(x.step + " " + (q.phase + 1) + " " + x.of + " " + x.ph.length + " · " + x.ph[q.phase]) + ' — ' + esc(x.question + " " + (idx + 1) + "/" + tot) + '</span></div>' +
       stepsHtml(q.phase) +
       '<div class="qbar" role="progressbar" aria-label="' + esc(x.progress) + '" aria-valuemin="1" aria-valuemax="' + tot + '" aria-valuenow="' + (idx + 1) + '"><span style="width:' + Math.round((idx + 1) / tot * 100) + '%"></span></div>' +
-      '<div><h2 class="title" id="qt" tabindex="-1">' + esc(L(q.title)) + '</h2><p class="lead">' + esc(L(q.lead)) + ' ' + (q.required ? "" : esc(x.optional)) + '</p></div>' +
+      '<div><h2 class="title" id="qt" tabindex="-1">' + esc(L(q.title)) + '</h2><p class="lead">' + esc(L(q.lead)) + ' ' + (q.required ? "" : esc(x.optional)) + '</p>' + (skipTop ? '<div class="linkrow skiptop">' + skipLink + '</div>' : "") + '</div>' +
       '<div id="qbody" style="display:grid;gap:14px;grid-template-columns:minmax(0,1fr)">' + qBody(id) + '</div>' + note +
       '<div class="nav"><a class="btn btn-ghost" href="#' + prev + '">' + esc(x.back) + '</a>' +
       '<a class="btn btn-primary" id="nextbtn" href="#' + next + '" data-act="next" data-id="' + id + '"' + (canNext ? "" : ' aria-disabled="true" aria-describedby="need"') + '>' + esc(x.next) + ' ' + ARROW + '</a></div>' +
-      '<div class="linkrow">' + (q.required ? "<span></span>" : '<a class="textbtn" href="#' + next + '">' + esc(x.skip) + '</a>') + '</div>';
+      (skipTop ? "" : '<div class="linkrow">' + (q.required ? "<span></span>" : skipLink) + '</div>');
     return h;
   }
   function clearBtn() {
     var es = S.lang === "es";
-    if (confirming) {
+    if (confirming === "hoy" || confirming === "all") {
       var hoy = confirming === "hoy";
       var q = hoy ? (es ? "¿Borrar lo de hoy (tiempo, porciones e ingredientes)? Su perfil de salud se conserva." : "Clear today's answers (time, servings and ingredients)? Your health profile is kept.") : u().clearQ;
       return '<div class="confirm" role="alertdialog" aria-labelledby="cq" style="flex-basis:100%"><p id="cq">' + esc(q) + '</p><div class="row"><button type="button" class="btn btn-ghost" data-act="clearno">' + esc(u().clearNo) + '</button><button type="button" class="btn btn-danger" data-act="' + (hoy ? "clearhoyyes" : "clearyes") + '">' + esc(u().clearYes) + '</button></div></div>';
@@ -1095,8 +1160,12 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
     var warn = "";
     if (miss.length) warn = '<p class="need">' + esc(x.getNeed) + ' ' + miss.map(function (id) { return '<a href="#' + id + '">' + esc(x.lbl[id]) + '</a>'; }).join(x.sep) + '.</p>';
     return stepsHtml(x.ph.length - 1).replace(/<ol class="steps">/, '<ol class="steps">') +
-      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p><p class="hint">' + esc(S.a.mode === "plan" ? XT().modePlan : XT().modeHoy) + '</p></div>' + perfilesHtml() + (S.a.mode === "plan" ? "" : '<div class="meal-q" role="group" aria-labelledby="mq"><h3 id="mq" class="subq">' + (S.lang === "es" ? "¿Para qué comida?" : "Which meal is it for?") + '</h3><div class="chips">' + [["desayuno", "Desayuno", "Breakfast"], ["almuerzo", "Almuerzo", "Lunch"], ["cena", "Cena", "Dinner"]].map(function (m) { return chipBtn("comida", m[0], S.lang === "es" ? m[1] : m[2], S.a.comida === m[0]); }).join("") + '</div></div>') + '<ul class="sum">' + rows + '</ul>' + warn +
-      '<div class="nav stack"><a class="btn btn-primary" href="#' + (S.a.mode === "plan" ? "plan" : "resultados") + '" data-act="get"' + (miss.length ? ' aria-disabled="true"' : "") + '>' + esc(S.a.mode === "plan" ? XT().getPlan : x.getBtn) + ' ' + ARROW + '</a>' +
+      '<div class="rv-hero"><div class="rv-txt"><h2 class="title" id="vt" tabindex="-1">' + esc(x.sumT) + '</h2><p class="lead">' + esc(x.sumP) + '</p><p class="hint">' + esc(S.a.mode === "plan" ? XT().modePlan : XT().modeHoy) + '</p><svg class="rv-swash" viewBox="0 0 320 22" aria-hidden="true"><path d="M4 16C70 2 150 22 220 12c36-5 66-8 96-9" fill="none" stroke="#5F7318" stroke-width="3.5" stroke-linecap="round"/></svg></div>' +
+      '<div class="rv-art" aria-hidden="true"><img class="rv-leaf" src="img/decor-hojas.webp" alt="" width="560" height="373" loading="lazy"><img class="rv-plate" src="img/platos/ensalada-pollo.webp" alt="" width="480" height="480"><img class="rv-side" src="img/nav-tomates-albahaca.webp" alt="" width="700" height="436" loading="lazy"></div></div>' +
+      perfilesHtml() +
+      (S.a.mode === "plan" ? "" : '<div class="meal-q" role="group" aria-labelledby="mq"><span class="sec-ic" aria-hidden="true"><img src="img/alimentacion.svg" alt="" width="40" height="40"></span><h3 id="mq" class="subq">' + (es ? "¿Para qué comida?" : "Which meal is it for?") + '</h3><div class="mealopts">' + [["desayuno", "Desayuno", "Breakfast", "avena-frutas-nueces"], ["almuerzo", "Almuerzo", "Lunch", "casado-costarricense"], ["cena", "Cena", "Dinner", "sopa-pollo-vegetales"]].map(function (m) { return '<button type="button" class="mealopt" data-act="comida" data-id="' + m[0] + '" aria-pressed="' + (S.a.comida === m[0] ? "true" : "false") + '"><img src="img/platos/' + m[3] + '.webp" alt="" width="480" height="480" loading="lazy"><span>' + (es ? m[1] : m[2]) + '</span></button>'; }).join("") + '</div></div>') +
+      '<ul class="sum">' + rows + '</ul>' + warn +
+      '<div class="nav navsum"><a class="btn btn-primary" href="#' + (S.a.mode === "plan" ? "plan" : "resultados") + '" data-act="get"' + (miss.length ? ' aria-disabled="true"' : "") + '>' + esc(S.a.mode === "plan" ? XT().getPlan : x.getBtn) + ' ' + ARROW + '</a>' +
       '<a class="btn btn-ghost" href="#' + ORDER[ORDER.length - 1] + '">' + esc(x.back) + '</a></div>' +
       '<div class="linkrow"><span></span>' + clearBtn() + '</div>';
   }
