@@ -316,19 +316,97 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .checklist input:checked + span { text-decoration: line-through; color: var(--ink-soft); }
 @media (min-width: 900px) { .tips { grid-template-columns: repeat(2, minmax(0, 1fr)); } .days { grid-template-columns: repeat(2, minmax(0, 1fr)); } .checklist { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 420px) { .meal { grid-template-columns: 56px minmax(0, 1fr); } .meal img { width: 56px; height: 56px; } .meal .btn { grid-column: 1 / -1; } }
+
+/* Rediseño: bienvenida, perfiles e inicio */
+.topbar { flex-wrap: wrap; }
+.tb-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.profpill { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 12px 4px 6px; border: 1.5px solid var(--forest); border-radius: 999px; background: var(--cream); color: var(--forest); text-decoration: none; font-weight: 500; max-width: 250px; }
+.profpill .pn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.av { display: inline-grid; place-items: center; border-radius: 50%; overflow: hidden; background: #DCE8D2; flex: none; border: 2px solid #fff; box-shadow: 0 2px 8px -3px rgba(23, 58, 30, .4); }
+.av img { width: 100%; height: 100%; object-fit: cover; }
+.av img.avu { width: 58%; height: 58%; object-fit: contain; }
+.av .ini { font-family: var(--serif); font-weight: 600; color: var(--cream); background: #8FA58A; width: 100%; height: 100%; display: grid; place-items: center; }
+.bodegon { display: none; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: min(900px, 100%); aspect-ratio: 1600 / 526; background: url(img/decor-bodegon-inferior.webp) no-repeat center bottom / contain; pointer-events: none; z-index: 0; }
+body.conbodegon .bodegon { display: block; }
+body.conbodegon { padding-block-end: calc(min(900px, 100vw) * .33 + 24px); }
+body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
+.hero.hc { text-align: center; } .hero.hc .lead { margin-inline: auto; }
+.hgrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.hcard { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; border-radius: 28px; box-shadow: var(--shadow); text-decoration: none; color: inherit; }
+.hcard.hp { background: linear-gradient(160deg, #FFF1DF 0%, #F9D2A4 100%); }
+.hcard.hl { background: linear-gradient(160deg, #F3EEFB 0%, #D8CAEF 100%); }
+.hcard .ph { position: relative; display: block; height: 170px; overflow: hidden; }
+.hcard .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent); mask-image: linear-gradient(180deg, #000 62%, transparent); }
+.hcard .tx { display: grid; gap: 6px; justify-items: center; text-align: center; padding: 4px 16px 18px; align-content: center; }
+.hcard .ic { width: 44px; height: 44px; }
+.hcard h3 { font-size: 22px; line-height: 1.15; font-weight: 600; }
+.hcard p { font-size: 15px; color: var(--ink-soft); line-height: 1.35; }
+.gopill { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 22px; border-radius: 999px; background: var(--forest); color: #fff; font-weight: 500; margin-top: 6px; }
+.hcard:hover .gopill, .hcard:focus-visible .gopill { background: var(--leaf); }
+.sgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.scard { display: grid; grid-template-rows: auto 1fr auto; justify-items: center; text-align: center; gap: 6px; padding: 14px 10px 6px; border-radius: 22px; box-shadow: var(--shadow); text-decoration: none; color: var(--forest); min-height: 190px; overflow: hidden; }
+.scard:last-child { grid-column: 1 / -1; }
+.scard .ic { width: 40px; height: 40px; }
+.scard h3 { font-size: 17px; line-height: 1.15; font-weight: 600; align-self: center; }
+.scard .il { height: 70px; width: auto; max-width: 100%; object-fit: contain; align-self: end; }
+.sc-mint { background: linear-gradient(160deg, #F2F8E7 0%, #CFE4B8 100%); } .sc-gold { background: linear-gradient(160deg, #FFF7DA 0%, #F3DE9A 100%); }
+.sc-rose { background: linear-gradient(160deg, #FDEEED 0%, #F5C9C6 100%); } .sc-sky { background: linear-gradient(160deg, #ECF5FB 0%, #C5DDEE 100%); }
+.sc-lav { background: linear-gradient(160deg, #F3EEFB 0%, #D8CAEF 100%); }
+@media (min-width: 900px) {
+  .hgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .hcard { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .hcard .ph { height: auto; min-height: 270px; }
+  .hcard .ph img { -webkit-mask-image: linear-gradient(90deg, #000 62%, transparent); mask-image: linear-gradient(90deg, #000 62%, transparent); }
+  .hcard .tx { padding: 18px 18px 18px 0; }
+  .sgrid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+  .scard:last-child { grid-column: auto; } .scard .il { height: 90px; }
+}
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.pcard { position: relative; display: grid; justify-items: center; align-content: start; gap: 10px; text-align: center; padding: 22px 14px 16px; background: var(--cream); border: 1.5px solid var(--line); border-radius: 24px; box-shadow: var(--shadow); min-width: 0; }
+.pcard.act { border: 2.5px solid var(--forest); padding: 20.5px 12.5px 14.5px; }
+.pcard h3 { font-size: 22px; overflow-wrap: anywhere; }
+.pcard .chk { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; background: var(--leaf); color: #fff; display: grid; place-items: center; font-weight: 700; }
+.pcard .btn { width: 100%; } .pcard .confirm { width: 100%; text-align: left; }
+.badge-act { font-size: 14px; font-weight: 600; color: var(--leaf); background: var(--mint); border-radius: 999px; padding: 2px 14px; }
+.badge-ph { font-size: 14px; color: var(--ink-soft); }
+.pact { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.pnew { background: #EEF4E4; border-style: dashed; }
+.pnew .av { background: #fff; }
+.pnew h3 { display: flex; align-items: center; gap: 8px; justify-content: center; } .pnew h3 img { width: 28px; height: 28px; }
+.edtop { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; }
+.avgrid { display: flex; flex-wrap: wrap; gap: 12px; }
+.avopt { border: 3px solid transparent; border-radius: 50%; padding: 2px; background: none; cursor: pointer; }
+.avopt[aria-pressed="true"] { border-color: var(--forest); }
+.fotorow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.irows { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.irows li { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); padding: 8px 12px; }
+.irows img { width: 40px; height: 40px; }
+.irows .k { display: block; font-size: 13.5px; color: var(--ink-soft); font-weight: 500; }
+.irows .v { display: block; font-weight: 500; overflow-wrap: anywhere; }
+.irows a { color: var(--forest); font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; }
+.stpanel { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; align-items: center; background: #E3EED6; border-radius: var(--r-md); padding: 10px 14px; }
+.stpanel img { width: 110px; height: auto; }
+.welcome { display: grid; gap: 14px; justify-items: center; text-align: center; }
+.wimg { border-radius: 24px; width: 100%; max-width: 720px; height: auto; }
+.wbtns { display: grid; gap: 10px; justify-items: center; width: min(100%, 360px); margin-top: 6px; } .wbtns .btn { width: 100%; }
+@media (max-width: 600px) { .profpill .pn { max-width: 110px; } .logo img { height: 40px; } }
 </style>
 </head>
 <body>
 <div class="decor decor-tr" aria-hidden="true"></div>
 <div class="decor decor-br" aria-hidden="true"></div>
 <div class="decor decor-bl" aria-hidden="true"></div>
+<div class="bodegon" aria-hidden="true"></div>
 
 <div class="app">
   <header class="topbar">
-    <a class="logo" href="#inicio" id="logolink"><img id="logo" src="img/logo-es.webp" width="149" height="34" alt="Mi Plato Inteligente"></a>
-    <div class="langswitch" role="group" id="langgrp">
-      <button type="button" data-lang="es" aria-pressed="true">ES</button>
-      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    <a class="logo" href="#inicio" id="logolink"><img id="logo" src="img/logo-mi-plato-inteligente-horizontal.webp" width="190" height="48" alt="Mi Plato Inteligente"></a>
+    <div class="tb-right">
+      <a class="profpill" id="profpill" href="#perfiles" hidden></a>
+      <div class="langswitch" role="group" id="langgrp">
+        <button type="button" data-lang="es" aria-pressed="true">ES</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
     </div>
   </header>
   <main class="card">
@@ -520,7 +598,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
     porestilo: { q: "dieta", next: "cond", ok: function () { return !!S.a.dieta; } },
     poringr: { q: "ingr", next: "cond", ok: function () { return S.a.ingr.length > 0; } }
   };
-  var ROUTES = ["inicio"].concat(ORDER, ["resumen", "resultados", "plan", "consejos"], Object.keys(ENT));
+  var ROUTES = ["inicio", "bienvenida", "perfiles", "perfil"].concat(ORDER, ["resumen", "resultados", "plan", "consejos"], Object.keys(ENT));
 
   /* ---------- Textos de las secciones nuevas ---------- */
   var X = {
@@ -590,9 +668,12 @@ h2.title { font-size: 28px; line-height: 1.15; }
     return { cond: [], condOtra: "", meds: null, medsTxt: "", alerg: [], alergOtra: "", dieta: null, evita: [], evitaOtra: "", cocina: [], tiempo: null, porc: null, ingr: [], comida: null, mode: "hoy" };
   }
   var MAXPERF = 5;
+  var AV = [["mujer-joven-marron-profundo", "Mujer joven", "Young woman"], ["hombre-adulto-marron-medio", "Hombre adulto", "Adult man"], ["mujer-adulta-clara", "Mujer adulta", "Adult woman"], ["mujer-mayor-marron-medio", "Mujer mayor", "Older woman"], ["hombre-mayor-claro", "Hombre mayor", "Older man"]];
+  var AV_KEYS = AV.map(function (a) { return a[0]; });
+  function newId() { return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   function fresh() {
-    var f = { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es", a: freshA(), perfiles: [], cur: 0 };
-    f.perfiles = [{ n: "", a: f.a }];
+    var f = { lang: (navigator.language || "es").toLowerCase().indexOf("en") === 0 ? "en" : "es", a: freshA(), perfiles: [], cur: 0, visto: false };
+    f.perfiles = [{ id: newId(), n: "", av: "", a: f.a }];
     return f;
   }
   var S = fresh(), storeOk = true, confirming = false;
@@ -626,11 +707,18 @@ h2.title { font-size: 28px; line-height: 1.15; }
           if (o.lang === "es" || o.lang === "en") f.lang = o.lang;
           /* Versión anterior: un solo perfil en «a». Ahora hay hasta 5 perfiles. */
           var lista = Array.isArray(o.perfiles) && o.perfiles.length ? o.perfiles.slice(0, MAXPERF) : [{ n: "", a: o.a }];
-          f.perfiles = lista.map(function (pf) { return { n: pf && typeof pf.n === "string" ? pf.n.slice(0, 24) : "", a: limpiarA(pf && pf.a) }; });
+          var usados = {};
+          f.perfiles = lista.map(function (pf) {
+            var id = pf && typeof pf.id === "string" && /^[\w-]{1,40}$/.test(pf.id) && !usados[pf.id] ? pf.id : newId(); usados[id] = 1;
+            var av = pf && typeof pf.av === "string" && (pf.av === "foto" || AV_KEYS.indexOf(pf.av) > -1) ? pf.av : "";
+            return { id: id, n: pf && typeof pf.n === "string" ? pf.n.slice(0, 24) : "", av: av, a: limpiarA(pf && pf.a) };
+          });
+          f.visto = o.visto === true;
           f.cur = typeof o.cur === "number" && o.cur >= 0 && o.cur < f.perfiles.length ? Math.floor(o.cur) : 0;
           f.a = f.perfiles[f.cur].a;
         }
         S = f;
+        if (!S.visto && hasAny()) S.visto = true;
       }
     } catch (e) { storeOk = false; }
   }
@@ -794,22 +882,113 @@ h2.title { font-size: 28px; line-height: 1.15; }
     }).join("") + '</ol>';
   }
 
+  /* ---------- Fotografías de perfil: solo en este dispositivo (IndexedDB), nunca en localStorage ---------- */
+  var PHOTO = {}, FROM_WELCOME = false;
+  function tt(es, en) { return S.lang === "es" ? es : en; }
+  function idbOpen(cb) {
+    try { var rq = indexedDB.open("mpi-fotos", 1); rq.onupgradeneeded = function () { rq.result.createObjectStore("f"); }; rq.onsuccess = function () { cb(rq.result); }; rq.onerror = function () { cb(null); }; } catch (e) { cb(null); }
+  }
+  function fotoPut(id, blob, done) {
+    idbOpen(function (db) {
+      if (!db) { done(false); return; }
+      try { var tx = db.transaction("f", "readwrite"); tx.objectStore("f").put(blob, id); tx.oncomplete = function () { db.close(); done(true); }; tx.onerror = tx.onabort = function () { db.close(); done(false); }; } catch (e) { done(false); }
+    });
+  }
+  function fotoDel(id) {
+    if (PHOTO[id]) { try { URL.revokeObjectURL(PHOTO[id]); } catch (e) {} delete PHOTO[id]; }
+    idbOpen(function (db) { if (!db) return; try { var tx = db.transaction("f", "readwrite"); tx.objectStore("f").delete(id); tx.oncomplete = function () { db.close(); }; } catch (e) {} });
+  }
+  function fotosLoad() {
+    idbOpen(function (db) {
+      if (!db) return;
+      try {
+        var tx = db.transaction("f", "readonly"), st = tx.objectStore("f"), n = 0;
+        S.perfiles.forEach(function (pf) { var g = st.get(pf.id); g.onsuccess = function () { if (g.result) { PHOTO[pf.id] = URL.createObjectURL(g.result); n++; } }; });
+        tx.oncomplete = function () { db.close(); if (n) render(false); };
+      } catch (e) {}
+    });
+  }
+  /* Recorta al centro en cuadrado y reduce a 320 × 320 en el propio dispositivo. */
+  function fotoPrep(file, cb) {
+    var url = URL.createObjectURL(file), im = new Image();
+    im.onload = function () {
+      var sz = Math.min(im.naturalWidth, im.naturalHeight), c = document.createElement("canvas");
+      c.width = c.height = 320; c.getContext("2d").drawImage(im, (im.naturalWidth - sz) / 2, (im.naturalHeight - sz) / 2, sz, sz, 0, 0, 320, 320);
+      URL.revokeObjectURL(url); c.toBlob(function (b) { cb(b); }, "image/jpeg", 0.88);
+    };
+    im.onerror = function () { URL.revokeObjectURL(url); cb(null); };
+    im.src = url;
+  }
+  function avatarHtml(i, size) {
+    var pf = S.perfiles[i], inner, nm = (pf.n || "").trim();
+    if (pf.av === "foto" && PHOTO[pf.id]) inner = '<img src="' + PHOTO[pf.id] + '" alt="">';
+    else if (AV_KEYS.indexOf(pf.av) > -1) inner = '<img src="img/perfil-avatar-' + pf.av + '.webp" width="320" height="320" alt="">';
+    else if (nm) inner = '<span class="ini" style="font-size:' + Math.round(size * 0.46) + 'px">' + esc(Array.from(nm)[0].toUpperCase()) + '</span>';
+    else inner = '<img class="avu" src="img/perfil-icono-datos.svg" alt="">';
+    return '<span class="av" style="width:' + size + 'px;height:' + size + 'px">' + inner + '</span>';
+  }
+  function perfHasData(pf) { var a = pf.a; return !!(a.cond.length || a.meds || a.alerg.length || a.dieta); }
+
   function viewInicio() {
     var x = u(), cont = hasAny(), go = cont ? "resumen" : "cond", t = cont ? x.resume : x.start;
-    var small = function (cls, img, t, href) {
-      return '<a class="cta small ' + cls + '" href="#' + href + '"><img src="img/' + img + '" width="52" height="52" alt=""><h3>' + esc(t) + '</h3></a>';
+    var big = function (cls, photo, icon, tt2, pp, mode) {
+      return '<a class="hcard ' + cls + '" href="#' + go + '" data-act="modo" data-id="' + mode + '"><span class="ph"><img src="img/' + photo + '" width="1000" height="1000" alt=""></span><span class="tx"><img class="ic" src="img/' + icon + '" width="44" height="44" alt=""><h3>' + esc(tt2) + '</h3><p>' + esc(pp) + '</p><span class="gopill">' + esc(t) + ' ' + ARROW + '</span></span></a>';
     };
-    var wide = function (cls, img, tt, pp, mode) {
-      return '<a class="cta ' + cls + ' cta-wide" href="#' + go + '" data-act="modo" data-id="' + mode + '"><img src="img/' + img + '" width="64" height="64" alt=""><h3>' + esc(tt) + '</h3><p>' + esc(pp) + '</p><span class="go" aria-hidden="true">' + ARROW + '</span><span class="hint" style="color:var(--ink);font-weight:500">' + esc(t) + '</span></a>';
+    var small = function (cls, icon, label, il, href) {
+      return '<a class="scard ' + cls + '" href="#' + href + '"><img class="ic" src="img/' + icon + '" width="40" height="40" alt=""><h3>' + esc(label) + '</h3><img class="il" src="img/' + il + '" alt=""></a>';
     };
-    return '<div class="hero"><h2 id="vt" tabindex="-1">' + esc(x.h1) + '</h2><p class="lead">' + esc(x.h1p) + '</p></div>' +
-      '<div class="cta-grid">' +
-      wide("c-peach", "icono-tipo-cocina.webp", x.c1, x.c1p, "hoy") +
-      wide("c-lav", "calendario.svg", x.c2, x.c2p, "plan") +
-      small("c-mint", "condiciones-salud.svg", x.s1, "porcond") + small("c-gold", "alimentacion.svg", x.s2, "porestilo") +
-      small("c-rose", "icono-ingredientes-disponibles.webp", x.s3, "poringr") + small("c-sky", "icono-consejos-recursos.webp", x.s4, "consejos") + '</div>' +
-      perfilesHtml() + perfilChip() +
+    return '<div class="hero hc"><h2 id="vt" tabindex="-1">' + esc(x.h1) + '</h2><p class="lead">' + esc(x.h1p) + '</p></div>' +
+      '<div class="hgrid">' + big("hp", "inicio-sopa-garbanzos.webp", "icono-olla.svg", x.c1, x.c1p, "hoy") + big("hl", "inicio-meal-prep.webp", "calendario.svg", x.c2, x.c2p, "plan") + '</div>' +
+      '<div class="sgrid">' +
+      small("sc-mint", "condiciones-salud.svg", x.s1, "nav-menta.webp", "porcond") + small("sc-gold", "alimentacion.svg", x.s2, "nav-tazon-garbanzos.webp", "porestilo") +
+      small("sc-rose", "icono-ingredientes.svg", x.s3, "nav-tomates-albahaca.webp", "poringr") + small("sc-sky", "icono-libro-hoja.svg", x.s4, "nav-libros-hojas.webp", "consejos") +
+      small("sc-lav", "icono-personas.svg", tt("Mis perfiles", "My profiles"), "nav-ramas-perfiles.webp", "perfiles") + '</div>' +
+      perfilChip() +
       '<p class="homelang">' + esc(x.homelang) + '</p>' + (hasAny() ? clearBtn() : "");
+  }
+  function viewBienvenida() {
+    return '<div class="welcome"><img class="wimg" src="img/perfil-bienvenida.webp" width="960" height="540" alt="">' +
+      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(tt("Le damos la bienvenida a Mi Plato Inteligente", "Welcome to My Smart Plate")) + '</h2>' +
+      '<p class="lead" style="margin-inline:auto;max-width:56ch">' + esc(tt("Cree su perfil para recibir recetas que se ajustan a su salud, sus gustos y lo que tiene en casa. Todo se guarda solo en este dispositivo.", "Create your profile to get recipes that fit your health, your tastes and what you have at home. Everything is saved only on this device.")) + '</p></div>' +
+      '<div class="wbtns"><a class="btn btn-primary" href="#perfil" data-act="welcome" data-id="crear">' + esc(tt("Crear mi perfil", "Create my profile")) + ' ' + ARROW + '</a>' +
+      '<a class="textbtn" href="#inicio" data-act="welcome" data-id="omitir">' + esc(tt("Entrar sin crear perfil", "Continue without a profile")) + '</a></div></div>';
+  }
+  function viewPerfiles() {
+    var n = S.perfiles.length;
+    var cards = S.perfiles.map(function (pf, i) {
+      var act = i === S.cur, conf = confirming === "del:" + i;
+      var body = conf
+        ? '<div class="confirm" role="alertdialog" aria-labelledby="cq"><p id="cq">' + esc(tt("¿Eliminar «" + perfNombre(i) + "» y todas sus respuestas? No se puede deshacer.", "Remove “" + perfNombre(i) + "” and all its answers? This cannot be undone.")) + '</p><div class="row"><button type="button" class="btn btn-ghost" data-act="clearno">' + esc(u().clearNo) + '</button><button type="button" class="btn btn-danger" data-act="pfdelyes2" data-id="' + i + '">' + esc(tt("Sí, eliminar", "Yes, remove")) + '</button></div></div>'
+        : '<button type="button" class="btn ' + (act ? "btn-primary" : "btn-ghost") + '" data-act="pfenter" data-id="' + i + '">' + esc(tt("Entrar", "Enter")) + ' ' + ARROW + '</button>' +
+          '<div class="pact"><button type="button" class="textbtn" data-act="pfedit" data-id="' + i + '">✎ ' + esc(tt("Editar", "Edit")) + '</button>' + (n > 1 ? '<button type="button" class="textbtn" data-act="pfdelask" data-id="' + i + '">' + esc(tt("Eliminar", "Remove")) + '</button>' : "") + '</div>';
+      return '<li class="pcard' + (act ? " act" : "") + '">' + (act ? '<span class="chk" aria-hidden="true">✓</span>' : "") + avatarHtml(i, 128) + '<h3>' + esc(perfNombre(i)) + '</h3>' +
+        (act ? '<span class="badge-act">' + esc(tt("Perfil activo", "Active profile")) + '</span>' : '<span class="badge-ph">' + esc(perfHasData(pf) ? tt("Perfil configurado", "Profile set up") : tt("Sin configurar", "Not set up")) + '</span>') + body + '</li>';
+    }).join("");
+    var nuevo = n < MAXPERF ? '<li class="pcard pnew"><span class="av" style="width:128px;height:128px"><img src="img/perfil-anadir.webp" width="320" height="320" alt=""></span>' +
+      '<h3><img src="img/icono-usuario-mas.svg" alt="">' + esc(tt("Nuevo perfil", "New profile")) + '</h3><p class="hint">' + esc(tt("Cree un perfil personalizado con sus necesidades, preferencias y objetivos.", "Create a personalized profile with your needs, preferences and goals.")) + '</p>' +
+      '<button type="button" class="btn btn-primary" data-act="pfnew" data-id="x">' + esc(tt("Crear perfil", "Create profile")) + ' ' + ARROW + '</button></li>' : "";
+    return '<div class="hero hc"><h2 class="title" id="vt" tabindex="-1">' + esc(tt("¿Quién va a utilizar la aplicación?", "Who is going to use the app?")) + '</h2><p class="lead">' + esc(tt("Seleccione un perfil o cree uno nuevo. Puede tener hasta " + MAXPERF + " perfiles.", "Select a profile or create a new one. You can have up to " + MAXPERF + " profiles.")) + '</p></div>' +
+      '<ul class="pgrid">' + cards + nuevo + '</ul>' +
+      '<p class="homelang">' + esc(tt("Cada perfil guarda sus propias enfermedades, medicamentos y alergias, y todo queda solo en este dispositivo.", "Each profile keeps its own health conditions, medications and allergies, and everything stays on this device.")) + '</p>';
+  }
+  function viewPerfil() {
+    var pf = S.perfiles[S.cur], es = S.lang === "es", hasPh = !!PHOTO[pf.id], nm = (pf.n || "").trim();
+    var avs = AV.map(function (a) {
+      return '<button type="button" class="avopt" data-act="av" data-id="' + a[0] + '" aria-pressed="' + (pf.av === a[0]) + '" aria-label="' + esc(es ? a[1] : a[2]) + '"><span class="av" style="width:76px;height:76px"><img src="img/perfil-avatar-' + a[0] + '.webp" width="320" height="320" alt=""></span></button>';
+    }).join("");
+    var iniSel = !(AV_KEYS.indexOf(pf.av) > -1 || (pf.av === "foto" && hasPh));
+    var iniOpt = '<button type="button" class="avopt" id="avini" data-act="av" data-id="" aria-pressed="' + iniSel + '" aria-label="' + esc(tt("Círculo con mi inicial", "Circle with my initial")) + '"><span class="av" style="width:76px;height:76px"><span class="ini" style="font-size:35px">' + esc(nm ? Array.from(nm)[0].toUpperCase() : "?") + '</span></span></button>';
+    var row = function (icon, label, id, val) { return '<li><img src="img/' + icon + '" alt=""><span><span class="k">' + esc(label) + '</span><span class="v">' + esc(val || u().unanswered) + '</span></span><a href="#' + id + '">' + esc(u().change) + '</a></li>'; };
+    var ok = perfHasData(pf);
+    return '<div><h2 class="title" id="vt" tabindex="-1">' + esc(tt("Mi perfil", "My profile")) + '</h2><p class="lead">' + esc(tt("Escriba su nombre y elija cómo quiere verse.", "Type your name and choose how you want to look.")) + '</p></div>' +
+      '<div class="edtop"><div id="avprev">' + avatarHtml(S.cur, 120) + '</div>' + textField("perfN", tt("Nombre de este perfil", "Name of this profile"), pf.n || "") + '</div>' +
+      '<div><h3 class="subq" style="margin-top:0">' + esc(tt("Elija un avatar", "Choose an avatar")) + '</h3><div class="avgrid" role="group" aria-label="' + esc(tt("Avatares", "Avatars")) + '">' + avs + iniOpt + '</div></div>' +
+      '<div><h3 class="subq" style="margin-top:0">' + esc(tt("O use su propia fotografía", "Or use your own photo")) + '</h3><p class="hint">' + esc(tt("La fotografía se queda solo en este dispositivo. Puede cambiarla o quitarla cuando quiera.", "The photo stays only on this device. You can change or remove it at any time.")) + '</p>' +
+      '<div class="fotorow"><input type="file" id="f-foto" accept="image/*" hidden><button type="button" class="btn btn-ghost" data-act="fotopick">' + esc(hasPh ? tt("Cambiar mi fotografía", "Change my photo") : tt("Subir mi fotografía", "Upload my photo")) + '</button>' +
+      (hasPh ? '<button type="button" class="btn btn-del" data-act="fotodel">' + esc(tt("Quitar mi fotografía", "Remove my photo")) + '</button>' : "") + '</div><p class="hint" id="fotomsg" role="status"></p></div>' +
+      '<div class="stpanel"><img src="img/' + (ok ? "perfil-completado" : "perfil-sin-configurar") + '.webp" width="400" height="300" alt=""><p>' + esc(ok ? tt("Su perfil de salud está configurado.", "Your health profile is set up.") : tt("Todavía no ha indicado su salud ni sus alergias. Así las recetas serán más seguras para usted.", "You have not entered your health or allergies yet. That makes recipes safer for you.")) + '</p></div>' +
+      '<ul class="irows">' + row("perfil-icono-salud.svg", u().lbl.cond, "cond", summaryValue("cond")) + row("perfil-icono-medicamentos.svg", u().lbl.meds, "meds", summaryValue("meds")) + row("perfil-icono-alergias.svg", u().lbl.alerg, "alerg", summaryValue("alerg")) + row("perfil-icono-alimentacion.svg", u().lbl.dieta, "dieta", summaryValue("dieta")) + '</ul>' +
+      '<div class="nav"><a class="btn btn-ghost" href="#perfiles">' + esc(tt("Volver a perfiles", "Back to profiles")) + '</a><a class="btn btn-primary" href="' + (FROM_WELCOME ? "#inicio" : "#perfiles") + '" data-act="pfdone">' + esc(tt("Listo", "Done")) + ' ' + ARROW + '</a></div>';
   }
   function perfNombre(i) { var n = (S.perfiles[i].n || "").trim(); return n || (S.lang === "es" ? "Perfil " : "Profile ") + (i + 1); }
   function perfilesHtml() {
@@ -1527,11 +1706,15 @@ h2.title { font-size: 28px; line-height: 1.15; }
   }
 
   /* ---------- Render ---------- */
-  function route() { var h = (location.hash || "").replace(/^#/, ""); return ROUTES.indexOf(h) > -1 ? h : "inicio"; }
+  function route() { var h = (location.hash || "").replace(/^#/, ""); if (!h && !S.visto) return "bienvenida"; return ROUTES.indexOf(h) > -1 ? h : "inicio"; }
   function chrome() {
-    var x = u(), lg = S.lang === "es" ? { s: "img/logo-es.webp", w: 149 } : { s: "img/logo-en.webp", w: 118 };
+    var x = u(), lg = S.lang === "es" ? { s: "img/logo-mi-plato-inteligente-horizontal.webp", w: 190, h: 48 } : { s: "img/logo-my-smart-plate-horizontal.webp", w: 190, h: 50 };
     document.documentElement.lang = S.lang;
-    var im = $("#logo"); im.src = lg.s; im.width = lg.w; im.height = 34; im.alt = x.logoAlt;
+    var im = $("#logo"); im.src = lg.s; im.width = lg.w; im.height = lg.h; im.alt = x.logoAlt;
+    var pp = $("#profpill"), r0 = route();
+    if (r0 === "bienvenida") pp.hidden = true;
+    else { pp.hidden = false; pp.innerHTML = avatarHtml(S.cur, 30) + '<span class="pn">' + esc(tt("Perfil: ", "Profile: ") + perfNombre(S.cur)) + '</span>'; pp.setAttribute("aria-label", tt("Cambiar de perfil. Perfil actual: ", "Change profile. Current profile: ") + perfNombre(S.cur)); }
+    document.body.classList.toggle("conbodegon", r0 === "inicio" || r0 === "perfiles" || r0 === "bienvenida");
     $("#logolink").setAttribute("aria-label", x.logoAlt);
     $("#langgrp").setAttribute("aria-label", x.langLabel);
     document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === S.lang)); });
@@ -1548,7 +1731,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   function render(focus) {
     chrome();
     var r = route(); if (r === "resultados") asegurarResultados(); if (r === "plan") asegurarPlan();
-    var html = r === "inicio" ? viewInicio() : r === "resumen" ? viewResumen() : r === "resultados" ? viewResultados() : r === "plan" ? viewPlan() : r === "consejos" ? viewConsejos() : ENT[r] ? viewEntrada(r) : viewQuestion(r);
+    var html = r === "inicio" ? viewInicio() : r === "bienvenida" ? viewBienvenida() : r === "perfiles" ? viewPerfiles() : r === "perfil" ? viewPerfil() : r === "resumen" ? viewResumen() : r === "resultados" ? viewResultados() : r === "plan" ? viewPlan() : r === "consejos" ? viewConsejos() : ENT[r] ? viewEntrada(r) : viewQuestion(r);
     $("#view").innerHTML = html;
     renderNotice();
     if (focus) {
@@ -1584,12 +1767,25 @@ h2.title { font-size: 28px; line-height: 1.15; }
     if (act === "clear") { confirming = "all"; render(false); var c = $("#cq"); if (c) c.scrollIntoView({ block: "center" }); return; }
     if (act === "clearhoy") { confirming = "hoy"; render(false); var c2 = $("#cq"); if (c2) c2.scrollIntoView({ block: "center" }); return; }
     if (act === "clearhoyyes") { S.a.tiempo = null; S.a.porc = null; S.a.ingr = []; S.a.comida = null; confirming = false; save(); render(false); return; }
+    if (act === "welcome") { S.visto = true; FROM_WELCOME = id === "crear"; save(); return; }
+    if (act === "pfdone") { FROM_WELCOME = false; return; }
+    if (act === "pfenter") { var ie = parseInt(id, 10); if (ie >= 0 && ie < S.perfiles.length) { S.cur = ie; S.a = S.perfiles[ie].a; confirming = false; save(); location.hash = "#inicio"; } return; }
+    if (act === "pfedit") { var ied = parseInt(id, 10); if (ied >= 0 && ied < S.perfiles.length) { S.cur = ied; S.a = S.perfiles[ied].a; confirming = false; save(); location.hash = "#perfil"; } return; }
+    if (act === "pfdelask") { confirming = "del:" + id; render(false); var c4 = $("#cq"); if (c4) c4.scrollIntoView({ block: "center" }); return; }
+    if (act === "pfdelyes2") {
+      var idl = parseInt(id, 10);
+      if (S.perfiles.length > 1 && idl >= 0 && idl < S.perfiles.length) { var rm = S.perfiles.splice(idl, 1)[0]; fotoDel(rm.id); if (idl < S.cur) S.cur--; else if (idl === S.cur) S.cur = 0; S.a = S.perfiles[S.cur].a; }
+      confirming = false; save(); render(false); return;
+    }
+    if (act === "av") { S.perfiles[S.cur].av = id; save(); render(false); var av2 = document.querySelector('[data-act="av"][data-id="' + id + '"]'); if (av2) av2.focus({ preventScroll: true }); return; }
+    if (act === "fotopick") { var fi = $("#f-foto"); if (fi) fi.click(); return; }
+    if (act === "fotodel") { var pfx = S.perfiles[S.cur]; fotoDel(pfx.id); if (pfx.av === "foto") pfx.av = ""; save(); render(false); return; }
     if (act === "pf") { var ix = parseInt(id, 10); if (ix >= 0 && ix < S.perfiles.length) { S.cur = ix; S.a = S.perfiles[ix].a; confirming = false; save(); render(false); } return; }
-    if (act === "pfnew") { if (S.perfiles.length < MAXPERF) { var np = { n: "", a: freshA() }; S.perfiles.push(np); S.cur = S.perfiles.length - 1; S.a = np.a; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; } return; }
+    if (act === "pfnew") { if (S.perfiles.length < MAXPERF) { var np = { id: newId(), n: "", av: "", a: freshA() }; S.perfiles.push(np); S.cur = S.perfiles.length - 1; S.a = np.a; confirming = false; save(); location.hash = "#perfil"; } return; }
     if (act === "pfdel") { confirming = "pfdel"; render(false); var c3 = $("#cq"); if (c3) c3.scrollIntoView({ block: "center" }); return; }
-    if (act === "pfdelyes") { if (S.perfiles.length > 1) { S.perfiles.splice(S.cur, 1); S.cur = 0; S.a = S.perfiles[0].a; } confirming = false; save(); render(false); return; }
+    if (act === "pfdelyes") { if (S.perfiles.length > 1) { var rm1 = S.perfiles.splice(S.cur, 1)[0]; fotoDel(rm1.id); S.cur = 0; S.a = S.perfiles[0].a; } confirming = false; save(); render(false); return; }
     if (act === "clearno") { confirming = false; render(false); return; }
-    if (act === "clearyes") { S.a = freshA(); S.perfiles[S.cur].a = S.a; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; return; }
+    if (act === "clearyes") { S.a = freshA(); S.perfiles[S.cur].a = S.a; var pf0 = S.perfiles[S.cur]; fotoDel(pf0.id); if (pf0.av === "foto") pf0.av = ""; confirming = false; save(); if (route() === "inicio") render(true); else location.hash = "#inicio"; return; }
     if (act === "ingadd") { addIngredient(); return; }
     if (act === "icat") { ING_UI.cat = id; ING_UI.q = ""; render(false); var cb = document.querySelector('[data-act="icat"][data-id="' + id + '"]'); if (cb) cb.focus({ preventScroll: true }); return; }
     if (act === "cancelar") { if (RES.ctrl) { try { RES.ctrl.abort(); } catch (e) {} } RES.n++; RES.sig = ""; return; }
@@ -1629,13 +1825,35 @@ h2.title { font-size: 28px; line-height: 1.15; }
   document.addEventListener("input", function (e) {
     if (e.target.id === "f-ingQ") { ING_UI.q = e.target.value; var L2 = $("#ing-list"); if (L2) L2.innerHTML = ingListHtml(); return; }
     var k = e.target.getAttribute && e.target.getAttribute("data-text"); if (!k) return;
-    if (k === "perfN") { S.perfiles[S.cur].n = e.target.value.slice(0, 24); save(); return; }
+    if (k === "perfN") {
+      S.perfiles[S.cur].n = e.target.value.slice(0, 24); save();
+      var pv = $("#avprev"); if (pv) pv.innerHTML = avatarHtml(S.cur, 120);
+      var ib = $("#avini"); if (ib) { var nm2 = S.perfiles[S.cur].n.trim(); ib.innerHTML = '<span class="av" style="width:76px;height:76px"><span class="ini" style="font-size:35px">' + esc(nm2 ? Array.from(nm2)[0].toUpperCase() : "?") + '</span></span>'; }
+      chrome(); return;
+    }
     S.a[k] = e.target.value;
     if (k === "evitaOtra" && e.target.value.trim() && has(S.a.evita, "todo")) { /* escribir un alimento a evitar quita «Como de todo» */
       S.a.evita.splice(S.a.evita.indexOf("todo"), 1);
       var ct = document.querySelector('[data-act="evita"][data-id="todo"]'); if (ct) ct.setAttribute("aria-pressed", "false");
     }
     save(); refreshStepState();
+  });
+  document.addEventListener("change", function (e) {
+    if (e.target.id !== "f-foto") return;
+    var f = e.target.files && e.target.files[0], say = function (t) { var m = $("#fotomsg"); if (m) m.textContent = t; };
+    e.target.value = ""; if (!f) return;
+    if (!/^image\//.test(f.type)) { say(tt("Elija un archivo de imagen (JPG, PNG o WebP).", "Choose an image file (JPG, PNG or WebP).")); return; }
+    if (f.size > 10 * 1024 * 1024) { say(tt("La fotografía pesa más de 10 MB. Elija una más liviana.", "The photo is larger than 10 MB. Choose a smaller one.")); return; }
+    var pf = S.perfiles[S.cur];
+    fotoPrep(f, function (b) {
+      if (!b) { say(tt("No se pudo leer la fotografía. Pruebe con otra.", "We could not read the photo. Try another one.")); return; }
+      fotoPut(pf.id, b, function (ok) {
+        if (!ok) { say(tt("Este navegador no permite guardar la fotografía en el dispositivo.", "This browser does not allow saving the photo on the device.")); return; }
+        if (PHOTO[pf.id]) { try { URL.revokeObjectURL(PHOTO[pf.id]); } catch (e2) {} }
+        PHOTO[pf.id] = URL.createObjectURL(b); pf.av = "foto"; save(); render(false);
+        say(tt("Fotografía guardada en este dispositivo.", "Photo saved on this device."));
+      });
+    });
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && e.target.id === "f-ingNew") { e.preventDefault(); addIngredient(); }
@@ -1644,6 +1862,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
 
   load();
   render(false);
+  fotosLoad();
 })();
 </script>
 </body>
