@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Mi Plato Inteligente</title>
+<link rel="manifest" id="manifestlink" href="manifest.webmanifest">
+<meta name="theme-color" content="#DCE8D2">
+<link rel="icon" type="image/png" sizes="48x48" href="img/favicon-app-v2-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="img/icon-app-v2-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" id="appletitle" content="Mi Plato">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Jost:wght@400;500;600&display=swap">
@@ -84,6 +92,9 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .cta.c-sky { background: linear-gradient(160deg, #ECF5FB 0%, #C5DDEE 100%); }
 .cta[aria-disabled="true"] { cursor: default; }
 .homelang { display: grid; gap: 6px; color: var(--ink-soft); font-size: 15px; }
+.instalar { display: grid; gap: 8px; justify-items: center; text-align: center; margin: 18px 0 14px; }
+.instalar .btn img { width: 26px; height: 26px; border-radius: 7px; }
+.instalar .hint { max-width: 46ch; }
 
 /* Progreso */
 .steps { display: flex; justify-content: space-between; position: relative; margin: 0; padding: 0; list-style: none; }
@@ -606,6 +617,9 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
       s1: "Por área de salud", s2: "Por tipo de alimentación", s3: "Buscar por ingredientes", s4: "Consejos y recursos", soon: "Pronto",
       resume: "Continuar donde quedó", start: "Empezar",
       homelang: "Idioma de la aplicación: puede cambiarlo en cualquier momento con los botones ES y EN; sus respuestas se conservan.",
+      appShort: "Mi Plato", instBtn: "Instalar la aplicación", instLater: "Puede instalarla más tarde desde el menú de su navegador.",
+      instIos: "Para instalarla, toque Compartir y luego «Añadir a pantalla de inicio».", instIosOtro: "Si no ve esa opción, abra esta página en Safari.",
+      instMac: "Para instalarla en Safari, abra el menú Archivo y elija «Añadir al Dock».",
       step: "Paso", of: "de", question: "Pregunta", progress: "Progreso",
       ph: ["Salud", "Preferencias", "Ingredientes", "Resultados"],
       back: "Atrás", next: "Siguiente", skip: "Omitir", clear: "Borrar mis respuestas",
@@ -632,6 +646,9 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
       s1: "By health area", s2: "By eating style", s3: "Search by ingredients", s4: "Tips and resources", soon: "Soon",
       resume: "Continue where you left off", start: "Start",
       homelang: "App language: you can switch at any time with the ES and EN buttons; your answers are kept.",
+      appShort: "My Plate", instBtn: "Install the app", instLater: "You can install it later from your browser menu.",
+      instIos: "To install it, tap Share and then “Add to Home Screen”.", instIosOtro: "If you do not see that option, open this page in Safari.",
+      instMac: "To install it in Safari, open the File menu and choose “Add to Dock”.",
       step: "Step", of: "of", question: "Question", progress: "Progress",
       ph: ["Health", "Preferences", "Ingredients", "Results"],
       back: "Back", next: "Next", skip: "Skip", clear: "Clear my answers",
@@ -1107,9 +1124,35 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
       small("sc-mint", "condiciones-salud.svg", x.s1, "nav-area-salud.webp", "porcond") + small("sc-gold", "alimentacion.svg", x.s2, "nav-tazon-garbanzos.webp", "porestilo") +
       small("sc-rose", "icono-ingredientes.svg", x.s3, "nav-tomates-albahaca.webp", "poringr") + small("sc-sky", "icono-libro-hoja.svg", x.s4, "nav-libros-hojas.webp", "consejos") +
       small("sc-lav", "icono-personas.svg", tt("Mis perfiles", "My profiles"), "nav-ramas-perfiles.webp", "perfiles") + '</div>' +
-      perfilChip() +
+      perfilChip() + instalarHtml() +
       '<p class="homelang">' + esc(x.homelang) + '</p>' + (hasAny() ? clearBtn() : "");
   }
+  /* ---------- Instalar la aplicación (solo en la pantalla de inicio) ---------- */
+  var INST = { ev: null, rechazada: false, abierta: false, hecha: false };
+  function instDisp() {
+    var ua = navigator.userAgent || "", ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var safari = /Safari\//.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|OPiOS|Edg\/|OPR\/|Android/.test(ua);
+    var puesta = INST.hecha || navigator.standalone === true || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+    return { ios: ios, safari: safari, mac: !ios && safari && /Macintosh/.test(ua), puesta: puesta };
+  }
+  function instalarHtml() {
+    var x = u(), d = instDisp(), nota = "";
+    if (d.puesta) return "";
+    if (INST.rechazada) return '<div class="instalar" id="instalar"><p class="hint" role="status">' + esc(x.instLater) + '</p></div>';
+    if (!INST.ev && !d.ios && !d.mac) return "";
+    if (INST.abierta && d.ios) nota = '<p class="hint" role="status">' + esc(x.instIos) + (d.safari ? "" : " " + esc(x.instIosOtro)) + '</p>';
+    if (INST.abierta && d.mac) nota = '<p class="hint" role="status">' + esc(x.instMac) + '</p>';
+    return '<div class="instalar" id="instalar"><button type="button" class="btn btn-ghost" data-act="instalar"' + (INST.ev ? "" : ' aria-expanded="' + (INST.abierta ? "true" : "false") + '"') + '><img src="img/icon-app-v2-192.png" width="26" height="26" alt="">' + esc(x.instBtn) + '</button>' + nota + '</div>';
+  }
+  function instPintar() { if (route() !== "inicio") return; var el = $("#instalar"), h = instalarHtml(); if (el) el.outerHTML = h; else if (h) render(false); }
+  function instalar() {
+    if (!INST.ev) { INST.abierta = !INST.abierta; instPintar(); var b = $("#instalar button"); if (b) b.focus(); return; }
+    var ev = INST.ev; INST.ev = null;
+    ev.prompt();
+    ev.userChoice.then(function (c) { if (c && c.outcome === "accepted") INST.hecha = true; else INST.rechazada = true; instPintar(); }, function () { instPintar(); });
+  }
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); INST.ev = e; INST.rechazada = false; instPintar(); });
+  window.addEventListener("appinstalled", function () { INST.ev = null; INST.hecha = true; instPintar(); });
   function viewBienvenida() {
     return '<div class="welcome"><img class="wimg" src="img/bienvenida-protagonista.webp" width="1000" height="1000" alt="">' +
       '<div class="wtxt"><h2 class="title" id="vt" tabindex="-1">' + esc(tt("Le damos la bienvenida a Mi Plato Inteligente", "Welcome to My Smart Plate")) + '</h2>' +
@@ -1310,7 +1353,7 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
       min: function (n) { return n + " min"; }, srv: function (n) { return n + (n === 1 ? " porción" : " porciones"); },
       photoNote: "Las fotos son ilustrativas del plato.", more: "Ver otras propuestas", edit: "Cambiar mis respuestas", retry: "Intentar de nuevo", wait: function (n) { return "Intentar de nuevo (" + n + " s)"; },
       example: "Datos de ejemplo: esta vista previa no se conecta con Gemini",
-      ia: "Receta más personalizada (con IA)", iaNote: "Al pulsar, sus respuestas se envían a un servicio de inteligencia artificial.", iaWait: "Preparando la receta con IA…", iaErr: "La IA no respondió en este momento. Puede seguir con la receta que ya ve.", iaTag: "Receta preparada con IA a partir de este plato. Revísela antes de cocinarla.",
+      ia: "Receta más personalizada (con IA)", iaNote: "Al pulsar, sus respuestas se envían a un servicio de inteligencia artificial.", iaOff: "Esta función necesita conexión a internet. La receta que ya ve y el resto de la aplicación siguen funcionando.", iaWait: "Preparando la receta con IA…", iaErr: "La IA no respondió en este momento. Puede seguir con la receta que ya ve.", iaTag: "Receta preparada con IA a partir de este plato. Revísela antes de cocinarla.",
       errT: "No se pudieron mostrar propuestas",
       err: {
         network: "No hay conexión con el servicio. Revise su conexión a internet e intente de nuevo.",
@@ -1338,7 +1381,7 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
       min: function (n) { return n + " min"; }, srv: function (n) { return n + (n === 1 ? " serving" : " servings"); },
       photoNote: "Photos are illustrative of the dish.", more: "See other ideas", edit: "Change my answers", retry: "Try again", wait: function (n) { return "Try again (" + n + " s)"; },
       example: "Sample data: this preview does not connect to Gemini",
-      ia: "More personalized recipe (with AI)", iaNote: "When you press it, your answers are sent to an artificial intelligence service.", iaWait: "Preparing the recipe with AI…", iaErr: "The AI did not respond right now. You can keep the recipe you already see.", iaTag: "Recipe prepared with AI from this dish. Please review it before cooking.",
+      ia: "More personalized recipe (with AI)", iaNote: "When you press it, your answers are sent to an artificial intelligence service.", iaOff: "This feature needs an internet connection. The recipe you already see and the rest of the app keep working.", iaWait: "Preparing the recipe with AI…", iaErr: "The AI did not respond right now. You can keep the recipe you already see.", iaTag: "Recipe prepared with AI from this dish. Please review it before cooking.",
       errT: "We could not show suggestions",
       err: {
         network: "Could not reach the service. Check your internet connection and try again.",
@@ -1670,6 +1713,7 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
   /* Botón opcional: pide a la IA una versión más personalizada de un plato. Nunca reintenta solo y, si falla, la receta propia sigue igual. */
   function pedirIA(store, key, plato, titulo, hecho) {
     var cur = store[key]; if (cur && cur.state === "loading") return;
+    if (sinRed()) { iaAviso(); return; }
     var P = perfil(), mine = store[key] = { state: "loading" }, holder = { ctrl: null };
     llamar(armarPromptUna(P, plato, titulo), holder, recetaSample({ plato: plato, titulo: titulo })).then(function (r) {
       if (store[key] !== mine) return;
@@ -1683,12 +1727,15 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
     });
     hecho(key);
   }
+  function sinRed() { return navigator.onLine === false; }
+  function iaAviso() { var r = rs(), t = sinRed() ? r.iaOff : r.iaNote; document.querySelectorAll(".ianote").forEach(function (p) { p.textContent = t; }); }
+  window.addEventListener("online", iaAviso); window.addEventListener("offline", iaAviso);
   function iaBlock(act, key, store) {
     var r = rs(), s = store[key], id = 'iab-' + act + '-' + esc(key);
     if (s && s.state === "loading") return '<div class="iab" id="' + id + '" tabindex="-1" role="status"><p class="hint">' + esc(r.iaWait) + '</p></div>';
     if (s && s.state === "ok") return '<div class="iab" id="' + id + '" tabindex="-1"><p class="hint">' + esc(r.iaTag) + '</p></div>';
     return '<div class="iab" id="' + id + '" tabindex="-1">' + (s && s.state === "error" ? '<p class="need" role="alert">' + esc(r.iaErr) + '</p>' : "") +
-      '<button type="button" class="btn btn-ghost sm" data-act="' + act + '" data-id="' + esc(key) + '">' + esc(r.ia) + '</button><p class="hint">' + esc(r.iaNote) + '</p></div>';
+      '<button type="button" class="btn btn-ghost sm" data-act="' + act + '" data-id="' + esc(key) + '">' + esc(r.ia) + '</button><p class="hint ianote">' + esc(sinRed() ? r.iaOff : r.iaNote) + '</p></div>';
   }
   function tras(act, key) { render(false); var e = document.getElementById("iab-" + act + "-" + key); if (e) e.focus({ preventScroll: true }); }
   var slowTimer = null, waitTimer = null;
@@ -1914,6 +1961,9 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
     document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === S.lang)); });
     $("#privtxt").textContent = x.priv; var pl = $("#privlink"); pl.textContent = x.privl; pl.href = x.privacyUrl; $("#privimg").href = x.privacyUrl;
     document.title = x.logoAlt;
+    var ml = $("#manifestlink"), mh = S.lang === "es" ? "manifest.webmanifest" : "manifest-en.webmanifest";
+    if (ml && ml.getAttribute("href") !== mh) ml.setAttribute("href", mh);
+    var at = $("#appletitle"); if (at) at.setAttribute("content", x.appShort);
   }
   function renderNotice() {
     var n = $("#notice");
@@ -1948,6 +1998,7 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
     var el = e.target.closest("[data-act]"); if (!el) return;
     var act = el.getAttribute("data-act"), id = el.getAttribute("data-id"), a = S.a;
     if (act === "noop") { e.preventDefault(); return; }
+    if (act === "instalar") { instalar(); return; }
     if (act === "more") { var w = el.closest(".optw"), ab = w.classList.toggle("open"); el.setAttribute("aria-expanded", ab ? "true" : "false"); el.textContent = el.getAttribute(ab ? "data-ocultar" : "data-ver"); return; }
     if (act === "modo") { a.mode = id === "plan" ? "plan" : "hoy"; save(); return; }
     if (act === "entrar") { if (el.getAttribute("aria-disabled") === "true") { e.preventDefault(); return; } a.mode = "hoy"; save(); return; }
@@ -2057,6 +2108,7 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
   load();
   render(false);
   fotosLoad();
+  if ("serviceWorker" in navigator) window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
 })();
 </script>
 </body>

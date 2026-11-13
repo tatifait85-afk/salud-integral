@@ -1,0 +1,45 @@
+{
+  "id": "/plato-prueba/",
+  "name": "My Smart Plate",
+  "short_name": "My Plate",
+  "description": "Personalized recipes based on your health, your tastes and what you have at home.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/plato-prueba/",
+  "scope": "/plato-prueba/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#DCE8D2",
+  "background_color": "#F7F3E8",
+  "categories": [
+    "food",
+    "health",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "img/icon-app-v2-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-app-v2-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-app-v2-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "img/icon-app-v2-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

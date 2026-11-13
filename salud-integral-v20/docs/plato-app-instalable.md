@@ -1,10 +1,10 @@
 # Mi Plato Inteligente: aplicación instalable (PWA)
 
-Fecha: 2026-11-11. Complementa `plato-condiciones-salud-medicamentos.md` y `plato-investigacion-reglas-pendientes.md`.
+Fecha: 2026-11-11; rehecho el 2026-11-13 con los íconos icon-app-v2. Complementa `plato-condiciones-salud-medicamentos.md` y `plato-investigacion-reglas-pendientes.md`.
 
 Convierte la página de prueba (`dist/plato-prueba/`, vista previa en https://saludintegral.site/plato-prueba/) en una aplicación que se instala en el teléfono (Android y iPhone), la computadora y la tableta, y que funciona sin internet. No se integra a saludintegral.site: la vista previa sigue siendo la única dirección.
 
-**Estado al 11/11/2026:** el trabajo está hecho y probado en una copia de trabajo, pero los archivos de la aplicación todavía no están en este repositorio ni desplegados; falta la orden de publicar. Este documento describe lo que se publicará.
+**Estado al 13/11/2026:** los archivos se rehicieron sobre el commit `ad39780` y se probaron en una copia de trabajo; todavía no están subidos ni desplegados (falta la orden de publicar). Este documento describe lo que se publicará.
 
 ## Archivos (todos en `dist/plato-prueba/`)
 
@@ -13,9 +13,9 @@ Convierte la página de prueba (`dist/plato-prueba/`, vista previa en https://sa
 | `manifest.webmanifest` | Datos de la aplicación en español: nombre «Mi Plato Inteligente», nombre corto «Mi Plato», `start_url` y `scope` `/plato-prueba/`, modo `standalone`, colores e íconos. |
 | `manifest-en.webmanifest` | Lo mismo en inglés: «My Smart Plate» y «My Plate». Misma identidad de aplicación (`id`, `scope`, `start_url`). |
 | `sw.js` | Service worker: guarda la página y todos sus archivos para usarla sin conexión y se actualiza con cada versión. |
-| `img/icon-192.png`, `img/icon-512.png` | Íconos de marca (copiados de `C:\Codex\Mi_Plato_Inteligente\assets\branding\`). Sirven también como «maskable»: el dibujo llega a 195 px del centro y la zona segura es de 205 px. |
-| `img/apple-touch-icon.png` | 180×180, derivado de `icon-512.png` (iPhone y iPad no aceptan transparencia). |
-| `img/favicon.png` | Ícono de la pestaña (copiado de la carpeta de marca). |
+| `img/icon-app-v2-192.png`, `img/icon-app-v2-512.png` | Íconos de la aplicación (ya estaban en la carpeta). Fondo verde bosque sin transparencia; sirven también como «maskable» porque el dibujo queda dentro de la zona segura. |
+| `img/icon-app-v2-180.png` | Ícono para iPhone y iPad (`apple-touch-icon`), sin transparencia. |
+| `img/favicon-app-v2-48.png` | Ícono de la pestaña. |
 | `index.html` | Se agregaron: enlaces al manifiesto y a los íconos, el botón «Instalar la aplicación», el registro del service worker y el aviso de Gemini sin conexión. |
 
 ## Cómo funciona
@@ -23,10 +23,11 @@ Convierte la página de prueba (`dist/plato-prueba/`, vista previa en https://sa
 - **Idioma:** al elegir ES o EN, la página cambia el manifiesto (`manifest.webmanifest` o `manifest-en.webmanifest`) y el título que usa el iPhone («Mi Plato» o «My Plate»). La aplicación instalada lleva el nombre del idioma activo al momento de instalarla.
 - **Botón «Instalar la aplicación» / «Install the app»:** aparece solo en la pantalla de inicio.
   - Android y computadora: usa el evento `beforeinstallprompt`. Si la persona rechaza el cuadro, el botón se oculta y aparece la nota «Puede instalarla más tarde desde el menú de su navegador».
-  - iPhone y iPad: muestra el mensaje «toque Compartir … y luego «Añadir a pantalla de inicio»». Si el navegador no es Safari, agrega «Si no ve esa opción, abra esta página en Safari».
+  - iPhone y iPad: al pulsar el botón muestra «Para instalarla, toque Compartir y luego «Añadir a pantalla de inicio»». Si el navegador no es Safari, agrega «Si no ve esa opción, abra esta página en Safari».
+  - Safari en Mac: al pulsar el botón muestra «Para instalarla en Safari, abra el menú Archivo y elija «Añadir al Dock»».
   - Desaparece cuando la aplicación ya está instalada (modo `standalone` o `navigator.standalone`) o al recibir el evento `appinstalled`.
   - Si el navegador no ofrece instalación (por ejemplo Firefox en computadora), no se muestra nada.
-- **Sin conexión:** `sw.js` guarda en una caché `mpi-plato-<VERSION>` los 74 archivos esenciales (página, 5 archivos js, manifiestos, íconos, imágenes de la interfaz) y las 399 imágenes de platos e ingredientes (unos 14 MB en la primera instalación). Si un archivo esencial falla, la instalación se descarta y se conserva la versión anterior; si falla una imagen, se guarda cuando se use. Las tipografías de Google Fonts se guardan en `mpi-plato-fuentes` la primera vez que se ven con internet.
+- **Sin conexión:** `sw.js` guarda en una caché `mpi-plato-<VERSION>` los 132 archivos esenciales (página, 5 archivos js, manifiestos, íconos, imágenes de la interfaz; unos 4 MB) y las 399 imágenes de platos e ingredientes (unos 11 MB); en total unos 15 MB en la primera instalación. Si un archivo esencial falla, la instalación se descarta y se conserva la versión anterior; si falla una imagen, se guarda cuando se use. Las tipografías de Google Fonts se guardan en `mpi-plato-fuentes` la primera vez que se ven con internet.
 - **Gemini sin conexión:** la llamada a `api.saludintegral.site/api/generate` (POST) nunca pasa por la caché. Sin internet, el botón «Receta más personalizada (con IA)» ya avisa «Esta función necesita conexión a internet…», y al pulsarlo muestra el mismo mensaje; la receta propia y el resto de la aplicación siguen funcionando. El aviso se actualiza solo al perder o recuperar la conexión.
 
 ## Publicar una versión nueva
@@ -37,7 +38,7 @@ Las aplicaciones instaladas solo se actualizan si `sw.js` cambia. Cada vez que s
 2. Si se agregaron o quitaron archivos, actualizar las listas `NUCLEO` e `IMAGENES` de `sw.js`: todos los archivos de la carpeta menos `sw.js`; los de `img/platos/` e `img/ingredientes/` van en `IMAGENES`, el resto en `NUCLEO`, y `index.html` se escribe `"./"`.
 3. Desplegar y comprobar que https://saludintegral.site/plato-prueba/manifest.webmanifest se entrega como `application/manifest+json`.
 
-Al abrir la aplicación con internet, el navegador detecta el cambio, descarga la caché nueva, borra las anteriores y la usa desde la siguiente apertura (no recarga la página en medio de una respuesta).
+Al abrir la aplicación con internet, el navegador detecta el cambio y descarga la caché nueva; la versión nueva queda en espera y, cuando se cierran todas las ventanas de la aplicación, borra las anteriores y se usa desde la siguiente apertura (no recarga la página en medio de una respuesta).
 
 Ayuda para regenerar las listas (Python 3, ejecutar desde `dist/plato-prueba/` y pegar el resultado entre las marcas `/*NUCLEO*/ … /*FIN-NUCLEO*/` y `/*IMAGENES*/ … /*FIN-IMAGENES*/`):
 
@@ -50,15 +51,16 @@ print("NUCLEO =", json.dumps(sorted(core, key=lambda f: (f != "./", f)), indent=
 print("IMAGENES =", json.dumps(bulk, indent=2))
 ```
 
-## Pruebas realizadas (11/11/2026)
+## Pruebas realizadas (13/11/2026)
 
-Playwright con Chromium y emulación de dispositivos, contra un servidor local con la misma ruta `/plato-prueba/`: **72 pruebas, todas correctas.**
+Playwright con Google Chrome y emulación de dispositivos, contra un servidor local con la misma ruta `/plato-prueba/`: **115 pruebas; 113 correctas y 2 que solo registran el bloqueo de Google Fonts en el entorno de pruebas.**
 
-- Escritorio 1440×900, Android (Pixel 7), iPhone (Safari y otro navegador), iPad y tableta Android: botón de instalar, pasos de iPhone/iPad, nota de Safari, ocultar si ya está instalada, sin desborde horizontal ni errores de JavaScript.
-- Chrome (`Page.getAppManifest` y `Page.getInstallabilityErrors`): manifiesto sin errores ni advertencias y aplicación instalable, en español y en inglés.
-- Sin conexión (escritorio y móvil): la página abre, las imágenes se ven, el armador propone platos, se abre una receta completa, el botón de IA avisa que necesita internet, el cambio a inglés funciona.
-- Actualización: con una versión nueva se instaló sola, se borró la anterior (queda una sola caché de la aplicación), guardó los 473 archivos y funcionó sin internet.
-- Lighthouse 11.7.1: PWA 100 (móvil y escritorio), accesibilidad 95, buenas prácticas 96.
+- Escritorio 1440, Android 412, tableta Android 800 y teléfono 360 (evento de instalación simulado): botón, cuadro del navegador, nota al rechazar, desaparición al aceptar, español e inglés, sin desborde horizontal ni errores de JavaScript.
+- iPhone (Safari y otro navegador), iPad (dos identificaciones) y Safari en Mac: instrucciones, nota de Safari, ocultar si ya está instalada.
+- Firefox en computadora: no se muestra nada.
+- Chrome (`Page.getAppManifest` y `Page.getInstallabilityErrors`): manifiesto sin errores y aplicación instalable, en español y en inglés.
+- Sin conexión (escritorio y móvil): 531 archivos guardados, la página abre, las imágenes se ven, se llega a las propuestas, se abre una receta completa, el botón de IA avisa que necesita internet y no intenta la llamada, el cambio a inglés funciona, el aviso vuelve al normal al recuperar la conexión.
+- Actualización: la versión nueva queda en espera, en la siguiente apertura queda una sola caché con los 531 archivos y funciona sin internet.
 
 ## Lo que no se pudo verificar
 
@@ -66,7 +68,7 @@ Playwright con Chromium y emulación de dispositivos, contra un servidor local c
 - El evento real `beforeinstallprompt`: Chromium sin pantalla no lo dispara, así que el botón se probó con un evento simulado.
 - Las tipografías de Google Fonts sin conexión: el entorno de pruebas las bloquea; si no se guardaron, se usa la letra de respaldo.
 - El tipo de archivo con que Cloudflare entrega `manifest.webmanifest` en producción (se verifica al desplegar).
-- Lighthouse señaló un enlace sin nombre accesible (`#privimg`, el ícono de privacidad); ya existía antes de este trabajo y no se modificó.
+- Lighthouse no se volvió a ejecutar el 13/11/2026.
 
 ## Decisiones tomadas (se pueden cambiar)
 
