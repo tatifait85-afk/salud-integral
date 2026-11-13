@@ -150,7 +150,9 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .privacy a { color: var(--forest); font-weight: 500; }
 .pimg { display: block; border-radius: 10px; }
 
-.nav { position: sticky; bottom: 0; z-index: 3; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 10px; padding-block: 12px 6px; margin-inline: -4px; padding-inline: 4px; background: linear-gradient(180deg, rgba(240,246,226,0) 0%, #F0F6E2 38%); }
+.nav { position: sticky; bottom: 0; z-index: 3; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 10px; padding: 12px 14px; margin-inline: -14px; background: rgba(251, 248, 241, .97); border-top: 1.5px solid var(--line); border-radius: 22px 22px 0 0; box-shadow: 0 -10px 24px -14px rgba(23, 58, 30, .35); }
+.nav .btn { white-space: nowrap; padding-inline: 12px; }
+@media (max-width: 420px) { .nav { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 8px; } }
 .nav.stack { grid-template-columns: minmax(0, 1fr); } .nav.stack .btn-primary { order: -1; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 6px 16px; text-align: center; line-height: 1.2; border-radius: 999px; border: 1.7px solid transparent; font-weight: 500; font-size: 16.5px; cursor: pointer; text-decoration: none; }
 .btn-primary { background: var(--olive); color: #fff; } .btn-primary:hover { background: var(--olive-d); }
@@ -284,12 +286,19 @@ h2.title { font-size: 28px; line-height: 1.15; }
   .cuis { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
   .sum { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .recipes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+  .recipes > .recipe:last-child:nth-child(odd) { grid-column: 1 / -1; width: calc(50% - 11px); justify-self: center; }
   .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 640px); margin-inline: auto; }
   .recipe .photo img { width: 128px; } .recipe { grid-template-columns: 128px minmax(0, 1fr); }
-  .nav { width: min(100%, 820px); margin-inline: auto; padding-inline: 0; }
+  .nav { width: auto; margin-inline: calc(-1 * clamp(28px, 4vw, 64px)); padding: 14px max(clamp(28px, 4vw, 64px), calc((100% - 820px) / 2)); border-radius: 28px 28px 0 0; }
   .linkrow { width: min(100%, 820px); margin-inline: auto; }
   .errbox, .loading { width: min(100%, 720px); margin-inline: auto; }
   .decor-tr { width: 380px; height: 254px; right: 0; } .decor-br { width: 400px; height: 268px; right: 0; } .decor-bl { width: 170px; height: 180px; }
+}
+
+@media (min-width: 1200px) {
+  .results { max-width: 1240px; }
+  .recipes:has(> .recipe:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .recipes:has(> .recipe:nth-child(3):last-child) > .recipe:last-child { grid-column: auto; width: auto; }
 }
 
 /* Resumen: «Revise sus respuestas» */
@@ -314,7 +323,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .mealopt span { overflow-wrap: anywhere; }
 .mealopt[aria-pressed="true"] { background: var(--mint); border: 2.5px solid var(--forest); padding: 9px 5px; }
 .mealopt[aria-pressed="true"] span::before { content: "✓ "; }
-.nav.navsum { position: static; grid-template-columns: minmax(0, 1fr); background: none; padding: 4px 0 0; margin-inline: 0; }
+.nav.navsum { position: static; grid-template-columns: minmax(0, 1fr); background: none; padding: 4px 0 0; margin-inline: 0; border: 0; border-radius: 0; box-shadow: none; }
 @media (min-width: 700px) {
   .rv-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 24px; }
   .rv-art { aspect-ratio: 300 / 210; }
@@ -331,7 +340,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   .mealopt { grid-template-columns: 64px minmax(0, 1fr); justify-items: start; align-items: center; gap: 14px; padding: 8px 16px 8px 10px; font-size: 19px; text-align: left; }
   .mealopt img { width: 64px; height: 64px; }
   .mealopt[aria-pressed="true"] { padding: 7px 15px 7px 9px; }
-  .nav.navsum { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); width: min(100%, 860px); margin-inline: auto; gap: 16px; }
+  .nav.navsum { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); width: min(100%, 860px); margin-inline: auto; gap: 16px; padding: 4px 0 0; }
   .rv-hero h2.title { font-size: 40px; }
 }
 @media (min-width: 700px) and (max-width: 899px) {
@@ -352,6 +361,23 @@ h2.title { font-size: 28px; line-height: 1.15; }
 @media (min-width: 1500px) {
   .rv-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 500px); }
   .rv-hero h2.title { font-size: 52px; }
+}
+
+/* Preguntas: encabezado con ícono, título grande y opciones más amplias */
+.qhead { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; align-items: start; }
+.qic { display: grid; place-items: center; width: 52px; height: 52px; margin-top: 2px; border-radius: 50%; background: #D5E6B1; box-shadow: inset 0 0 0 1.5px rgba(95, 115, 24, .15); }
+.qic img { width: 32px; height: 32px; }
+.qhead.sinic { grid-template-columns: minmax(0, 1fr); }
+.opt .lbl { font-size: 18px; }
+.opt { min-height: 68px; border-radius: 18px; }
+.qgrp { display: grid; grid-template-columns: 48px minmax(0, 1fr); column-gap: 12px; row-gap: 8px; align-items: center; }
+.qgrp > .chips { grid-column: 1 / -1; }
+@media (min-width: 700px) {
+  .qhead { grid-template-columns: 104px minmax(0, 1fr); gap: 24px; align-items: center; } .qic { margin-top: 0; } .qhead.sinic { grid-template-columns: minmax(0, 1fr); } .qic { width: 104px; height: 104px; } .qic img { width: 60px; height: 60px; }
+  .qhead h2.title { font-size: 44px; line-height: 1.1; } .qhead .lead { font-size: 19px; }
+  .opt { min-height: 76px; } .opt .lbl { font-size: 19px; }
+  .qgrp { grid-template-columns: 56px minmax(0, 1fr); column-gap: 14px; } .qgrp .sec-ic { width: 56px; height: 56px; } .qgrp .sec-ic img { width: 34px; height: 34px; }
+  .qgrp > .chips { grid-column: 2; }
 }
 
 /* Consejos y recursos */
@@ -511,9 +537,24 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
 .irows a { color: var(--forest); font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; }
 .stpanel { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; align-items: center; background: #E3EED6; border-radius: var(--r-md); padding: 10px 14px; }
 .stpanel img { width: 110px; height: auto; }
-.welcome { display: grid; gap: 14px; justify-items: center; text-align: center; }
-.wimg { border-radius: 24px; width: 100%; max-width: 720px; height: auto; }
+.welcome { display: grid; gap: 18px; justify-items: center; text-align: center; }
+.wimg { border-radius: 28px; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; object-position: 50% 55%; box-shadow: var(--shadow); }
+.wtxt .lead { margin-inline: auto; max-width: 52ch; }
 .wbtns { display: grid; gap: 10px; justify-items: center; width: min(100%, 360px); margin-top: 6px; } .wbtns .btn { width: 100%; }
+body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px 0 0; }
+@media (min-width: 900px) {
+  body.esbienv .app { min-height: calc(100dvh - 180px); }
+  body.esbienv .card { padding: 0; align-content: center; }
+  .welcome { grid-template-columns: minmax(0, 45fr) minmax(0, 55fr); align-items: center; justify-items: start; text-align: left; gap: clamp(32px, 5vw, 80px); min-height: min(76dvh, 760px); }
+  .wimg { order: 2; height: 100%; max-height: 760px; aspect-ratio: auto; min-height: 460px; border-radius: 36px; }
+  .wtxt h2.title { font-size: clamp(40px, 3.6vw, 58px); line-height: 1.08; }
+  .wtxt .lead { margin-inline: 0; font-size: 20px; }
+  .wbtns { justify-items: start; width: min(100%, 380px); margin-top: 0; }
+  .welcome > .wtxt, .welcome > .wbtns { grid-column: 1; }
+  .welcome { grid-template-rows: 1fr auto auto 1fr; }
+  .welcome > .wtxt { grid-row: 2; } .welcome > .wbtns { grid-row: 3; }
+  .wimg { grid-column: 2; grid-row: 1 / -1; }
+}
 @media (max-width: 600px) { .profpill .pn { max-width: 110px; } .logo img { height: 40px; } }
 </style>
 </head>
@@ -990,7 +1031,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
     } else if (id === "tiempo") {
       h += '<div class="field"><span id="tl" style="font-weight:500;color:var(--forest)">' + (S.lang === "es" ? "Tiempo máximo" : "Maximum time") + '</span><div class="chips" role="radiogroup" aria-labelledby="tl">' +
         TIEMPOS.map(function (m) { return chipBtn("tiempo", String(m), x.mins(m), a.tiempo === m); }).join("") + '</div></div>' +
-        '<div class="field"><span id="pl" style="font-weight:500;color:var(--forest)">' + (S.lang === "es" ? "Porciones" : "Servings") + '</span><div class="chips" role="radiogroup" aria-labelledby="pl">' +
+        '<div class="field qgrp"><span class="sec-ic" aria-hidden="true"><img src="img/icono-porciones.svg" alt="" width="40" height="40"></span><span id="pl" style="font-weight:500;color:var(--forest)">' + (S.lang === "es" ? "Porciones" : "Servings") + '</span><div class="chips" role="radiogroup" aria-labelledby="pl">' +
         PORCIONES.map(function (m) { return chipBtn("porc", String(m), String(m), a.porc === m); }).join("") + '</div></div>';
     } else if (id === "ingr") {
       h += ingUI();
@@ -1070,9 +1111,9 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
       '<p class="homelang">' + esc(x.homelang) + '</p>' + (hasAny() ? clearBtn() : "");
   }
   function viewBienvenida() {
-    return '<div class="welcome"><img class="wimg" src="img/perfil-bienvenida.webp" width="960" height="540" alt="">' +
-      '<div><h2 class="title" id="vt" tabindex="-1">' + esc(tt("Le damos la bienvenida a Mi Plato Inteligente", "Welcome to My Smart Plate")) + '</h2>' +
-      '<p class="lead" style="margin-inline:auto;max-width:56ch">' + esc(tt("Cree su perfil para recibir recetas que se ajustan a su salud, sus gustos y lo que tiene en casa. Todo se guarda solo en este dispositivo.", "Create your profile to get recipes that fit your health, your tastes and what you have at home. Everything is saved only on this device.")) + '</p></div>' +
+    return '<div class="welcome"><img class="wimg" src="img/bienvenida-protagonista.webp" width="1000" height="1000" alt="">' +
+      '<div class="wtxt"><h2 class="title" id="vt" tabindex="-1">' + esc(tt("Le damos la bienvenida a Mi Plato Inteligente", "Welcome to My Smart Plate")) + '</h2>' +
+      '<p class="lead">' + esc(tt("Cree su perfil para recibir recetas que se ajustan a su salud, sus gustos y lo que tiene en casa. Todo se guarda solo en este dispositivo.", "Create your profile to get recipes that fit your health, your tastes and what you have at home. Everything is saved only on this device.")) + '</p></div>' +
       '<div class="wbtns"><a class="btn btn-primary" href="#perfil" data-act="welcome" data-id="crear">' + esc(tt("Crear mi perfil", "Create my profile")) + ' ' + ARROW + '</a>' +
       '<a class="textbtn" href="#inicio" data-act="welcome" data-id="omitir">' + esc(tt("Entrar sin crear perfil", "Continue without a profile")) + '</a></div></div>';
   }
@@ -1100,7 +1141,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
       return '<button type="button" class="avopt" data-act="av" data-id="' + a[0] + '" aria-pressed="' + (pf.av === a[0]) + '" aria-label="' + esc(es ? a[1] : a[2]) + '"><span class="av" style="width:76px;height:76px"><img src="img/perfil-avatar-' + a[0] + '.webp" width="320" height="320" alt=""></span></button>';
     }).join("");
     var iniSel = !(AV_KEYS.indexOf(pf.av) > -1 || (pf.av === "foto" && hasPh));
-    var iniOpt = '<button type="button" class="avopt" id="avini" data-act="av" data-id="" aria-pressed="' + iniSel + '" aria-label="' + esc(tt("Círculo con mi inicial", "Circle with my initial")) + '"><span class="av" style="width:76px;height:76px"><span class="ini" style="font-size:35px">' + esc(nm ? Array.from(nm)[0].toUpperCase() : "?") + '</span></span></button>';
+    var iniOpt = '<button type="button" class="avopt" id="avini" data-act="av" data-id="" aria-pressed="' + iniSel + '" aria-label="' + esc(tt("Círculo con mi inicial", "Circle with my initial")) + '"><span class="av" style="width:76px;height:76px"><span class="ini" style="font-size:35px">' + esc(Array.from(perfNombre(S.cur))[0].toUpperCase()) + '</span></span></button>';
     var row = function (icon, label, id, val) { return '<li><img src="img/' + icon + '" alt=""><span><span class="k">' + esc(label) + '</span><span class="v">' + esc(val || u().unanswered) + '</span></span><a href="#' + id + '">' + esc(u().change) + '</a></li>'; };
     var ok = perfHasData(pf);
     return '<div><h2 class="title" id="vt" tabindex="-1">' + esc(tt("Mi perfil", "My profile")) + '</h2><p class="lead">' + esc(tt("Escriba su nombre y elija cómo quiere verse.", "Type your name and choose how you want to look.")) + '</p></div>' +
@@ -1138,7 +1179,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
   function viewEntrada(r) {
     var x = u(), E = ENT[r], q = Q[E.q], ok = E.ok();
     var note = ok ? "" : '<p class="need" id="need">' + esc(XT().needSel) + '</p>';
-    return '<div><h2 class="title" id="qt" tabindex="-1">' + esc(L(q.title)) + '</h2><p class="lead">' + esc(XT().entry[r]) + '</p></div>' +
+    return '<div class="qhead' + (QICON[E.q] ? "" : " sinic") + '">' + qIcon(E.q) + '<div><h2 class="title" id="qt" tabindex="-1">' + esc(L(q.title)) + '</h2><p class="lead">' + esc(XT().entry[r]) + '</p></div></div>' +
       '<div id="qbody" style="display:grid;gap:14px;grid-template-columns:minmax(0,1fr)">' + qBody(E.q) + '</div>' + note +
       '<div class="nav"><a class="btn btn-ghost" href="#inicio">' + esc(x.back) + '</a>' +
       '<a class="btn btn-primary" id="nextbtn" href="#' + E.next + '" data-act="entrar"' + (ok ? "" : ' aria-disabled="true" aria-describedby="need"') + '>' + esc(XT().cont) + ' ' + ARROW + '</a></div>';
@@ -1173,6 +1214,8 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
       '<div class="actions"><a class="btn btn-primary" href="#cond" data-act="modo" data-id="hoy">' + esc(t.tipsGo) + ' ' + ARROW + '</a><a class="btn btn-ghost" href="#inicio">' + esc(x.back) + '</a></div></section>';
   }
 
+  var QICON = { cond: "perfil-icono-salud", meds: "icono-medicamentos", alerg: "perfil-icono-alergias", dieta: "alimentacion", cocina: "icono-olla", tiempo: "icono-tiempo", ingr: "icono-ingredientes" };
+  function qIcon(id) { return QICON[id] ? '<span class="qic" aria-hidden="true"><img src="img/' + QICON[id] + '.svg" alt="" width="64" height="64"></span>' : ""; }
   function viewQuestion(id) {
     var x = u(), q = Q[id], idx = ORDER.indexOf(id), tot = ORDER.length, ok = answered(id);
     var canNext = !q.required || ok;
@@ -1184,7 +1227,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
     var h = '<div><span class="stepcount">' + esc(x.step + " " + (q.phase + 1) + " " + x.of + " " + x.ph.length + " · " + x.ph[q.phase]) + ' — ' + esc(x.question + " " + (idx + 1) + "/" + tot) + '</span></div>' +
       stepsHtml(q.phase) +
       '<div class="qbar" role="progressbar" aria-label="' + esc(x.progress) + '" aria-valuemin="1" aria-valuemax="' + tot + '" aria-valuenow="' + (idx + 1) + '"><span style="width:' + Math.round((idx + 1) / tot * 100) + '%"></span></div>' +
-      '<div><h2 class="title" id="qt" tabindex="-1">' + esc(L(q.title)) + '</h2><p class="lead">' + esc(L(q.lead)) + ' ' + (q.required ? "" : esc(x.optional)) + '</p>' + (skipTop ? '<div class="linkrow skiptop">' + skipLink + '</div>' : "") + '</div>' +
+      '<div class="qhead' + (QICON[id] ? "" : " sinic") + '">' + qIcon(id) + '<div><h2 class="title" id="qt" tabindex="-1">' + esc(L(q.title)) + '</h2><p class="lead">' + esc(L(q.lead)) + ' ' + (q.required ? "" : esc(x.optional)) + '</p>' + (skipTop ? '<div class="linkrow skiptop">' + skipLink + '</div>' : "") + '</div></div>' +
       '<div id="qbody" style="display:grid;gap:14px;grid-template-columns:minmax(0,1fr)">' + qBody(id) + '</div>' + note +
       '<div class="nav"><a class="btn btn-ghost" href="#' + prev + '">' + esc(x.back) + '</a>' +
       '<a class="btn btn-primary" id="nextbtn" href="#' + next + '" data-act="next" data-id="' + id + '"' + (canNext ? "" : ' aria-disabled="true" aria-describedby="need"') + '>' + esc(x.next) + ' ' + ARROW + '</a></div>' +
@@ -1864,7 +1907,8 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
     var pp = $("#profpill"), r0 = route();
     if (r0 === "bienvenida") pp.hidden = true;
     else { pp.hidden = false; pp.innerHTML = avatarHtml(S.cur, 30) + '<span class="pn">' + esc(tt("Perfil: ", "Profile: ") + perfNombre(S.cur)) + '</span>'; pp.setAttribute("aria-label", tt("Cambiar de perfil. Perfil actual: ", "Change profile. Current profile: ") + perfNombre(S.cur)); }
-    document.body.classList.toggle("conbodegon", r0 === "inicio" || r0 === "perfiles" || r0 === "bienvenida");
+    document.body.classList.toggle("conbodegon", r0 === "inicio" || r0 === "perfiles" || ORDER.indexOf(r0) > -1 || !!ENT[r0]);
+    document.body.classList.toggle("esbienv", r0 === "bienvenida");
     $("#logolink").setAttribute("aria-label", x.logoAlt);
     $("#langgrp").setAttribute("aria-label", x.langLabel);
     document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === S.lang)); });
@@ -1978,7 +2022,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
     if (k === "perfN") {
       S.perfiles[S.cur].n = e.target.value.slice(0, 24); save();
       var pv = $("#avprev"); if (pv) pv.innerHTML = avatarHtml(S.cur, 120);
-      var ib = $("#avini"); if (ib) { var nm2 = S.perfiles[S.cur].n.trim(); ib.innerHTML = '<span class="av" style="width:76px;height:76px"><span class="ini" style="font-size:35px">' + esc(nm2 ? Array.from(nm2)[0].toUpperCase() : "?") + '</span></span>'; }
+      var ib = $("#avini"); if (ib) { var nm2 = S.perfiles[S.cur].n.trim(); ib.innerHTML = '<span class="av" style="width:76px;height:76px"><span class="ini" style="font-size:35px">' + esc(Array.from(perfNombre(S.cur))[0].toUpperCase()) + '</span></span>'; }
       chrome(); return;
     }
     S.a[k] = e.target.value;
