@@ -163,7 +163,7 @@ Por eso la aplicación comprada debe vivir en una dirección protegida (como `/p
 
 - **Cambio de dispositivo:** escribir otra vez el ID de transacción en la página de acceso (cuenta como un dispositivo más, hasta 5, dentro del plazo de 3 meses).
 - **Si pierde el ID:** está en el correo de recibo de PayPal.
-- **Después de los 3 meses:** pendiente de su decisión (ver sección 13).
+- **Después de los 3 meses:** no se reactiva a mano (ver sección 13).
 
 ### Problemas de pago y reembolsos
 
@@ -296,5 +296,4 @@ Las ocho decisiones que se pidieron en la primera versión de este plan (botón 
 - **Marca en la ficha en inglés:** «Holistic Wellness».
 - **«¿Hay algo que prefiera evitar?»:** no se pide ícono.
 
-**Aún por decidir:**
-- Si un comprador pierde el acceso de un dispositivo después de los 3 meses (borró el navegador o cambió de teléfono), ¿se le reactiva a mano o no?
+- **Después de los 3 meses:** si un comprador pierde el acceso de un dispositivo (borró el navegador o cambió de teléfono), no se le reactiva a mano.
