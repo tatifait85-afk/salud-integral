@@ -4,7 +4,9 @@ Fecha: 2026-11-11; rehecho el 2026-11-13 con los íconos icon-app-v2. Complement
 
 Convierte la página de prueba (`dist/plato-prueba/`, vista previa en https://saludintegral.site/plato-prueba/) en una aplicación que se instala en el teléfono (Android y iPhone), la computadora y la tableta, y que funciona sin internet. No se integra a saludintegral.site: la vista previa sigue siendo la única dirección.
 
-**Estado al 13/11/2026:** los archivos se rehicieron sobre el commit `ad39780` y se probaron en una copia de trabajo; todavía no están subidos ni desplegados (falta la orden de publicar). Este documento describe lo que se publicará.
+**Estado al 13/11/2026:** publicado. Los archivos están en `main` (commit `871879b`) y desplegados en https://saludintegral.site/plato-prueba/ con la versión `4103bd69-422d-4aed-b5d1-3b2cb80bddb7` del Worker `saludintegral`. Este documento describe lo publicado.
+
+**Cambios previstos en la fase 2 (pago y acceso):** la aplicación pasará a `/privado/plato/`, `/plato-prueba/` quedará protegida (podrá entrar cualquier comprador) y el service worker se adaptará para no guardar respuestas «No autorizado», revisar el acceso cuando haya conexión y borrar las copias sin conexión ya guardadas. Al hacerlo habrá que revisar `start_url` y `scope` de los manifiestos y actualizar este documento.
 
 ## Archivos (todos en `dist/plato-prueba/`)
 
