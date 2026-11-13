@@ -365,7 +365,6 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .cj-art { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 8px; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--r-md); overflow: hidden; padding-bottom: 16px; box-shadow: 0 6px 18px -12px rgba(23, 58, 30, .35); min-width: 0; }
 .cj-ph { position: relative; display: block; aspect-ratio: 3 / 2; }
 .cj-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cj-lang { position: absolute; left: 12px; top: 12px; background: rgba(251, 248, 241, .94); color: var(--forest); font-size: 13.5px; font-weight: 600; padding: 4px 12px; border-radius: 999px; }
 .cj-cat { justify-self: start; margin: 0 14px; background: var(--mint); color: var(--forest); font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 999px; }
 .cj-art h4 { margin: 0 14px; font-family: var(--serif); font-size: 19px; line-height: 1.2; color: var(--forest); overflow-wrap: anywhere; }
 .cj-art p { margin: 0 14px; font-size: 15px; color: var(--ink-soft); }
@@ -376,8 +375,15 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .cj-use { background: linear-gradient(160deg, #F2F8E7 0%, #DCE8D2 100%); border: 1.5px solid var(--line); border-radius: var(--r-lg); padding: 16px; display: grid; gap: 12px; }
 .cj-use .subt { margin: 0; }
 .cj-uselist .tip { background: rgba(251, 248, 241, .8); }
+.cj-uselist .tip { grid-template-columns: 72px minmax(0, 1fr); column-gap: 14px; align-items: center; padding: 10px 14px 10px 10px; }
+.cj-uselist .tip img { grid-row: 1 / span 2; width: 72px; height: 72px; object-fit: cover; border-radius: 12px; }
+.cj-uselist .tip h3, .cj-uselist .tip p { min-width: 0; overflow-wrap: anywhere; }
 @media (min-width: 600px) {
   .cj-arts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cj-art:nth-child(3):last-child { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr auto; column-gap: 0; }
+  .cj-art:nth-child(3):last-child .cj-ph { grid-row: 1 / -1; aspect-ratio: auto; height: 100%; }
+  .cj-art:nth-child(3):last-child > :not(.cj-ph) { grid-column: 2; }
+  .cj-art:nth-child(3):last-child .cj-cat { margin-top: 16px; }
 }
 @media (min-width: 700px) {
   .cj-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; min-height: 230px; }
@@ -387,18 +393,25 @@ h2.title { font-size: 28px; line-height: 1.15; }
   .tips.cj-tips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cj-tips .tip img { width: 88px; height: 88px; }
   .cj-tips .tip { grid-template-columns: 88px minmax(0, 1fr); }
-  .tips.cj-uselist { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tips.cj-uselist { grid-template-columns: minmax(0, 1fr); }
+  .cj-uselist .tip { grid-template-columns: 88px minmax(0, 1fr); }
+  .cj-uselist .tip img { width: 88px; height: 88px; }
   .cj-use { padding: 20px 22px; }
 }
 @media (min-width: 1100px) {
   .cj-hero { min-height: 280px; }
   .cj-hero h2.title { font-size: 50px; }
-  .cj-arts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cj-arts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cj-art:nth-child(3):last-child { grid-column: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto 1fr auto; }
+  .cj-art:nth-child(3):last-child .cj-ph { grid-row: auto; aspect-ratio: 3 / 2; height: auto; }
+  .cj-art:nth-child(3):last-child > :not(.cj-ph) { grid-column: auto; }
+  .cj-art:nth-child(3):last-child .cj-cat { margin-top: 0; }
   .tips.cj-tips { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .cj-tips .tip { grid-template-columns: 76px minmax(0, 1fr); align-items: start; }
   .cj-tips .tip img { grid-row: 1; width: 76px; height: 76px; }
   .cj-tips .tip h3 { align-self: center; font-size: 17px; }
   .cj-tips .tip p { grid-column: 1 / -1; margin-top: 6px; }
+  .tips.cj-uselist { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .tips { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; grid-template-columns: minmax(0, 1fr); }
@@ -732,8 +745,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
       useT: "Cómo aprovechar Mi Plato Inteligente",
       use: [
         ["Indique sus alergias y lo que evita", "La aplicación excluye esos ingredientes de todas las propuestas."],
-        ["Marque lo que tiene en casa", "En «Buscar por ingredientes» elija lo que hay en su cocina para aprovecharlo."],
-        ["Cambie el idioma cuando quiera", "Use los botones ES y EN; sus respuestas se conservan."]
+        ["Marque lo que tiene en casa", "En «Buscar por ingredientes» elija lo que hay en su cocina para aprovecharlo."]
       ],
       tipsNote: "Son consejos generales de alimentación. No reemplazan la orientación de un profesional de salud.", tipsGo: "Empezar",
       plan: {
@@ -761,8 +773,7 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
       useT: "Getting the most out of My Smart Plate",
       use: [
         ["Tell us your allergies and what you avoid", "The app excludes those ingredients from every suggestion."],
-        ["Mark what you have at home", "In “Search by ingredients”, choose what is in your kitchen to make use of it."],
-        ["Switch language any time", "Use the ES and EN buttons; your answers are kept."]
+        ["Mark what you have at home", "In “Search by ingredients”, choose what is in your kitchen to make use of it."]
       ],
       tipsNote: "These are general eating tips. They do not replace the guidance of a health professional.", tipsGo: "Start",
       plan: {
@@ -1136,21 +1147,24 @@ body.conbodegon .decor-br, body.conbodegon .decor-bl { display: none; }
   function viewConsejos() {
     var t = XT(), x = u(), es = S.lang === "es";
     var B = "https://blog.saludintegral.site", E = "https://flowsomatic.blogspot.com";
-    var arts = [
-      ["es", "articulo-intestino-pancreas", B + "/2026/07/el-eje-intestino-pancreas-el-poder-de.html", "Salud digestiva y metabolismo", "El eje intestino-páncreas: el poder de la microbiota", "Descubra cómo la salud de su intestino influye en el páncreas, el metabolismo y su bienestar integral."],
-      ["es", "articulo-dieta-restrictiva", B + "/2026/07/por-que-tu-dieta-restrictiva-te.html", "Nutrición y alimentación consciente", "¿Por qué tu dieta restrictiva te mantiene inflamada?", "Conozca cómo las dietas muy restrictivas pueden afectar su metabolismo, sus hormonas y su relación con la comida."],
-      ["en", "articulo-peso-emociones", E + "/2026/10/the-weight-of-emotions-emotional.html", "Emotional Wellbeing", "The Weight of Emotions: Emotional Factors That Influence Weight Gain", "Explore how emotional factors can influence your eating patterns, metabolism and overall well-being."],
-      ["en", "articulo-restrictive-diet-eng", E + "/2026/10/why-is-your-restrictive-diet-keeping.html", "Nutrition & Mindful Eating", "Why Is Your Restrictive Diet Keeping You Inflamed?", "Learn why overly restrictive diets can backfire and what to do instead to reach a healthy, sustainable balance."]
+    var arts = es ? [
+      ["articulo-intestino-pancreas", B + "/2026/07/el-eje-intestino-pancreas-el-poder-de.html", "Salud digestiva y metabolismo", "El eje intestino-páncreas: el poder de la microbiota", "Descubra cómo la salud de su intestino influye en el páncreas, el metabolismo y su bienestar integral."],
+      ["articulo-dieta-restrictiva", B + "/2026/07/por-que-tu-dieta-restrictiva-te.html", "Nutrición y alimentación consciente", "¿Por qué tu dieta restrictiva te mantiene inflamada?", "Conozca cómo las dietas muy restrictivas pueden afectar su metabolismo, sus hormonas y su relación con la comida."],
+      ["articulo-peso-emociones", B + "/2025/06/el-peso-de-las-emociones-factores.html", "Bienestar emocional", "El peso de las emociones: factores emocionales que influyen en el aumento de peso", "Explore cómo los factores emocionales pueden influir en sus hábitos de alimentación, su metabolismo y su bienestar general."]
+    ] : [
+      ["articulo-intestino-pancreas", E + "/2026/10/the-gutpancreas-axis-power-of-microbiota.html", "Digestive Health & Metabolism", "The Gut–Pancreas Axis: The Power of the Microbiota", "Discover how the health of your gut influences your pancreas, your metabolism and your overall well-being."],
+      ["articulo-restrictive-diet-eng", E + "/2026/10/why-is-your-restrictive-diet-keeping.html", "Nutrition & Mindful Eating", "Why Is Your Restrictive Diet Keeping You Inflamed?", "Learn why overly restrictive diets can backfire and what to do instead to reach a healthy, sustainable balance."],
+      ["articulo-peso-emociones", E + "/2026/10/the-weight-of-emotions-emotional.html", "Emotional Wellbeing", "The Weight of Emotions: Emotional Factors That Influence Weight Gain", "Explore how emotional factors can influence your eating patterns, metabolism and overall well-being."]
     ];
     var tipImg = ["vegetales", "legumbres", "sal", "integrales", "planificacion", "etiquetas", "hidratacion", "sobras"];
     var artHtml = '<ul class="cj-arts">' + arts.map(function (a) {
-      var ae = a[0] === "es";
-      return '<li class="cj-art" lang="' + a[0] + '"><span class="cj-ph"><img src="img/consejos/' + a[1] + '.webp" alt="" width="600" height="400" loading="lazy"><span class="cj-lang">' + (ae ? "Español" : "English") + '</span></span>' +
-        '<span class="cj-cat">' + esc(a[3]) + '</span><h4>' + esc(a[4]) + '</h4><p>' + esc(a[5]) + '</p>' +
-        '<a class="btn btn-primary cj-read" href="' + a[2] + '" target="_blank" rel="noopener">' + (ae ? "Leer artículo" : "Read article") + ' ' + ARROW + '<span class="sr" style="position:absolute;left:-9999px">' + (es ? " (se abre en otra pestaña)" : " (opens in a new tab)") + '</span></a></li>';
+      return '<li class="cj-art"><span class="cj-ph"><img src="img/consejos/' + a[0] + '.webp" alt="" width="600" height="400" loading="lazy"></span>' +
+        '<span class="cj-cat">' + esc(a[2]) + '</span><h4>' + esc(a[3]) + '</h4><p>' + esc(a[4]) + '</p>' +
+        '<a class="btn btn-primary cj-read" href="' + a[1] + '" target="_blank" rel="noopener">' + (es ? "Leer artículo" : "Read article") + ' ' + ARROW + '<span class="sr" style="position:absolute;left:-9999px">' + (es ? " (se abre en otra pestaña)" : " (opens in a new tab)") + '</span></a></li>';
     }).join("") + '</ul>';
     var tipHtml = '<ul class="tips cj-tips">' + t.tips.map(function (c, i) { return '<li class="tip"><img src="img/consejos/tip-' + tipImg[i] + '.webp" alt="" width="240" height="240" loading="lazy"><h3>' + esc(c[0]) + '</h3><p>' + esc(c[1]) + '</p></li>'; }).join("") + '</ul>';
-    var useHtml = '<ul class="tips cj-uselist">' + t.use.map(function (c) { return '<li class="tip"><h3>' + esc(c[0]) + '</h3><p>' + esc(c[1]) + '</p></li>'; }).join("") + '</ul>';
+    var useImg = ["alergias", "ingredientes"];
+    var useHtml = '<ul class="tips cj-uselist">' + t.use.map(function (c, i) { return '<li class="tip"><img src="img/consejos/uso-' + useImg[i] + '.webp" alt="" width="240" height="240" loading="lazy"><h3>' + esc(c[0]) + '</h3><p>' + esc(c[1]) + '</p></li>'; }).join("") + '</ul>';
     return '<section class="results cj">' +
       '<div class="cj-hero"><div class="cj-txt"><h2 class="title" id="vt" tabindex="-1">' + esc(t.tipsT) + '</h2><p class="lead">' + esc(t.tipsP) + '</p><svg class="rv-swash" viewBox="0 0 320 22" aria-hidden="true"><path d="M4 16C70 2 150 22 220 12c36-5 66-8 96-9" fill="none" stroke="#5F7318" stroke-width="3.5" stroke-linecap="round"/></svg></div><img class="cj-img" src="img/consejos/consejos-hero.webp" alt="" width="1200" height="675"></div>' +
       '<h3 class="subt cj-h"><img src="img/icono-libro-hoja.svg" alt="" width="34" height="34" aria-hidden="true">' + (es ? "Explore nuestros artículos" : "Explore our articles") + '</h3>' + artHtml +
