@@ -58,7 +58,14 @@ const productos = (env) => [
     canjeDias: Number(env.PLATO_REDEEM_DAYS || 90), // 3 meses para activar dispositivos nuevos
     ttl: null, // registro del pago sin vencimiento
   },
-  { id: "jardin", precio: parseFloat(env.PRICE_JARDIN || "25"), prefijo: "j:", cookie: "si_jardin", api: "/api/jardin", privados: ["/privado/jardin/"] },
+  {
+    id: "jardin", precio: parseFloat(env.PRICE_JARDIN || "25"), prefijo: "j:", cookie: "si_jardin", api: "/api/jardin", privados: ["/privado/jardin/"],
+    // Acceso de por vida en 5 dispositivos, con 3 meses para activar dispositivos nuevos (decisión del 14/11/2026, igual que Mi Plato).
+    tokenSeg: Number(env.JARDIN_TOKEN_DAYS || 365) * DIA,
+    renovarSeg: DIA,
+    canjeDias: Number(env.JARDIN_REDEEM_DAYS || 90),
+    ttl: null,
+  },
   { id: "equilibrio", precio: parseFloat(env.PRICE_EQUILIBRIO || "12.99"), prefijo: "e:", cookie: "si_equilibrio", api: "/api/equilibrio", privados: ["/privado/equilibrio/"] },
   { id: "habitos", precio: parseFloat(env.PRICE_HABITOS || env.PRICE || "9.99"), prefijo: "p:", cookie: "si_mapa", api: "/api", privados: ["/privado/"] },
 ];
@@ -180,7 +187,7 @@ async function acceso(request, env, prod) {
   const actual = await leerToken(request, env, prod); // mismo dispositivo con cookie vigente: no cuenta otra emisión
   const mismo = !!(actual && actual.k === k);
   const dias = prod.canjeDias || Number(env.REDEEM_DAYS || 30);
-  // El plazo solo limita los dispositivos NUEVOS de Mi Plato; un dispositivo ya activado sigue entrando.
+  // El plazo solo limita los dispositivos NUEVOS (Mi Plato y Mi Jardín); un dispositivo ya activado sigue entrando.
   if (!(prod.canjeDias && mismo) && Date.now() - reg.t > dias * 86400000) return json({ estado: "expirado" }, 403);
 
   if (!mismo) {
