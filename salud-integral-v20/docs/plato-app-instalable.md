@@ -8,6 +8,20 @@ Convierte la página de prueba (`dist/plato-prueba/`, vista previa en https://sa
 
 **Cambios previstos en la fase 2 (pago y acceso):** la aplicación pasará a `/privado/plato/`, `/plato-prueba/` quedará protegida (podrá entrar cualquier comprador) y el service worker se adaptará para no guardar respuestas «No autorizado», revisar el acceso cuando haya conexión y borrar las copias sin conexión ya guardadas. Al hacerlo habrá que revisar `start_url` y `scope` de los manifiestos y actualizar este documento.
 
+## Fase 2: acceso solo para compradores (preparada el 14/11/2026, sin publicar)
+
+En la rama `ficha-mi-plato`. Probada con el Worker en local y avisos de PayPal simulados (91 pruebas) y en Chrome (24 pruebas).
+
+- **Dos copias de la aplicación**, iguales salvo el manifiesto: `/privado/plato/` (la de venta; `id` y `start_url` `/privado/plato/`) y `/plato-prueba/` (para probar cambios antes de pasarlos a la de venta). Las dos piden la cookie de comprador `si_plato`. Al cambiar algo, se hace en `/plato-prueba/` y luego se copia la carpeta a `/privado/plato/` sin tocar sus manifiestos.
+- **`scope` de los manifiestos: `/`**, para que la página de acceso se abra dentro de la aplicación instalada (iPhone y iPad no comparten la cookie entre Safari y la aplicación).
+- **Archivos públicos** en las dos carpetas (el navegador los pide sin cookie): `sw.js`, los manifiestos y los íconos `icon-app-v2-*` y `favicon-app-v2-*`. Todo lo demás pide la cookie; quien abre la página sin acceso va a `/mi-plato-inteligente/acceso/` (o a `/en/my-smart-plate/access/` si el navegador está en inglés).
+- **Service worker (`VERSION` 2026-11-14.1):**
+  - Solo guarda la copia sin conexión si el Worker confirma el acceso (`/api/plato/estado`), y nunca guarda respuestas que no sean 200.
+  - Al abrir la aplicación con conexión, pide la página al servidor (que revisa la cookie y la renueva); si tarda más de 4 segundos o no hay conexión, usa la copia guardada.
+  - Si el servidor dice que no hay acceso (sin cookie o reembolso), borra todas las copias, se da de baja y lleva a la página de acceso.
+  - Se activa de inmediato (`skipWaiting`), para que las copias viejas de `/plato-prueba/` guardadas desde la fase 1 se borren en cuanto el navegador vea el `sw.js` nuevo.
+- **Receta con IA:** la página llama a `/api/plato/receta` del Worker `saludintegral` con datos estructurados (plato, alergias, alimentos que evitar, tipo de alimentación, etc.), no con un texto libre. El Worker exige la cookie de comprador, permite 20 recetas por hora y por compra, arma el texto para Gemini con una plantilla fija y lo envía al Worker `mi-plato-inteligente-api` por un enlace interno (`GEMINI`).
+
 ## Archivos (todos en `dist/plato-prueba/`)
 
 | Archivo | Para qué sirve |

@@ -6,7 +6,7 @@
   "lang": "en",
   "dir": "ltr",
   "start_url": "/plato-prueba/",
-  "scope": "/plato-prueba/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "any",
   "theme_color": "#DCE8D2",

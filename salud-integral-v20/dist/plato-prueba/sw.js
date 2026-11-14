@@ -1,10 +1,18 @@
 /* Mi Plato Inteligente: service worker.
    Guarda la aplicación para usarla sin conexión. Cambie VERSION en cada publicación
-   (ver docs/plato-app-instalable.md). */
+   (ver docs/plato-app-instalable.md).
+   Acceso (fase 2): la aplicación solo funciona para compradores.
+   - Nunca guarda respuestas que no sean 200 (por ejemplo «No autorizado» o una redirección).
+   - Al abrir la aplicación con conexión, pide la página al servidor (que revisa la cookie de comprador
+     y la renueva). Sin conexión, o si el servidor tarda, usa la copia guardada.
+   - Si el servidor dice que no hay acceso (sin cookie, reembolso), borra todas las copias guardadas,
+     se da de baja y deja que el servidor lleve a la página de acceso. */
 "use strict";
-var VERSION = "2026-11-13.1";
+var VERSION = "2026-11-14.1";
 var CACHE = "mpi-plato-" + VERSION;
 var FUENTES = "mpi-plato-fuentes";
+var ESTADO = "/api/plato/estado";
+var ESPERA_RED = 4000; /* milisegundos antes de usar la copia guardada al abrir la aplicación */
 var NUCLEO = /*NUCLEO*/[
   "./",
   "armador.js",
@@ -547,30 +555,59 @@ function guardarImagenes(cache) {
     var grupo = IMAGENES.slice(i, i + 12); i += 12;
     if (!grupo.length) return Promise.resolve();
     return Promise.all(grupo.map(function (u) {
-      return fetch(u).then(function (r) { if (r.ok) return cache.put(u, r); }).catch(function () {});
+      return fetch(u).then(function (r) { if (r.ok && r.status === 200) return cache.put(u, r); }).catch(function () {});
     })).then(tanda);
   }
   return tanda();
 }
 
+/* true = acceso confirmado; false = el servidor dice que no hay acceso; null = no se pudo saber (sin conexión). */
+function acceso() {
+  return fetch(ESTADO, { credentials: "same-origin", cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json().then(function (j) { return !!(j && j.activo); }) : null; })
+    .catch(function () { return null; });
+}
+
+/* Borra todas las copias de la aplicación, se da de baja y recarga las ventanas abiertas
+   (el servidor las lleva a la página de acceso). */
+var retirando = null;
+function retirar() {
+  if (retirando) return retirando;
+  retirando = caches.keys().then(function (ks) {
+    return Promise.all(ks.filter(function (k) { return k.indexOf("mpi-plato-") === 0; }).map(function (k) { return caches.delete(k); }));
+  }).then(function () { return self.registration.unregister(); })
+    .then(function () { return self.clients.matchAll({ type: "window" }); })
+    .then(function (cs) { cs.forEach(function (c) { try { c.navigate(c.url); } catch (e) {} }); })
+    .catch(function () {});
+  return retirando;
+}
+
 self.addEventListener("install", function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (cache) {
-    /* Si un archivo esencial falla, la instalación se descarta y sigue la versión anterior. */
-    return Promise.all(NUCLEO.map(function (u) {
-      return fetch(new Request(u, { cache: "reload" })).then(function (r) {
-        if (!r.ok) throw new Error("No se pudo guardar " + u);
-        return cache.put(u, r);
-      });
-    })).then(function () { return guardarImagenes(cache); });
-  }).catch(function (err) { return caches.delete(CACHE).then(function () { throw err; }); }));
+  self.skipWaiting();
+  e.waitUntil(acceso().then(function (ok) {
+    if (ok !== true) return; /* sin acceso confirmado no se guarda nada; al activarse se decide */
+    return caches.open(CACHE).then(function (cache) {
+      /* Si un archivo esencial falla, la instalación se descarta y sigue la versión anterior. */
+      return Promise.all(NUCLEO.map(function (u) {
+        return fetch(new Request(u, { cache: "reload", credentials: "same-origin" })).then(function (r) {
+          if (!r.ok || r.status !== 200) throw new Error("No se pudo guardar " + u);
+          return cache.put(u, r);
+        });
+      })).then(function () { return guardarImagenes(cache); });
+    }).catch(function (err) { return caches.delete(CACHE).then(function () { throw err; }); });
+  }));
 });
 
 self.addEventListener("activate", function (e) {
   e.waitUntil(caches.keys().then(function (ks) {
     return Promise.all(ks.filter(function (k) { return k.indexOf("mpi-plato-") === 0 && k !== CACHE && k !== FUENTES; })
       .map(function (k) { return caches.delete(k); }));
-  }).then(function () { return self.clients.claim(); }));
+  }).then(function () { return self.clients.claim(); })
+    .then(function () { return acceso(); })
+    .then(function (ok) { if (ok === false) return retirar(); }));
 });
+
+function noAutorizado(r) { return r.type === "opaqueredirect" || r.status === 401 || r.status === 403 || r.redirected; }
 
 self.addEventListener("fetch", function (e) {
   var req = e.request;
@@ -586,15 +623,36 @@ self.addEventListener("fetch", function (e) {
     return;
   }
 
-  if (url.origin !== self.location.origin || url.pathname.indexOf(new URL(self.registration.scope).pathname) !== 0) return;
+  var base = new URL(self.registration.scope).pathname;
+  if (url.origin !== self.location.origin || url.pathname.indexOf(base) !== 0) return;
+
+  var pagina = req.mode === "navigate" && (url.pathname === base || url.pathname === base + "index.html");
+  if (pagina) {
+    /* Con conexión: el servidor revisa el acceso. Sin conexión o si tarda: la copia guardada. */
+    var red = fetch(req).then(function (r) {
+      if (noAutorizado(r)) { e.waitUntil(retirar()); return r; }
+      if (r.ok && r.status === 200) { var c = r.clone(); e.waitUntil(caches.open(CACHE).then(function (cache) { return cache.put("./", c); })); }
+      return r;
+    });
+    e.respondWith(caches.open(CACHE).then(function (cache) {
+      return cache.match("./").then(function (hit) {
+        if (!hit) return red;
+        var espera = new Promise(function (ok) { setTimeout(function () { ok(null); }, ESPERA_RED); });
+        return Promise.race([red.catch(function () { return null; }), espera]).then(function (r) {
+          if (r && (r.ok || noAutorizado(r))) return r; /* un error del servidor no impide usar la copia guardada */
+          red.catch(function () {}); /* la consulta sigue: si revela que no hay acceso, se retira la copia */
+          return hit;
+        });
+      });
+    }));
+    return;
+  }
 
   e.respondWith(caches.open(CACHE).then(function (cache) {
-    var base = new URL(self.registration.scope).pathname;
-    var clave = req.mode === "navigate" && (url.pathname === base || url.pathname === base + "index.html") ? "./" : req;
-    return cache.match(clave, { ignoreSearch: true }).then(function (hit) {
+    return cache.match(req, { ignoreSearch: true }).then(function (hit) {
       if (hit) return hit;
       return fetch(req).then(function (r) {
-        if (r.ok && r.status === 200) cache.put(req, r.clone());
+        if (r.ok && r.status === 200 && !r.redirected) cache.put(req, r.clone());
         return r;
       });
     });

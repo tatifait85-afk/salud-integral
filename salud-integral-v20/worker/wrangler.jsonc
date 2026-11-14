@@ -1,23 +1,29 @@
 {
-  // Worker de pagos unificado (hábitos + equilibrio + jardín). Desplegado como "saludintegral".
+  // Worker de pagos unificado (hábitos + equilibrio + jardín + Mi Plato Inteligente). Desplegado como "saludintegral".
   "name": "saludintegral",
   "main": "src/index.js",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "../dist",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/privado/*"]
+    "run_worker_first": ["/api/*", "/privado/*", "/plato-prueba", "/plato-prueba/*"]
   },
   "send_email": [{ "name": "EMAIL", "destination_address": "terapiaholisticacr@gmail.com" }],
   "kv_namespaces": [{ "binding": "PAGOS", "id": "4a6d28ce6fb14b6aacc661fb2bec7d86" }],
+  // Receta con IA de Mi Plato: enlace interno al Worker de Gemini (que no tiene dirección pública).
+  "services": [{ "binding": "GEMINI", "service": "mi-plato-inteligente-api" }],
   "vars": {
     "PAYPAL_RECEIVER": "lolaita42@gmail.com",
     "PRICE_HABITOS": "9.99",
     "PRICE_EQUILIBRIO": "12.99",
     "PRICE_JARDIN": "25",
+    "PRICE_PLATO": "39.99",
     "CURRENCY": "USD",
     "REDEEM_DAYS": "30",
     "MAX_REDEEMS": "5",
-    "TOKEN_HOURS": "24"
+    "TOKEN_HOURS": "24",
+    // Solo Mi Plato Inteligente: cookie de 365 días renovada con el uso y 90 días (3 meses) para activar dispositivos nuevos.
+    "PLATO_TOKEN_DAYS": "365",
+    "PLATO_REDEEM_DAYS": "90"
   }
 }
