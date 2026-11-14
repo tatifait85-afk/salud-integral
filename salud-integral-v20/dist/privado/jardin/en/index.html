@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>My Digestive Garden | Salud Integral</title>
+<title>My Digestive Garden | Holistic Wellness</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#F7F3E8">
 <base href="/assets/jardin/">
@@ -484,7 +484,7 @@ const L={
   rewH:'¡Estación 1 completa!',rewB:(s)=>`Ganaste ${s} semillas. Vuelve al jardín: se despertó la siguiente estación.`,back:'Volver al jardín',
   underH:'Esta estación se construye después',underB:'Para esta vista previa solo está lista la estación 1. Cuando apruebes cómo se ve y se juega, construyo las demás.',
   underBro:'Esta estación aún no está lista en la vista previa.',rewBro:'¡Lo lograste! Vuelve al jardín cuando quieras.'},
- en:{title:'My Digestive Garden',eyebrow:'Salud Integral',sub:'Your practical guide to better digestion and wellbeing',start:'Start',
+ en:{title:'My Digestive Garden',eyebrow:'Holistic Wellness',sub:'Your practical guide to better digestion and wellbeing',start:'Start',
   charH:'Create your character',charB:"Hi! I'm Brote, your guide in the garden. Choose how you want to look. Your name is optional.",
   woman:'Woman',man:'Man',skin:'Skin',hair:'Hair',name:'Your name (optional)',namePh:'Type your name',enter:'Enter the garden',
   seeds:'Seeds',garden:'Garden',again:'Start over',sure:'Sure? Tap again',
@@ -539,7 +539,7 @@ function brote(){return '<img class="brote" src="img/brote.webp" alt="" width="5
 /* ====== Pantallas ====== */
 function topbar(){
   const tt=t(),sc=S.screen,inScene=/^st\d$/.test(sc)||sc==='reward'||sc==='final';
-  const left=inScene?`<button class="pill back" data-act="back" aria-label="${T('Atrás','Back')}">← ${T('Atrás','Back')}</button><button class="pill gard" data-act="toMap" aria-label="${tt.back}">⌂<span class="hide-sm"> ${tt.garden}</span></button>`:`<a class="pill gard" href="${SITE_HOME[S.lang]}" aria-label="Salud Integral">←<span class="hide-sm"> Salud Integral</span></a>`;
+  const left=inScene?`<button class="pill back" data-act="back" aria-label="${T('Atrás','Back')}">← ${T('Atrás','Back')}</button><button class="pill gard" data-act="toMap" aria-label="${tt.back}">⌂<span class="hide-sm"> ${tt.garden}</span></button>`:`<a class="pill gard" href="${SITE_HOME[S.lang]}" aria-label="${T('Salud Integral','Holistic Wellness')}">←<span class="hide-sm"> ${T('Salud Integral','Holistic Wellness')}</span></a>`;
   const seeds=`<span class="pill seeds" aria-label="${tt.seeds}">${ICON.seed.replace('<svg','<svg width="14" height="18"')}${S.seeds}</span>`;
   const rst=(sc==='map'||inScene)?`<button class="pill reset ${S.askReset?'ask':''}" data-act="reset" aria-label="${tt.again}">${S.askReset?tt.sure:'↺<span class="long"> '+tt.again+'</span>'}</button>`:'';
   return `<header class="topbar">${left}<span class="brand">${inScene?'':tt.title}</span>${seeds}${rst}<button class="pill" data-act="lang" aria-label="Idioma / Language">${S.lang==='es'?'EN':'ES'}</button></header>`;
