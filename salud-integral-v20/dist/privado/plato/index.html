@@ -104,6 +104,11 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .steps li.done .n { background: var(--leaf); border-color: var(--leaf); color: var(--cream); }
 .steps li.now .n { background: var(--olive); border-color: var(--olive); color: #fff; box-shadow: 0 0 0 4px var(--mint); }
 .steps li.now { color: var(--forest); font-weight: 600; }
+.steps a.stp { display: grid; justify-items: center; gap: 4px; color: inherit; text-decoration: none; border-radius: 10px; padding: 0 4px 2px; min-width: 44px; }
+.steps a.stp .sl { text-decoration: underline; text-decoration-color: rgba(47,107,42,.35); text-underline-offset: 3px; }
+.steps a.stp:hover .sl { color: var(--forest); text-decoration-color: currentColor; }
+.steps a.stp:hover .n { box-shadow: 0 0 0 3px var(--mint); }
+.steps a.stp:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
 .qbar { height: 6px; border-radius: 999px; background: rgba(23,58,30,.12); overflow: hidden; }
 .qbar > span { display: block; height: 100%; background: var(--leaf); border-radius: 999px; }
 .stepcount { font-size: 14px; color: var(--ink-soft); }
@@ -1056,10 +1061,14 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
     return h;
   }
 
+  /* Cada paso lleva a su primera pregunta; Resultados lleva a «Revise sus respuestas». El paso actual no es enlace. */
+  var PASO_DESTINO = ["cond", "dieta", "ingr", "resumen"];
   function stepsHtml(phase) {
     return '<ol class="steps">' + u().ph.map(function (n, i) {
       var cls = i < phase ? "done" : i === phase ? "now" : "";
-      return '<li class="' + cls + '"' + (i === phase ? ' aria-current="step"' : "") + '><span class="n">' + (i < phase ? "✓" : i + 1) + '</span><span>' + esc(n) + '</span></li>';
+      var dentro = '<span class="n">' + (i < phase ? "✓" : i + 1) + '</span><span class="sl">' + esc(n) + '</span>';
+      return '<li class="' + cls + '"' + (i === phase ? ' aria-current="step"' : "") + '>' +
+        (i === phase ? dentro : '<a class="stp" href="#' + PASO_DESTINO[i] + '">' + dentro + '</a>') + '</li>';
     }).join("") + '</ol>';
   }
 

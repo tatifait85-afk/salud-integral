@@ -8,7 +8,7 @@
    - Si el servidor dice que no hay acceso (sin cookie, reembolso), borra todas las copias guardadas,
      se da de baja y deja que el servidor lleve a la página de acceso. */
 "use strict";
-var VERSION = "2026-11-14.2";
+var VERSION = "2026-11-14.3";
 var CACHE = "mpi-plato-" + VERSION;
 var FUENTES = "mpi-plato-fuentes";
 var ESTADO = "/api/plato/estado";
