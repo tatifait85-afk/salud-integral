@@ -45,3 +45,6 @@
 @media (max-width:420px){.q-scale{gap:.35rem}}
 @media (prefers-reduced-motion:reduce){.q-prog i{transition:none}}
 .q-card .btn{margin-top:.5rem}
+/* Mi Plato Inteligente — ficha */
+.mp-sign{margin-top:2rem;color:var(--ink-soft);font-size:.95rem}
+.page-plato .mp-narrow ol{padding-left:1.4rem;margin:0 0 1rem} .page-plato .mp-narrow ol li{margin:.2rem 0}

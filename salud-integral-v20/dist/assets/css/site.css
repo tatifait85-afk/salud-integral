@@ -427,3 +427,5 @@ section[id]{scroll-margin-top:5rem}
 .fcredit a:hover{opacity:1;text-decoration:underline}
 .fcredit img{width:40px;height:40px;border-radius:10px;background:#fff;flex:none}
 .fcredit strong{font-weight:600;color:#fff}
+.prod-grid.prod-odd>.prod:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:100%;max-width:calc(50% - .9rem)}@media (max-width:820px){.prod-grid.prod-odd>.prod:last-child:nth-child(odd){max-width:none}}
+@media (min-width:981px){.res-grid.res-odd>.res-card:last-child:nth-child(3n+1){grid-column:2}}@media (min-width:601px) and (max-width:980px){.res-grid.res-odd>.res-card:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:100%;max-width:calc(50% - .8rem)}}
