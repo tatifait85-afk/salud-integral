@@ -10,7 +10,12 @@
   function say(t, err) { msg.textContent = t || ""; msg.className = "mp-status" + (err ? " err" : ""); }
   function normaliza(v) { return String(v || "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }
 
-  function irAlCuestionario() { say(cfg.a_ok); location.href = cfg.quiz; }
+  function irAlCuestionario(tx) {
+    say(cfg.a_ok);
+    // Mi Plato Inteligente: la página de bienvenida muestra el ID para copiarlo (solo en esta pestaña; no va a ningún servidor).
+    if (cfg.guarda_tx && tx) { try { sessionStorage.setItem("mpi-tx", tx); } catch (e) {} }
+    location.href = cfg.quiz;
+  }
 
   function intentar(tx) {
     if (ocupado) return; ocupado = true; btn.disabled = true; say(cfg.a_checking);
@@ -21,7 +26,7 @@
       .then(function (o) {
         ocupado = false;
         var e = o.j && o.j.estado;
-        if (o.s === 200 && o.j.ok) { irAlCuestionario(); return; }
+        if (o.s === 200 && o.j.ok) { irAlCuestionario(tx); return; }
         if (e === "pendiente") {
           intentos++;
           if (intentos < MAX) { say(cfg.a_wait); timer = setTimeout(function () { intentar(tx); }, 5000); }

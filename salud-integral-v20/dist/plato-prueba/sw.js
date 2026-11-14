@@ -8,7 +8,7 @@
    - Si el servidor dice que no hay acceso (sin cookie, reembolso), borra todas las copias guardadas,
      se da de baja y deja que el servidor lleve a la página de acceso. */
 "use strict";
-var VERSION = "2026-11-14.1";
+var VERSION = "2026-11-14.2";
 var CACHE = "mpi-plato-" + VERSION;
 var FUENTES = "mpi-plato-fuentes";
 var ESTADO = "/api/plato/estado";
@@ -16,6 +16,7 @@ var ESPERA_RED = 4000; /* milisegundos antes de usar la copia guardada al abrir 
 var NUCLEO = /*NUCLEO*/[
   "./",
   "armador.js",
+  "bienvenida/index.html",
   "img/alergia-huevo.webp",
   "img/alergia-leche.webp",
   "img/alergia-mani.webp",
@@ -28,6 +29,7 @@ var NUCLEO = /*NUCLEO*/[
   "img/alergia-sulfitos.webp",
   "img/alergia-trigo.webp",
   "img/alimentacion.svg",
+  "img/bienvenida-instalar.webp",
   "img/bienvenida-protagonista.webp",
   "img/calendario.svg",
   "img/cocina-caribena.webp",
@@ -89,11 +91,14 @@ var NUCLEO = /*NUCLEO*/[
   "img/icon-app-v2-192.png",
   "img/icon-app-v2-512.png",
   "img/icono-consejos-recursos.webp",
+  "img/icono-guardar-id.webp",
   "img/icono-ingredientes-disponibles.webp",
   "img/icono-ingredientes.svg",
+  "img/icono-instalar-app.webp",
   "img/icono-libro-hoja.svg",
   "img/icono-medicamentos.svg",
   "img/icono-olla.svg",
+  "img/icono-otros-dispositivos.webp",
   "img/icono-personas.svg",
   "img/icono-porciones.svg",
   "img/icono-privacidad.webp",
@@ -145,7 +150,8 @@ var NUCLEO = /*NUCLEO*/[
   "manifest.webmanifest",
   "platos.js",
   "recetas.js",
-  "reglas.js"
+  "reglas.js",
+  "welcome/index.html"
 ]/*FIN-NUCLEO*/;
 var IMAGENES = /*IMAGENES*/[
   "img/ingredientes/aceite-coco.webp",
@@ -627,6 +633,7 @@ self.addEventListener("fetch", function (e) {
   if (url.origin !== self.location.origin || url.pathname.indexOf(base) !== 0) return;
 
   var pagina = req.mode === "navigate" && (url.pathname === base || url.pathname === base + "index.html");
+  if (req.mode === "navigate" && !pagina) return; /* otras páginas (bienvenida): siempre del servidor, que revisa el acceso */
   if (pagina) {
     /* Con conexión: el servidor revisa el acceso. Sin conexión o si tarda: la copia guardada. */
     var red = fetch(req).then(function (r) {
