@@ -13,6 +13,22 @@ Fecha: 13 de noviembre de 2026, 13:50. Solo revisión: no se modificó nada.
 
 ---
 
+## Actualización del 14 de noviembre de 2026 (PayPal)
+
+Revisado en la cuenta de PayPal (Terapia Holistica) con autorización de Tatiana:
+
+- **Dirección de avisos IPN encontrada:** `https://saludintegral-ipn-temporal.506webartesanal.workers.dev/ipn`, el Worker de diagnóstico creado el 23/10/2026. Ese Worker solo anotaba los avisos; no registraba pagos ni daba acceso.
+- **Historial de IPN (28 días) y actividad (30 días):** un solo aviso y un solo pago, la prueba de US$0,10 de Tatiana del 23/10/2026 (transacción `1LK73909U1297224P`). **No hubo ventas reales; nadie pagó sin recibir acceso.** Las 10 visitas del 3/11 al Worker antiguo no venían de PayPal.
+- **Cambio hecho (14/11, 8:17):** dirección de avisos IPN → `https://saludintegral.site/api/ipn`, mensajes activados.
+- **Worker `saludintegral-ipn-temporal`:** borrado el 14/11.
+- **Comprobación (14/11, 8:27):** un pago nuevo de US$0,10 de Tatiana generó un aviso que llegó a `/api/ipn` (POST de «PayPal IPN», respuesta 200) y el Worker lo verificó con PayPal. No se registró en KV porque el monto no corresponde a ningún producto, como debe ser.
+- **Queda confirmado:** los pagos hechos con enlaces `paypal.com/ncp/payment/...` sí generan avisos IPN.
+- **Sigue sin probar:** el registro y la activación con el monto de un producto real (se prueba con la compra de US$39,99 de la fase 2).
+
+Con esto quedan resueltos el paso 1 de «Pasos concretos que faltan» y la «señal de alerta» del punto 2.
+
+---
+
 ## Conclusión
 
 **Hoy Mi Plato Inteligente no está protegido.** Cualquier persona con la dirección `/plato-prueba/` puede usar toda la aplicación, incluida la receta con IA, sin pagar. Además, el Worker de pagos no reconoce Mi Plato: si alguien paga US$39,99, el pago se ignora y no se le entrega ningún acceso.
