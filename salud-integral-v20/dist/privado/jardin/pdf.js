@@ -44,7 +44,7 @@ async function buildPDF(){
   page=pdf.addPage([W,H]);pageNo++;page.drawImage(img,{x:0,y:(H-ih)/2,width:W,height:ih});
   page.drawRectangle({x:50,y:H-290,width:W-100,height:235,color:C.cream,opacity:.86,borderColor:C.line,borderWidth:.6});
   const ct=(t,f,s,yy,col)=>{const w=f.widthOfTextAtSize(t,s);page.drawText(t,{x:(W-w)/2,y:yy,size:s,font:f,color:col||C.forest})};
-  ct('SALUD INTEGRAL',BLD,10,H-84,C.terra);
+  ct(T('SALUD INTEGRAL','HOLISTIC WELLNESS'),BLD,10,H-84,C.terra);
   ct(T('Mi plan del','My Digestive'),SER,38,H-135);ct(T('Jardín Digestivo','Garden Plan'),SER,38,H-182);
   const sub=wrap(SAN,13,T('Tu guía práctica para una mejor digestión y bienestar','Your practical guide to better digestion and wellbeing'),380);sub.forEach((ln,i)=>ct(ln,SAN,13,H-212-i*17,C.soft));
   const who=name?T('Para '+name,'For '+name):T('Mi jardín','My garden');
