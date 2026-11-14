@@ -1339,7 +1339,7 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
 
   /* ---------- Resultados ---------- */
   var MPI = window.MPI_REGLAS, PLATOS = window.MPI_PLATOS;
-  var API = "https://api.saludintegral.site";
+  var API = "/api/plato/receta"; /* receta con IA: pasa por el Worker del sitio, que exige el acceso de comprador */
   var LIVE = /(^|\.)saludintegral\.site$/.test(location.hostname) || window.__MPI_LIVE === true;
   var RES = null;
   function resetRes(sig) { return { sig: sig, state: "idle", recetas: [], reserva: [], vistos: [], code: null, retryAt: 0, simulated: false, n: 0, ctrl: null, cancelled: false, ia: {}, open: {} }; }
@@ -1630,13 +1630,13 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
     ]
   };
 
-  function llamar(prompt, holder, sample) {
+  function llamar(datos, holder, sample) {
     holder = holder || RES;
     if (!LIVE) return new Promise(function (ok) { setTimeout(function () { ok({ ok: true, data: sample || { recetas: SAMPLE[S.lang] } }); }, 900); });
     var ctrl = new AbortController(), timedOut = false;
     holder.ctrl = ctrl;
     var timer = setTimeout(function () { timedOut = true; ctrl.abort(); }, window.__MPI_TIMEOUT || 30000);
-    return fetch(API + "/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: prompt, language: S.lang }), signal: ctrl.signal })
+    return fetch(API, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify(datos), signal: ctrl.signal })
       .then(function (res) {
         return res.json().catch(function () { return null; }).then(function (body) {
           clearTimeout(timer);
@@ -1833,11 +1833,30 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
     }
     return texto;
   }
+  /* Datos estructurados para la receta con IA: el Worker arma el texto para Gemini con una plantilla fija. */
+  function saludLista(P, es) {
+    var out = [], i = es ? 0 : 1;
+    (P.condiciones || []).forEach(function (c) { if (SALUD_PREF[c]) out.push(SALUD_PREF[c][i]); });
+    var m = P.medicamentos || [];
+    if (m.indexOf("imao") > -1) out.push(es ? "sin alimentos con tiramina (quesos curados, embutidos, pescado ahumado, vino tinto, cerveza, chocolate)" : "no tyramine-rich foods (aged cheese, cured meats, smoked fish, red wine, beer, chocolate)");
+    if (m.indexOf("estatinas") > -1) out.push(es ? "sin toronja ni pomelo" : "no grapefruit or pomelo");
+    return out.filter(function (x, k) { return out.indexOf(x) === k; });
+  }
   function armarPromptUna(P, plato, titulo) {
-    var es = S.lang === "es", t = limpio(titulo, 90), dd = PLATOS.filter(function (z) { return z[0] === plato; })[0], mm = dd && dd[3] ? dd[3] : 0;
-    return es
-      ? "Escriba la receta completa de este plato: " + t + " (id: " + plato + (mm ? "; tiempo aproximado: " + mm + " min" : "") + "). Responda solo con JSON: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"cantidad y nombre\"],\"pasos\":[\"...\"]}]} con UNA sola receta y use exactamente el id indicado en \"plato\". " + restr(P, true) + "Los platos cuyo id empieza por «crema-» son sopas sin lácteos: en el título llámelos «sopa» o «puré» y nunca «crema». No afirme que la receta es segura para ninguna condición de salud. Máximo 12 ingredientes y 6 pasos breves."
-      : "Write the complete recipe for this dish: " + t + " (id: " + plato + (mm ? "; approximate time: " + mm + " min" : "") + "). Reply with JSON only: {\"recetas\":[{\"plato\":\"id\",\"titulo\":\"\",\"tiempo_min\":0,\"porciones\":0,\"ingredientes\":[\"quantity and name\"],\"pasos\":[\"...\"]}]} with ONE recipe only and use exactly the given id in \"plato\". " + restr(P, false) + "Dishes whose id starts with «crema-» are dairy-free soups: in the title call them «soup» or «purée» and never «cream». Do not claim the recipe is safe for any health condition. At most 12 ingredients and 6 short steps.";
+    var a = S.a, es = S.lang === "es", dd = PLATOS.filter(function (z) { return z[0] === plato; })[0], pref = a.cocina.filter(function (c) { return c !== "otra"; });
+    var dieta = P.dieta ? (DIETA.filter(function (x) { return x.id === P.dieta; })[0] || { label: T("", "") }).label : null;
+    return {
+      lang: S.lang, plato: plato, titulo: limpio(titulo, 90), minutos: dd && dd[3] ? dd[3] : null,
+      restricciones: {
+        alergias: labelsOf(ALERG, P.alergias, ""), evitar: labelsOf(EVITA_ALL, P.evitar, ""),
+        libres: P.libres.map(function (x) { return limpio(x, 40); }).filter(Boolean),
+        dieta: dieta ? L(dieta) : null,
+        cocinas: pref.map(function (c) { var f = COCINA.filter(function (x) { return x.id === c; })[0]; return f ? L(f.label) : ""; }).filter(Boolean),
+        tiempo: a.tiempo || null, porciones: a.porc || null,
+        ingredientes: a.ingr.slice(0, 15).map(function (v) { if (v.indexOf("c:") === 0) return limpio(v.slice(2), 30); var f = INGR.filter(function (c) { return c.id === v; })[0]; return f ? L(f.label) : ""; }).filter(Boolean),
+        salud: saludLista(P, es)
+      }
+    };
   }
   function tituloDeId(id) { var t = id.replace(/-\d+$/, "").replace(/^crema-/, "sopa-").replace(/-/g, " "); return t.charAt(0).toUpperCase() + t.slice(1); }
   function planSample(L) {
