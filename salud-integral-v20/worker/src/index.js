@@ -60,6 +60,8 @@ const productos = (env) => [
   },
   {
     id: "jardin", precio: parseFloat(env.PRICE_JARDIN || "25"), prefijo: "j:", cookie: "si_jardin", api: "/api/jardin", privados: ["/privado/jardin/"],
+    // Quien abre el jardín sin acceso va a la página «Entre a su jardín» / «Enter your garden» (decisión del 15/11/2026).
+    acceso: { es: "/mi-jardin-digestivo/jardin/", en: "/en/my-digestive-garden/garden/" },
     // Acceso de por vida en 5 dispositivos, con 3 meses para activar dispositivos nuevos (decisión del 14/11/2026, igual que Mi Plato).
     tokenSeg: Number(env.JARDIN_TOKEN_DAYS || 365) * DIA,
     renovarSeg: DIA,
@@ -365,11 +367,12 @@ export default {
           return new Response(r.body, { status: r.status, headers: h });
         }
         const pagina = resto === "" || resto.endsWith("/") || resto.endsWith(".html");
-        const t = await leerToken(request, env, prod, !!prod.acceso && !pagina);
+        const t = await leerToken(request, env, prod, prod.id === "plato" && !pagina);
         if (!t) {
-          // Mi Plato: quien abre la aplicación sin acceso va a la página de acceso de su idioma.
+          // Mi Plato y Mi Jardín: quien abre la aplicación sin acceso va a la página de acceso de su idioma.
+          // El idioma sale de la dirección (/en/ o /es/) y, si no lo indica, del idioma del navegador.
           if (prod.acceso && pagina && request.method === "GET") {
-            const en = /^en\b/i.test(request.headers.get("accept-language") || "");
+            const en = /^en\//.test(resto) || (!/^es\//.test(resto) && /^en\b/i.test(request.headers.get("accept-language") || ""));
             return new Response(null, { status: 302, headers: { location: prod.acceso[en ? "en" : "es"], "cache-control": "no-store" } });
           }
           return new Response("No autorizado", { status: 401, headers: { "cache-control": "no-store" } });

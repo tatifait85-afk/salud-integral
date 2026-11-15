@@ -97,18 +97,19 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .instalar .hint { max-width: 46ch; }
 
 /* Progreso */
-.steps { display: flex; justify-content: space-between; position: relative; margin: 0; padding: 0; list-style: none; }
-.steps::before { content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 13px; height: 2px; background: linear-gradient(90deg, var(--leaf), rgba(47,107,42,.25) 40%, var(--line)); }
-.steps li { position: relative; display: grid; justify-items: center; gap: 4px; width: 25%; font-size: 11px; overflow-wrap: normal; hyphens: none; min-width: 0; color: var(--ink-soft); text-align: center; line-height: 1.15; }
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.steps li { display: grid; min-width: 0; font-size: 11px; overflow-wrap: normal; hyphens: none; text-align: center; line-height: 1.15; }
+.steps .stp { display: grid; justify-items: center; align-content: center; gap: 4px; min-width: 0; min-height: 62px; padding: 7px 2px 6px; border: 1.7px solid var(--forest); border-radius: 16px; background: #FCF9F2; color: var(--forest); font-weight: 500; text-decoration: none; box-shadow: 0 2px 0 rgba(23,58,30,.22); }
 .steps .n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--ivory); border: 1.5px solid var(--forest); color: var(--forest); font-weight: 600; font-size: 13px; }
 .steps li.done .n { background: var(--leaf); border-color: var(--leaf); color: var(--cream); }
-.steps li.now .n { background: var(--olive); border-color: var(--olive); color: #fff; box-shadow: 0 0 0 4px var(--mint); }
-.steps li.now { color: var(--forest); font-weight: 600; }
-.steps a.stp { display: grid; justify-items: center; gap: 4px; color: inherit; text-decoration: none; border-radius: 10px; padding: 0 4px 2px; min-width: 44px; }
-.steps a.stp .sl { text-decoration: underline; text-decoration-color: rgba(47,107,42,.35); text-underline-offset: 3px; }
-.steps a.stp:hover .sl { color: var(--forest); text-decoration-color: currentColor; }
-.steps a.stp:hover .n { box-shadow: 0 0 0 3px var(--mint); }
+.steps li.now .stp { background: var(--olive); border-color: var(--olive); color: #fff; font-weight: 600; box-shadow: none; }
+.steps li.now .n { background: #fff; border-color: #fff; color: var(--olive); }
+.steps a.stp { cursor: pointer; }
+.steps a.stp:hover { background: var(--mint); }
+.steps a.stp:active { transform: translateY(1px); box-shadow: none; }
 .steps a.stp:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
+@media (min-width: 600px) { .steps { gap: 10px; } .steps li { font-size: 13.5px; } }
+@media (min-width: 900px) { .steps { gap: 12px; } .steps li { font-size: 16px; } .steps .stp { grid-auto-flow: column; justify-content: center; align-items: center; gap: 10px; min-height: 54px; padding: 6px 12px; border-radius: 999px; } }
 .qbar { height: 6px; border-radius: 999px; background: rgba(23,58,30,.12); overflow: hidden; }
 .qbar > span { display: block; height: 100%; background: var(--leaf); border-radius: 999px; }
 .stepcount { font-size: 14px; color: var(--ink-soft); }
@@ -175,7 +176,10 @@ h2.title { font-size: 28px; line-height: 1.15; }
 .btn-primary[aria-disabled="true"] { background: #B9BFA6; color: #4a4f3a; cursor: not-allowed; }
 .btn-ghost { background: #FCF9F2; border-color: var(--forest); color: var(--forest); }
 .linkrow { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; font-size: 14.5px; }
-.linkrow.skiptop { width: auto; margin: 4px 0 0; justify-content: flex-start; }
+.linkrow.skiptop { width: auto; margin: 10px 0 0; justify-content: flex-start; }
+.skipbtn { min-height: 48px; min-width: min(100%, 200px); padding-inline: 28px; }
+.linkrow > .skipbtn:only-child { margin-inline: auto; }
+.linkrow.skiptop > .skipbtn:only-child { margin-inline: 0; }
 .textbtn { background: none; border: 0; padding: 8px 4px; min-height: 44px; color: var(--forest); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .confirm { display: grid; gap: 10px; background: var(--terra-bg); border: 1.5px solid var(--terra-d); border-radius: var(--r-md); padding: 14px; }
 .confirm .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -208,6 +212,7 @@ h2.title { font-size: 28px; line-height: 1.15; }
   .cta, .btn, .opt, .chip, .cu, .go { transition: background-color .15s ease, border-color .15s ease; }
 }
 @media (max-width: 420px) { .steps li { font-size: 10px; letter-spacing: -.1px; } .hero h2 { font-size: 30px; } h2.title { font-size: 25px; } .card { padding: 18px 14px 12px; } }
+@media (max-width: 350px) { .steps { gap: 4px; } .steps li { font-size: 9px; letter-spacing: -.2px; } .steps .stp { padding-inline: 0; } }
 @media (max-width: 600px) {
   .decor-tr { display: none; } .decor-br { width: 200px; height: 134px; right: -40px; } .decor-bl { width: 90px; height: 96px; }
   body { padding-block-end: 150px; }
@@ -1068,7 +1073,7 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
       var cls = i < phase ? "done" : i === phase ? "now" : "";
       var dentro = '<span class="n">' + (i < phase ? "✓" : i + 1) + '</span><span class="sl">' + esc(n) + '</span>';
       return '<li class="' + cls + '"' + (i === phase ? ' aria-current="step"' : "") + '>' +
-        (i === phase ? dentro : '<a class="stp" href="#' + PASO_DESTINO[i] + '">' + dentro + '</a>') + '</li>';
+        (i === phase ? '<span class="stp">' + dentro + '</span>' : '<a class="stp" href="#' + PASO_DESTINO[i] + '">' + dentro + '</a>') + '</li>';
     }).join("") + '</ol>';
   }
 
@@ -1275,7 +1280,7 @@ body.esbienv .card { background: none; border: 0; box-shadow: none; padding: 4px
     var note = "";
     if (!canNext) note = '<p class="need" id="need">' + esc(needsText(id) ? x.needText : x.needAnswer) + '</p>';
     var skipTop = id === "ingr";
-    var skipLink = q.required ? "" : '<a class="textbtn" href="#' + next + '">' + esc(x.skip) + '</a>';
+    var skipLink = q.required ? "" : '<a class="btn btn-ghost skipbtn" href="#' + next + '">' + esc(x.skip) + '</a>';
     var h = '<div><span class="stepcount">' + esc(x.step + " " + (q.phase + 1) + " " + x.of + " " + x.ph.length + " · " + x.ph[q.phase]) + ' — ' + esc(x.question + " " + (idx + 1) + "/" + tot) + '</span></div>' +
       stepsHtml(q.phase) +
       '<div class="qbar" role="progressbar" aria-label="' + esc(x.progress) + '" aria-valuemin="1" aria-valuemax="' + tot + '" aria-valuenow="' + (idx + 1) + '"><span style="width:' + Math.round((idx + 1) / tot * 100) + '%"></span></div>' +

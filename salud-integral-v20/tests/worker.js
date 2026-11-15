@@ -42,7 +42,7 @@ const ck = r => (r.headers.get('set-cookie') || '').split(';')[0];
     r = await acceso(tj.toLowerCase(), 'j'); const cj = ck(r); ok(r.status === 200 && cj.startsWith('si_jardin='), 'pago de 25.00 verificado → cookie si_jardin');
     ok((await (await fetch(B + '/api/jardin/estado', { headers: { cookie: cj } })).json()).activo === true, 'jardín: estado activo con su cookie');
     ok((await (await fetch(B + '/api/jardin/estado')).json()).activo === false, 'jardín: sin cookie no hay acceso');
-    ok((await fetch(B + '/privado/jardin/es/', { redirect: 'manual' })).status === 401, 'juego del jardín sin cookie: 401');
+    r = await fetch(B + '/privado/jardin/es/', { redirect: 'manual' }); ok(r.status === 302 && r.headers.get('location') === '/mi-jardin-digestivo/jardin/', 'juego del jardín sin cookie: va a la página de acceso');
     ok((await fetch(B + '/privado/jardin/core2.js')).status === 401, 'scripts del juego sin cookie: 401');
     ok((await fetch(B + '/privado/jardin/core2.js', { headers: { cookie: cj } })).status === 200, 'scripts del juego con cookie: 200');
     ok((await fetch(B + '/privado/jardin/es/', { headers: { cookie: cj } })).status === 200, 'juego con cookie: 200');
